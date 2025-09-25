@@ -84,6 +84,7 @@ header:hover {
   background-color: transparent;
   line-height: 15px;
   border-bottom: solid 1px black;
+  padding-bottom: 3px;
 }
 
 /* Slider */
@@ -93,7 +94,7 @@ header:hover {
   height: 100%;     /* chỉnh tùy ảnh của anh */
   aspect-ratio: 16/4;    /* giúp giữ tỉ lệ khi co giãn, có thể bỏ nếu không cần */
   overflow: hidden;
-  border-radius: 10px;
+  border-top-left-radius: 10px;
   padding-top: 45%;
 }
 
@@ -133,3 +134,33 @@ header:hover {
   cursor: pointer;
 }
 .slider-dots button.active { background: white; }
+
+
+/* Footer */
+footer {
+  margin-top: 10px;
+    display: flex;
+    height: auto;
+    background: #d6d5d5;
+    color: rgb(96, 91, 91);
+    padding: 20px 50px;
+    gap: 20px;
+}
+
+.left_footer {
+    width: 55%;
+    font-size: 20px;
+}
+
+.left_footer .footer-logo {
+    width: 150px;
+    margin-bottom: 10px;
+}
+
+.right_footer {
+    width: 45%;
+    justify-content: space-between;
+    align-content: center;
+    justify-items: center;
+    line-height: 30px;
+}
