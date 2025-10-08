@@ -4,16 +4,95 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="shortcut icon" href="image/logo.png" type="image/x-icon">
+    <link rel="icon"type="image/png" href="image/logo.png" >
     <link rel="stylesheet" href="css/index.css">
     <title>Ticktock-Shop</title>
 </head>
 <body>
     <header>
-        <div class="logo"></div>
+        <div class="logo">
+            <img src="image/logo2.png" alt="logoshop">
+        </div>
+
+        <div class="header_menu">
+                <div class="name"> Thương hiệu
+                    <ul>
+                        <li><a href="product.html?brand=casio">Casio</a></li>
+                        <li><a href="product.html?brand=rolex">Rolex</a></li>
+                        <li><a href="product.html?brand=citizen">Citizen</a></li>
+                        <li><a href="product.html?brand=rado">Rado</a></li>
+                        <li><a href="product.html?brand=seiko">Seiko</a></li>
+                    </ul>
+                </div>
+
+                <div class="name"><a href="product.html?category=nam">Nam</a>
+                    <ul>
+                        <li><a href="product.html?category=nam&brand=casio">Casio</a></li>
+                        <li><a href="product.html?category=nam&brand=rolex">Rolex</a></li>
+                        <li><a href="product.html?category=nam&brand=citizen">Citizen</a></li>
+                        <li><a href="product.html?category=nam&brand=rado">Rado</a></li>
+                        <li><a href="product.html?category=nam&brand=seiko">Seiko</a></li>
+                    </ul>
+                </div>
+                <div class="name"><a href="product.html?category=nu">Nữ</a>
+                    <ul>
+                        <li><a href="product.html?category=nu&brand=casio">Casio</a></li>
+                        <li><a href="product.html?category=nu&brand=rolex">Rolex</a></li>
+                        <li><a href="product.html?category=nu&brand=citizen">Citizen</a></li>
+                        <li><a href="product.html?category=nu&brand=rado">Rado</a></li>
+                        <li><a href="product.html?category=nu&brand=seiko">Seiko</a></li>
+                    </ul>
+                </div>
+                <div class="name"><a href="product.html?category=capdoi">Cặp đôi</a>
+                    <ul>
+                        <li><a href="product.html?category=capdoi&brand=casio">Casio</a></li>
+                        <li><a href="product.html?category=capdoi&brand=rolex">Rolex</a></li>
+                        <li><a href="product.html?category=capdoi&brand=citizen">Citizen</a></li>
+                        <li><a href="product.html?category=capdoi&brand=rado">Rado</a></li>
+                        <li><a href="product.html?category=capdoi&brand=seiko">Seiko</a></li>
+                    </ul>
+                </div>
+                <div class="name"> Phụ kiện
+                    <ul>
+                        <li><a href="product.html?accessory=hopdung">Hộp đựng</a></li>
+                        <li><a href="product.html?accessory=daydeo">Dây đeo</a></li>
+                        <li><a href="product.html?accessory=kinhcuongluc">Kính cường lực</a></li>
+                    </ul>
+                </div>
+                <div class="name"><a href="warranty.html">Thông tin bảo hành</a></div>
+        </div>
+
+        <div class="header_other">
+            <div class="search">
+                <input type="text" placeholder="Tìm kiếm...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div class="account">
+                <i class="fa-regular fa-user"></i>
+                <span>Tài khoản</span>
+            </div>
+            <div class="cart">
+                <i class="fa-solid fa-cart-shopping"></i>
+                <span id="cart-count" class="cart-badge">0</span>
+            </div>
+            <div class="logout">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+        </div>
+
     </header>
-    <div class="content"></div>
+
+
+    <div class="slider">
+        <div class="slide"><img src="image/slide1.jpg" alt="slider1"></div>
+        <div class="slide"><img src="image/slide2.jpg" alt="slider2"></div>
+        <div class="slide"><img src="image/slide3.png" alt="slider3"></div>
+        <div class="slide"><img src="image/slide4.png" alt="slider4"></div>
+        <div class="slide"><img src="image/slide5.jpg" alt="slider5"></div> <!-- thêm class="slide" -->
+    </div>
     <footer></footer>
     
 </body>
+<script src="js/slider.js"></script>
+<script src="js/product.js"></script>
 </html>
