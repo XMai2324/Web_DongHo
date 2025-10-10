@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register</title>
+    <style>
+        /* CSS Dùng lại từ bản gốc */
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f4f8; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            width: 350px; 
+        }
+       h2 { 
+            text-align: center; 
+            color: #333; 
+            margin-bottom: 25px; 
+        }
+        .input-group { 
+            margin-bottom: 15px; 
+            position: relative; 
+        }
+        .input-group label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: 600; 
+            color: #555; 
+        }
+        .input-group input { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            box-sizing: border-box; 
+        }
+        button { 
+            width: 100%; 
+            padding: 10px; 
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: background-color 0.3s; 
+        }
+        button:hover { 
+            background-color:#1e7e34; 
+        }
+        .message { 
+            margin-top: 15px; 
+            text-align: center; 
+            padding: 10px; 
+            border-radius: 5px; 
+        }
+        .success { 
+            background-color: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
+        .error { 
+            background-color: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .link { 
+            text-align: center; 
+            margin: 20px; 
+            font-size: 14px; 
+        }
+        .link a { 
+            color: #007bff; 
+            text-decoration: none; 
+        }
+        
+        /* CSS cho Trạng thái Invalid: Chuyển viền input thành đỏ */
+        .input-group.invalid input { 
+            border-color: #dc3545; /* Màu đỏ */
+            box-shadow: 0 0 0 0.1rem rgba(220, 53, 69, 0.25);
+        } 
+        
+        /* Text lỗi: Hiển thị dòng báo lỗi màu đỏ */
+        .input-group .error-text { 
+            color: #dc3545; /* Màu đỏ */
+            font-size: 0.85em; 
+            margin-top: 3px; 
+            display: none; /* Mặc định ẩn */
+        } 
+        .input-group.invalid .error-text { 
+            display: block; /* Hiện khi input-group có lỗi */
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Đăng Ký Người Dùng Mới</h2>
+    <form id="registerForm">
+        <div class="input-group">
+            <label for="regUsername">Tên đăng nhập (Username)</label>
+            <input type="text" id="regUsername" required>
+            <span class="error-text" id="errorUsername"></span>
+        </div>
+        <div class="input-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" required>
+            <span class="error-text" id="errorEmail"></span>
+        </div>
+        <div class="input-group">
+            <label for="regPassword">Mật khẩu</label>
+            <input type="password" id="regPassword" required>
+            <span class="error-text" id="errorPassword"></span>
+        </div>
+        
+        <!-- Ô nhập lại mật khẩu -->
+        <div class="input-group">
+            <label for="regRePassword">Nhập lại Mật khẩu</label>
+            <input type="password" id="regRePassword" required>
+            <span class="error-text" id="errorRePassword"></span>
+        </div>
+
+        <button type="submit">Đăng Ký</button>
+    </form>
+    <div id="message" class="message" style="display: none;"></div>
+    
+    <div class="link">
+        Đã có tài khoản? <a href="login.html">Đăng nhập ngay</a>
+    </div>
+</div>
+
+<script>
+    // Hàm hiển thị thông báo chung (success/error box)
+    function showMessage(element, text, type) {
+        element.textContent = text;
+        element.className = 'message ' + type;
+        element.style.display = 'block';
+    }
+
+    // Hàm đặt lỗi cho từng input
+    function setInputError(input, message) {
+        const group = input.closest('.input-group');
+        const errorEl = group.querySelector('.error-text'); 
+        
+        if (message) {
+            group.classList.add('invalid');
+            errorEl.textContent = message;
+        } else {
+            group.classList.remove('invalid');
+            errorEl.textContent = '';
+        }
+    }
+
+    // Hàm xóa tất cả lỗi validation trên form
+    function clearAllValidationErrors() {
+        document.querySelectorAll('.input-group').forEach(group => {
+            group.classList.remove('invalid');
+            const errorEl = group.querySelector('.error-text');
+            if (errorEl) errorEl.textContent = '';
+        });
+    }
+
+    document.getElementById('registerForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        clearAllValidationErrors();
+        const messageDiv = document.getElementById('message');
+        messageDiv.style.display = 'none';
+        
+        const username = document.getElementById('regUsername').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value.trim();
+        const rePassword = document.getElementById('regRePassword').value.trim();
+        
+        let isValid = true;
+
+        // --- 1. Validation Logic Chi Tiết ---
+        
+        // A. Username (3-15 ký tự, chỉ chữ/số)
+        if (username.length < 3 || username.length > 15 || !/^[a-zA-Z0-9]+$/.test(username)) {
+            setInputError(document.getElementById('regUsername'), 'Tên đăng nhập (3-15 ký tự, chỉ chữ/số).');
+            isValid = false;
+        } else {
+             setInputError(document.getElementById('regUsername'), ''); // Xóa lỗi nếu hợp lệ
+        }
+
+        // B. Email Validation (Định dạng cơ bản)
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(email)) {
+            setInputError(document.getElementById('regEmail'), 'Email không hợp lệ (vd: user@example.com).');
+            isValid = false;
+        } else {
+            setInputError(document.getElementById('regEmail'), ''); // Xóa lỗi nếu hợp lệ
+        }
+
+        // C. Password Validation (Mạnh hơn: min 8, hoa, thường, số)
+        const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+        if (!passwordRegex.test(password)) {
+            setInputError(document.getElementById('regPassword'), 'Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất 1 chữ hoa, 1 chữ thường, và 1 số.');
+            isValid = false;
+        } else {
+            setInputError(document.getElementById('regPassword'), ''); // Xóa lỗi nếu hợp lệ
+        }
+
+        // D. Re-Password Match
+        if (password !== rePassword) {
+            setInputError(document.getElementById('regRePassword'), 'Mật khẩu xác nhận không khớp.');
+            isValid = false;
+        } else {
+            setInputError(document.getElementById('regRePassword'), ''); // Xóa lỗi nếu hợp lệ
+        }
+
+        if (!isValid) {
+            showMessage(messageDiv, 'Vui lòng kiểm tra lại các trường bị lỗi.', 'error');
+            return;
+        }
+
+        // --- 2. Local Storage Logic ---
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        
+        // --- 3. Kiểm tra trùng lặp (sau khi đã pass validation định dạng) ---
+        const existingUser = users.find(u => u.username === username || u.email === email);
+        if (existingUser) {
+            showMessage(messageDiv, 'Tên đăng nhập hoặc Email đã tồn tại.', 'error');
+            
+            // Đặt lỗi cụ thể
+            if (existingUser.username === username) setInputError(document.getElementById('regUsername'), 'Tên đăng nhập đã tồn tại.');
+            if (existingUser.email === email) setInputError(document.getElementById('regEmail'), 'Email đã tồn tại.');
+            return;
+        }
+
+        // --- 4. Tạo đối tượng user mới và phân quyền ---
+        const newUser = {
+            id: Date.now(),
+            username: username,
+            email: email,
+            password: password, 
+            // Phân quyền: admin nếu username là 'admin', còn lại là 'user'
+            role: (username.toLowerCase() === 'admin') ? 'admin' : 'user'
+        };
+
+        // --- 5. Lưu user mới và cập nhật Local Storage ---
+        users.push(newUser);
+        localStorage.setItem('users', JSON.stringify(users));
+        
+        // --- 6. Thông báo thành công và chuyển hướng ---
+        showMessage(messageDiv, 'Đăng ký thành công! Đang chuyển hướng đến trang Đăng nhập...', 'success');
+        document.getElementById('registerForm').reset();
+        
+        setTimeout(() => {
+            window.location.href = 'login.html';
+        }, 1500);
+    });
+
+    // Thêm validation khi người dùng rời khỏi ô input (optional nhưng tốt cho UX)
+    document.querySelectorAll('.input-group input').forEach(input => {
+        input.addEventListener('blur', function() {
+            clearAllValidationErrors(); // Xóa tất cả lỗi trước khi kiểm tra lại
+            
+            // Tạm thời gọi lại logic validation cơ bản để hiển thị lỗi ngay lập tức
+            const username = document.getElementById('regUsername').value.trim();
+            const email = document.getElementById('regEmail').value.trim();
+            const password = document.getElementById('regPassword').value.trim();
+            const rePassword = document.getElementById('regRePassword').value.trim();
+
+            if (this.id === 'regUsername') {
+                if (username.length < 3 || username.length > 15 || !/^[a-zA-Z0-9]+$/.test(username)) {
+                    setInputError(this, 'Tên đăng nhập (3-15 ký tự, chỉ chữ/số).');
+                } else { setInputError(this, ''); }
+            } else if (this.id === 'regEmail') {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!emailRegex.test(email)) {
+                    setInputError(this, 'Email không hợp lệ (vd: user@example.com).');
+                } else { setInputError(this, ''); }
+            } else if (this.id === 'regPassword') {
+                const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/;
+                if (!passwordRegex.test(password)) {
+                    setInputError(this, 'Mật khẩu phải có ít nhất 8 ký tự, bao gồm ít nhất 1 chữ hoa, 1 chữ thường, và 1 số.');
+                } else { setInputError(this, ''); }
+            } else if (this.id === 'regRePassword') {
+                if (password !== rePassword) {
+                    setInputError(this, 'Mật khẩu xác nhận không khớp.');
+                } else { setInputError(this, ''); }
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

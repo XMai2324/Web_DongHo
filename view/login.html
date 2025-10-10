@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #f0f4f8; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            margin: 0; 
+        }
+        .container { 
+            background: white; 
+            padding: 30px; 
+            border-radius: 10px; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+            width: 350px; 
+        }
+        h2 { text-align: center; 
+            color: #333; 
+            margin-bottom: 25px; 
+        }
+        .input-group { 
+            margin-bottom: 15px; 
+        }
+        .input-group label { 
+            display: block; 
+            margin-bottom: 5px; 
+            font-weight: 600; 
+            color: #555; 
+        }
+        .input-group input { 
+            width: 100%; 
+            padding: 10px; 
+            border: 1px solid #ccc; 
+            border-radius: 5px; 
+            box-sizing: border-box; 
+        }
+        button { 
+            width: 100%; 
+            padding: 10px; 
+            background-color: #28a745; 
+            color: white; 
+            border: none; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            font-size: 16px; 
+            transition: background-color 0.3s; 
+        }
+        button:hover { 
+            background-color: #1e7e34; 
+        }
+        .message { 
+            margin-top: 15px; 
+            text-align: center; 
+            padding: 10px; 
+            border-radius: 5px; 
+        }
+        .success { 
+            background-color: #d4edda; 
+            color: #155724; 
+            border: 1px solid #c3e6cb; 
+        }
+        .error { 
+            background-color: #f8d7da; 
+            color: #721c24; 
+            border: 1px solid #f5c6cb; 
+        }
+        .link { 
+            text-align: center; 
+            margin: 20px; 
+            font-size: 14px; 
+        }
+        .link a { 
+            color: #007bff; 
+            text-decoration: none; 
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Đăng Nhập</h2>
+    <form id="loginForm">
+        <div class="input-group">
+            <label for="loginIdentifier">Email hoặc Tên đăng nhập</label>
+            <input type="text" id="loginIdentifier" required>
+        </div>
+        <div class="input-group">
+            <label for="loginPassword">Mật khẩu</label>
+            <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit">Đăng Nhập</button>
+    </form>
+    <div id="message" class="message" style="display: none;"></div>
+    
+    <div class="link">
+        Chưa có tài khoản? <a href="register.html">Đăng ký ngay</a>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const identifier = document.getElementById('loginIdentifier').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const messageDiv = document.getElementById('message');
+        
+        // --- 1. Lấy danh sách user từ Local Storage ---
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        
+        // --- 2. Thêm tài khoản admin mặc định nếu chưa có ---
+        if (!users.find(u => u.username === 'admin')) {
+            users.push({
+                id: 99999,
+                username: 'admin',
+                email: 'admin@sgu.edu.vn',
+                password: '123456', 
+                role: 'admin' // Tài khoản này có quyền admin
+            });
+            localStorage.setItem('users', JSON.stringify(users));
+        }
+
+        // --- 3. Tìm kiếm người dùng khớp ---
+        const foundUser = users.find(user => 
+            (user.username === identifier || user.email === identifier) && 
+            user.password === password
+        );
+        
+        // --- 4. Xử lý kết quả đăng nhập ---
+        if (foundUser) {
+            showMessage(messageDiv, `Chào mừng, ${foundUser.username}! Đăng nhập thành công.`, 'success');
+            
+            // Lưu trạng thái đăng nhập (giả lập)
+            localStorage.setItem('currentUser', JSON.stringify(foundUser));
+            
+            // Quyết định chuyển hướng dựa trên vai trò (Role)
+            setTimeout(() => {
+                if (foundUser.role === 'admin') {
+                    window.location.href = '../admin/admin.html'; // Chuyển đến trang quản lý
+                } else {
+                    window.location.href = 'index.html'; // Chuyển đến trang người dùng thường
+                }
+            }, 1500);
+
+        } else {
+            showMessage(messageDiv, 'Tên đăng nhập/Email hoặc mật khẩu không đúng.', 'error');
+        }
+    });
+
+    function showMessage(element, text, type) {
+        element.textContent = text;
+        element.className = 'message ' + type;
+        element.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>

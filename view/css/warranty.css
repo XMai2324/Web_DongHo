@@ -1,0 +1,114 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.left, .right {
+    padding: 20px;
+    line-height: 40px;
+    
+}
+
+.left{
+    width: 55%;
+    float: left;
+    clear: left;
+}
+
+.left a{
+    text-decoration: none;
+    color: black;
+}
+
+.right{
+    width: 45%;
+    float: right;
+    clear: right;
+}
+
+
+.wlp-card {
+    line-height: 30px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+}
+
+
+.wlp-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 0 0 12px;
+  color: #111;
+  align-items: center;
+}
+
+.wlp-row { display: flex; gap: 8px; }
+#wlp-phone {
+  flex: 1;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+#wlp-phone:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,.15); }
+
+#wlp-btn {
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: #2563eb;
+  color: #fff;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background .2s;
+}
+#wlp-btn:hover { background: #1e40af; }
+
+.wlp-result { margin-top: 14px; font-size: 14px; color: #333; }
+.wlp-customer {
+  padding: 10px 12px;
+  border-left: 4px solid #2563eb;
+  background: #f8fafc;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.wlp-order {
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 12px;
+  background: #fafafa;
+  margin: 10px 0;
+}
+.wlp-order p { margin: 6px 0; }
+.badge { font-weight: 700; }
+.badge.ok  { color: #0a7a2d; }
+.badge.exp { color: #b42318; }
+.note  { color: #777; font-size: 13px; margin-top: 8px; }
+.empty {
+  padding: 10px;
+  border: 1px dashed #ddd;
+  border-radius: 10px;
+  background: #fcfcfc;
+  text-align: center;
+  color: #666;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .content { flex-direction: column; }
+  .right { justify-content: stretch; }
+  .wlp { max-width: 100%; }
+}
+
+/* Hiệu ứng */
+@keyframes fadeIn { from {opacity:0; transform:translateY(-6px);} to {opacity:1; transform:translateY(0);} }
+
