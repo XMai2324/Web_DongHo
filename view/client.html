@@ -3,9 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TickTock Shop - Sản phẩm</title>
-
-  <!-- CSS -->
+  <title>TickTock Shop</title>
   <link rel="stylesheet" href="css/client.css">
   <link rel="stylesheet" href="css/product.css">
   <link rel="stylesheet" href="css/login.css">
@@ -78,15 +76,20 @@
         <input type="text" placeholder="Tìm kiếm...">
         <i class="fa-solid fa-magnifying-glass"></i>
       </div>
-      <div class="account">
+      
+      <div class="account" id="accountBtn">
         <i class="fa-regular fa-user"></i>
-        <a href="#">Tài khoản</a>
+        <a href="#" id="accountLink">
+            <span id="accountLinkText">Tài khoản</span>
+        </a>
       </div>
+
       <div class="cart">
         <i class="fa-solid fa-cart-shopping"></i>
         <span id="cart-count" class="cart-badge">0</span>
       </div>
-      <div class="logout">
+      
+      <div class="logout" id="logoutBtn"> 
         <i class="fa-solid fa-right-from-bracket"></i>
       </div>
     </div>

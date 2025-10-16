@@ -1,53 +1,105 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="shortcut icon" href="/view/image/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="../view/css/index.css">
-    <title>Ticktock-Admin</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="../admin/ad_css/admin.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <script src="../view/js/auth.js"></script>
+  <title>Ticktock - Admin</title>
 </head>
 <body>
-    <header>
-        <div class="logo">
-            <img src="/view/image/logo2.png" alt="logoshop">
+  <div class="admin-container">
+    <!-- MENU BÊN TRÁI -->
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="/view/image/logo2.png" alt="Logo">
+      </div>
+      <h2>Xin chào Admin</h2>
+
+      <ul class="menu">
+        <li class="menu-title">Sản phẩm</li>
+        <ul class="submenu">
+          <li>Đồng hồ</li>
+          <li>Dây đeo</li>
+          <li>Hộp đựng</li>
+          <li>Kính cường lực</li>
+        </ul>
+        <li class="menu-title">Đơn hàng</li>
+        <li class="menu-title">Khách hàng</li>
+        <li class="menu-title">Nhập hàng</li>
+        <li class="menu-title">Kho hàng</li>
+      </ul>
+    </aside>
+
+    <!-- NỘI DUNG BÊN PHẢI -->
+    <main class="main-content">
+      <header class="topbar">
+        <div class="search">
+          <input type="text" placeholder="Tìm kiếm...">
+          <i class="fa-solid fa-magnifying-glass"></i>
+        </div>
+        <div class="actions">
+          <div class="account">
+            <i class="fa-regular fa-user"></i>
+            <span>Admin</span>
+          <div class="logout" id="logoutBtn"> 
+              <i class="fa-solid fa-right-from-bracket"></i>
+          </div>
+      </header>
+
+
+
+      <!-- ---------------SẢN PHẨM------------------- -->
+      <section class="dashboard">
+        <div class="toolbar">
+            <h1>Quản lý đồng hồ</h1>
+            <div class="actions">
+            <select id="filterCategory">
+                <option value="">Loại (tất cả)</option>
+                <option value="nam">Nam</option>
+                <option value="nu">Nữ</option>
+                <option value="unisex">Unisex</option>
+                <option value="capdoi">Cặp đôi</option>
+            </select>
+
+            <select id="filterBrand">
+                <option value="">Thương hiệu (tất cả)</option>
+                <option value="casio">Casio</option>
+                <option value="citizen">Citizen</option>
+                <option value="rolex">Rolex</option>
+                <option value="seiko">Seiko</option>
+                <option value="rado">Rado</option>
+            </select>
+
+            <input id="searchInput" type="text" placeholder="Tìm theo tên/brand...">
+            <button id="btnAdd" class="btn primary">+ Thêm đồng hồ</button>
+            </div>
         </div>
 
-        <div class="header_menu">
-                <div class="name"> Quản lý sản phẩm
-                    <ul>
-                        <li>Đồng hồ</li>
-                        <li>Dây đeo</li>
-                        <li>Hộp đựng</li>
-                        <li>Kính cường lực</li>
-                    </ul>
-                </div>
-                <div class="name"> Quản lý người dùng
-                </div>
-                <div class="name"> <a href="/view/warranty.html">Thông tin bảo hành</a>
-                </div>
-                <div class="name"> Khuyến mãi
-                </div>
+        <div class="table-wrap">
+            <table class="product-table" id="productTable">
+            <thead>
+                <tr>
+                <th style="width:150px;">Ảnh</th>
+                <th>Tên</th>
+                <th style="width:120px;">Giá (₫)</th>
+                <th style="width:120px;">Danh mục</th>
+                <th style="width:120px;">Thương hiệu</th>
+                <th style="width:140px;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="productTbody"></tbody>
+            </table>
         </div>
 
-        <div class="header_other">
-            <div class="search">
-                <input type="text" placeholder="Tìm kiếm...">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
-            <div class="account">
-                <i class="fa-regular fa-user"></i>
-                <span>Admin</span>
-            </div>
-            <div class="cart">
-                <i class="fa-solid fa-cart-shopping"></i>
-            </div>
-            <div class="logout">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </div>
-        </div>
 
-    </header>
+        
+
+    </section>
+
+
+    </main>
+  </div>
 </body>
 </html>
