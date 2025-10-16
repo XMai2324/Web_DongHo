@@ -53,3 +53,13 @@ document.addEventListener("DOMContentLoaded", function () {
     render();
     start();
 });
+
+
+window.addEventListener("scroll", function() {
+  const header = document.querySelector("header");
+  if (window.scrollY > 50) { // Khi cuộn quá 50px
+    header.classList.add("scrolled");
+  } else {
+    header.classList.remove("scrolled");
+  }
+});

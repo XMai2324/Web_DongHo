@@ -3,7 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link rel="shortcut icon" href="/view/image/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="../view/css/index.css">
+    <title>Admin_user</title>
    <style>
     /* Global Styles */
     body { 
@@ -27,6 +30,7 @@
         margin: 50px auto; 
     }
     main { 
+        margin-top: 170px;
         padding: 30px; 
     }
 
@@ -111,24 +115,143 @@
     }
 
     /* Header & Navigation Styles (for index.html and admin.html) */
-    header { 
-        background-color: #333; 
-        color: white; 
-        padding: 15px 30px; 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-    }
-    nav a { 
-        color: white; 
-        margin-left: 20px; 
-        text-decoration: none; 
-        font-weight: 500;
-        transition: color 0.3s;
-    }
-    nav a:hover {
-        color: #007bff;
-    }
+   
+header {
+    height: 100px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    display: flex;
+    flex: 1;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 30px;
+    background-color: rgba(225, 225, 225, 0.3) ;
+    transition: background-color 0.3s ease;
+    z-index: 1000;
+}
+
+header:hover {
+    background: white;
+}
+
+/* Logo */
+
+/* Menu ngang */
+.header_menu {
+    display: flex;
+    gap: 30px; /* khoảng cách giữa các mục */
+    margin-left: 50px;
+}
+
+/* Mục menu chính */
+.header_menu .name {
+    position: relative;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+/* Menu con */
+.header_menu .name ul {
+    list-style: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background: white;
+    display: none; /* ẩn mặc định */
+    padding: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+/* Các item bên trong */
+.header_menu .name ul li {
+    padding: 8px 15px;
+    white-space: nowrap;
+}
+
+.header_menu .name ul li:hover {
+    background: #f2f2f2;
+}
+
+/* Hover để xổ xuống */
+.header_menu .name:hover ul {
+    display: block;
+}
+
+.header_menu a {
+    text-decoration: none;
+    color: black;
+}
+
+.header_other {
+    width: 450px;
+    display: flex;
+    gap: 30px;
+    margin-left: 40px;
+}
+
+.search input[type="text"] {
+  border: none;
+  outline: none;
+  background-color: transparent;
+  line-height: 15px;
+  border-bottom: solid 1px black;
+  padding-bottom: 3px;
+}
+
+/* Slider */
+.slider {
+  position: relative;
+  width: 100%;
+  height: 100%;     /* chỉnh tùy ảnh của anh */
+  aspect-ratio: 16/4;    /* giúp giữ tỉ lệ khi co giãn, có thể bỏ nếu không cần */
+  overflow: hidden;
+  border-top-left-radius: 10px;
+  padding-top: 45%;
+}
+
+/* Mỗi slide chồng lên nhau, chỉ slide.active hiện */
+.slider .slide {
+  position: absolute;
+  inset: 0;              /* top:0; right:0; bottom:0; left:0; */
+  opacity: 0;
+  transition: opacity 0.8s ease;  /* hiệu ứng fade */
+  z-index: 0;
+}
+
+.slider .slide.active {
+  opacity: 1;
+  z-index: 1;
+}
+
+.slider .slide img {
+  width: 100%;
+  height: 100%;
+}
+
+/* (tuỳ chọn) chấm chỉ báo */
+.slider-dots {
+  position: absolute;
+  left: 50%;
+  bottom: 12px;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 2;
+}
+
+.slider-dots button {
+  width: 10px; height: 10px; border-radius: 50%;
+  border: none; background: rgba(255,255,255,.6);
+  cursor: pointer;
+}
+.fa-right-from-bracket {
+    color: black;
+    text-decoration: none;
+}
 
     /* Admin Management Styles */
     .management-header { 
@@ -243,18 +366,56 @@
     .modal-content button { 
         margin-top: 15px; 
     }
+    
 </style>
 
 </head>
 <body>
 
     <header>
-        <h1>Bảng Điều Khiển Admin</h1>
+            <div class="logo">
+            <img src="/view/image/logo2.png" alt="logoshop">
+        </div>
+
+        <div class="header_menu">
+                <div class="name"> Quản lý sản phẩm
+                    <ul>
+                        <li>Đồng hồ</li>
+                        <li>Dây đeo</li>
+                        <li>Hộp đựng</li>
+                        <li>Kính cường lực</li>
+                    </ul>
+                </div>
+                <div class="name"> Xử lý đơn hàng
+                </div>
+                <div class="name"> <a href="/view/warranty.html">Thông tin bảo hành</a>
+                </div>
+                <div class="name"> Khuyến mãi
+                </div>
+        </div>
+
+        <div class="header_other">
+            <div class="search">
+                <input type="text" placeholder="Tìm kiếm...">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </div>
+            <div class="account">
+                <i class="fa-regular fa-user"></i>
+                <span>Admin</span>
+            </div>
+            <div class="cart">
+                <i class="fa-solid fa-cart-shopping"></i>
+            </div>
+            <div class="logout">
+                <a href="#" id="logoutBtn" class="fa-solid fa-right-from-bracket"></a>
+            </div>
+        </div>
+        <!-- <h1>Bảng Điều Khiển Admin</h1>
         <nav>
             <a href="#">Quản lý Tổng quan</a>
-            <a href="admin_panel.html">Quản lý Người dùng</a>
+            <a href="ad_user.html">Quản lý Người dùng</a>
             <a href="#" id="logoutBtn">Đăng xuất</a>
-        </nav>
+        </nav> -->
     </header>
 
     <main>

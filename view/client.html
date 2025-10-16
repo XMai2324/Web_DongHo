@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>TickTock Shop - Sản phẩm</title>
+
+  <!-- CSS -->
+  <link rel="stylesheet" href="css/client.css">
+  <link rel="stylesheet" href="css/product.css">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="icon" type="image/png" href="image/logo.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+  <!-- ===== HEADER ===== -->
+  <header>
+    <div class="logo">
+      <img src="image/logo2.png" alt="logo shop">
+    </div>
+
+    <div class="header_menu">
+      <div class="name"> Thương hiệu
+        <ul>
+          <li><a href="client.html?brand=casio">Casio</a></li>
+          <li><a href="client.html?brand=rolex">Rolex</a></li>
+          <li><a href="client.html?brand=citizen">Citizen</a></li>
+          <li><a href="client.html?brand=rado">Rado</a></li>
+          <li><a href="client.html?brand=seiko">Seiko</a></li>
+          </ul>
+          </div>
+
+          <div class="name"><a href="client.html?category=nam">Nam</a>
+            <ul>
+              <li><a href="client.html?category=nam&brand=casio">Casio</a></li>
+              <li><a href="client.html?category=nam&brand=rolex">Rolex</a></li>
+              <li><a href="client.html?category=nam&brand=citizen">Citizen</a></li>
+              <li><a href="client.html?category=nam&brand=rado">Rado</a></li>
+              <li><a href="client.html?category=nam&brand=seiko">Seiko</a></li>
+            </ul>
+          </div>
+
+          <div class="name"><a href="client.html?category=nu">Nữ</a>
+            <ul>
+              <li><a href="client.html?category=nu&brand=casio">Casio</a></li>
+              <li><a href="client.html?category=nu&brand=rolex">Rolex</a></li>
+              <li><a href="client.html?category=nu&brand=citizen">Citizen</a></li>
+              <li><a href="client.html?category=nu&brand=rado">Rado</a></li>
+              <li><a href="client.html?category=nu&brand=seiko">Seiko</a></li>
+            </ul>
+          </div>
+
+          <div class="name"><a href="client.html?category=capdoi">Cặp đôi</a>
+            <ul>
+              <li><a href="client.html?category=capdoi&brand=casio">Casio</a></li>
+              <li><a href="client.html?category=capdoi&brand=rolex">Rolex</a></li>
+              <li><a href="client.html?category=capdoi&brand=citizen">Citizen</a></li>
+              <li><a href="client.html?category=capdoi&brand=rado">Rado</a></li>
+              <li><a href="client.html?category=capdoi&brand=seiko">Seiko</a></li>
+            </ul>
+          </div>
+
+          <div class="name"> Phụ kiện
+            <ul>
+              <li><a href="client.html?category=phukien&accessory=glass">Kính cường lực</a></li>
+              <li><a href="client.html?category=phukien&accessory=box">Hộp đựng</a></li>
+              <li><a href="client.html?category=phukien&accessory=strap">Dây đeo</a></li>
+            </ul>
+
+
+      </div>
+
+      <div class="name"><a href="warranty.html">Thông tin bảo hành</a></div>
+    </div>
+
+    <div class="header_other">
+      <div class="search">
+        <input type="text" placeholder="Tìm kiếm...">
+        <i class="fa-solid fa-magnifying-glass"></i>
+      </div>
+      <div class="account">
+        <i class="fa-regular fa-user"></i>
+        <a href="#">Tài khoản</a>
+      </div>
+      <div class="cart">
+        <i class="fa-solid fa-cart-shopping"></i>
+        <span id="cart-count" class="cart-badge">0</span>
+      </div>
+      <div class="logout">
+        <i class="fa-solid fa-right-from-bracket"></i>
+      </div>
+    </div>
+  </header>
+
+  <div class="slider">
+        <div class="slide"><img src="image/slide1.jpg" alt="slider1"></div>
+        <div class="slide"><img src="image/slide2.jpg" alt="slider2"></div>
+        <div class="slide"><img src="image/slide3.png" alt="slider3"></div>
+        <div class="slide"><img src="image/slide4.png" alt="slider4"></div>
+        <div class="slide"><img src="image/slide5.jpg" alt="slider5"></div> <!-- thêm class="slide" -->
+    </div>
+  <!-- ===== MAIN ===== -->
+  <main>
+    <section class="product-page">
+      <div class="container">
+        <!-- Breadcrumb -->
+        <div class="product-page-top row">
+          <p><a href="client.html">Trang chủ</a></p>
+          <span>&#10230;</span>
+          <p id="breadcrumb-current">Danh sách sản phẩm</p>
+        </div>
+
+        <!-- Tiêu đề + Filter -->
+        <div class="product-page-right-top row">
+          <div class="product-page-right-top-item">
+            <p class="product-page-title" id="page-title">TẤT CẢ SẢN PHẨM</p>
+          </div>
+
+          <div class="filter-group">
+            <select class="filter-select select-box" id="price-range">
+              <option value="">-- Khoảng giá --</option>
+              <option value="0-1000000">Dưới 1 triệu</option>
+              <option value="1000000-3000000">1 - 3 triệu</option>
+              <option value="3000000-5000000">3 - 5 triệu</option>
+              <option value="5000000-7000000">5 - 7 triệu</option>
+              <option value="7000000-10000000">7 - 10 triệu</option>
+              <option value="10000000-30000000">10 - 30 triệu</option>
+              <option value="30000000-50000000">30 - 50 triệu</option>
+              <option value="50000000-100000000">50 - 100 triệu</option>
+              <option value="100000000-200000000">100 - 200 triệu</option>
+              <option value="200000000-300000000">200 - 300 triệu</option>
+              <option value="300000000-400000000">300 - 400 triệu</option>
+              <option value="400000000-500000000">400 - 500 triệu</option>
+              <option value="500000000-">Trên 500 triệu</option>
+            </select>
+          </div>
+
+          <div class="product-page-right-top-item">
+            <select class="select-box" id="sort">
+              <option value="">Sắp xếp</option>
+              <option value="desc">Giá cao đến thấp</option>
+              <option value="asc">Giá thấp đến cao</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Danh sách sản phẩm -->
+        <div class="product-page-right-content product-list" id="product-list"></div>
+
+        <!-- Phân trang -->
+        <div class="product-page-right-bottom row">
+          <div class="product-page-right-bottom-items">
+            <p id="counter">Hiển thị 0 sản phẩm</p>
+          </div>
+          <div class="product-page-right-bottom-items pagination-wrapper">
+            <ul class="pagination" id="pagination"></ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- ===== FOOTER ===== -->
+  <footer>
+        <div class="left_footer">
+            <img src="image/logo2.png" alt="logo" class="footer-logo">
+            <p><strong>TickTock Shop</strong> là hệ thống cửa hàng đồng hồ chính hãng tại Việt Nam, 
+                chuyên cung cấp các thương hiệu nổi tiếng thế giới như Casio, Seiko, Citizen, 
+                Rolex, Rado cùng nhiều phụ kiện đi kèm (dây đeo, hộp đựng, kính cường lực).
+            </p>
+            <p>
+                Với phương châm <em>“Uy tín tạo niềm tin”</em>, TickTock Shop luôn cam kết 
+                sản phẩm 100% chính hãng, bảo hành chính hãng toàn quốc, dịch vụ giao hàng nhanh chóng 
+                và đội ngũ tư vấn nhiệt tình để mang đến trải nghiệm mua sắm hoàn hảo nhất cho khách hàng.
+            </p>
+        </div>
+        <div class="right_footer">
+            <h4>Liên hệ</h4>
+            <p><i class="fa-solid fa-location-dot"></i> 123 Nguyễn Trãi, Thanh Xuân, Hà Nội</p>
+            <p><i class="fa-solid fa-phone"></i> 0123 456 789</p>
+            <p><i class="fa-regular fa-envelope"></i> support@ticktockshop.com</p>
+            
+            <h4>Giờ làm việc</h4>
+            <p>Thứ 2 - Thứ 7: 8:00 - 21:30</p>
+            <p>Chủ nhật & ngày lễ: 9:00 - 18:00</p>
+
+            <h4>Kết nối với chúng tôi</h4>
+            <div class="social-links">
+                <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="#"><i class="fa-brands fa-instagram"></i></a>
+                <a href="#"><i class="fa-brands fa-tiktok"></i></a>
+                <a href="#"><i class="fa-brands fa-youtube"></i></a>
+            </div>
+        </div>
+    </footer>  
+
+  <!-- Quick View Modal -->
+  <div id="quickview" class="modal" role="dialog" aria-modal="true" aria-labelledby="qv-name">
+    <div class="modal-content">
+      <button class="close-modal" id="qv-close" aria-label="Đóng">×</button>
+      <div class="modal-left">
+        <div class="modal-image-box">
+          <img id="qv-image" src="" alt="">
+        </div>
+      </div>
+
+      <div class="modal-right">
+        <h2 id="qv-name"></h2>
+
+        <p class="price" id="qv-price"></p>
+
+        <p><strong>Thương hiệu:</strong> <span id="qv-brand"></span></p>
+        <p><strong>Danh mục:</strong> <span id="qv-category"></span></p>
+
+        <p id="qv-desc" class="description"></p>
+
+        <div class="action-row">
+          <div class="quantity-box">
+            <label for="qv-qty">Số lượng:</label>
+            <input id="qv-qty" type="number" min="1" value="1">
+          </div>
+          <button class="btn-add-to-cart" id="qv-add">
+            <i class="fa-solid fa-cart-shopping"></i>
+            Thêm vào giỏ hàng
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== JS ===== -->
+  <script src="js/data.js"></script>
+  <script src="js/product.js"></script>
+  <script src="js/slider.js"></script>
+  <script src="js/auth.js"></script>
+
+
+
+  <div id="login_modal">
+    <form id="loginForm">
+        <h2>Đăng nhập</h2>
+        <div class="input-group">
+            <label for="loginIdentifier">Email hoặc Tên đăng nhập</label>
+            <input type="text" id="loginIdentifier" required>
+        </div>
+        <div class="input-group">
+            <label for="loginPassword">Mật khẩu</label>
+            <input type="password" id="loginPassword" required>
+        </div>
+        <button type="submit">Đăng Nhập</button>
+        <div id="message" class="message"></div>
+
+        <div class="link">
+            Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+        </div>
+    </form>
+
+    <form id="registerForm">
+        <h2>Đăng ký tài khoản</h2>
+        <div class="input-group">
+            <label for="regUsername">Tên đăng nhập (Username)</label>
+            <input type="text" id="regUsername" required>
+            <span class="error-text" id="errorUsername"></span>
+        </div>
+        <div class="input-group">
+            <label for="regEmail">Email</label>
+            <input type="email" id="regEmail" required>
+            <span class="error-text" id="errorEmail"></span>
+        </div>
+        <div class="input-group">
+            <label for="regPassword">Mật khẩu</label>
+            <input type="password" id="regPassword" required>
+            <span class="error-text" id="errorPassword"></span>
+        </div>
+        
+        <!-- Ô nhập lại mật khẩu -->
+        <div class="input-group">
+            <label for="regRePassword">Nhập lại Mật khẩu</label>
+            <input type="password" id="regRePassword" required>
+            <span class="error-text" id="errorRePassword"></span>
+        </div>
+
+        <button type="submit">Đăng Ký</button>
+        <div id="message" class="message"></div>
+    
+        <div class="link">
+            Đã có tài khoản? <a href="#">Đăng nhập ngay</a>
+        </div>
+    </form>
+  </div>
+
+
+
+</body>
+</html>
