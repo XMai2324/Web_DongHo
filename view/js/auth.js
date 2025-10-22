@@ -112,6 +112,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const handleLogin = (event) => {
         event.preventDefault();
+        console.log("--- Bắt đầu xử lý đăng ký ---"); // DÒNG NÀY CẦN XUẤT HIỆN TRONG CONSOLE
 
         const identifier = DOMElements.loginIdentifier?.value.trim();
         const password   = DOMElements.loginPassword?.value.trim();
@@ -168,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
    
         displayUserName(); 
 
-        alert('Bạn sẽ đăng xuất và quay về trang khách hàng.');
+        alert('Bạn sẽ đăng xuất ??.');
         window.location.href = '../../view/client.html';    }
 
     // ===================================
@@ -206,4 +207,67 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Gắn xử lý Đăng xuất
     DOMElements.logoutBtn?.addEventListener('click', handleLogout);
+
+
+
+
+    // ===================================
+    // 5. LOGIC ĐĂNG KÝ (HANDLE REGISTER)
+    // ===================================
+    const handleRegister = (event) => {
+        event.preventDefault();
+        
+        // Lấy Message Div của Form Đăng ký (nó có class .message trong HTML bạn cung cấp)
+        const registerMsgDiv = DOMElements.registerForm?.querySelector('.message');
+        showMessage('', '', registerMsgDiv); 
+
+        const username = document.getElementById('regUsername')?.value.trim();
+        const email = document.getElementById('regEmail')?.value.trim();
+        const password = document.getElementById('regPassword')?.value;
+        const rePassword = document.getElementById('regRePassword')?.value;
+        
+        // // 1. Validate Form
+        // if (!validateRegisterForm(username, email, password, rePassword)) {
+        //     showMessage('Vui lòng kiểm tra lại thông tin đăng ký.', 'error', registerMsgDiv);
+        //     return;
+        // }
+
+        // 2. Đăng ký thành công (Trong môi trường demo, thêm vào mảng)
+        const newUser = {
+            username: username,
+            email: email,
+            password: password,
+            name: username, // Lấy username làm tên hiển thị
+            role: 'user'
+        };
+
+        ACCOUNTS.push(newUser); // ⭐ THÊM USER MỚI VÀO MẢNG ACCOUNTS
+        console.log("Registered Accounts:", ACCOUNTS);
+
+        // 3. Thông báo và chuyển hướng
+        showMessage('Đăng ký thành công! Đang chuyển đến Đăng nhập...', 'success', registerMsgDiv);
+        
+        DOMElements.registerForm.reset();
+
+        setTimeout(() => {
+            // Chuyển sang Form Đăng nhập
+            showModal('login');
+            showMessage('', ''); // Xóa thông báo trên form Đăng nhập
+            DOMElements.loginIdentifier.value = username; // Điền sẵn username
+        }, 1500);
+
+    };
+
+
+
+    // ...
+    // Gắn xử lý Đăng nhập
+    DOMElements.loginForm?.addEventListener('submit', handleLogin);
+
+    // ⭐ GẮN XỬ LÝ ĐĂNG KÝ
+    DOMElements.registerForm?.addEventListener('submit', handleRegister);
+
+    // Gắn xử lý Đăng xuất
+    DOMElements.logoutBtn?.addEventListener('click', handleLogout);
 });
+

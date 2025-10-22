@@ -1,0 +1,70 @@
+
+#addForm{
+     background: white; 
+        padding: 30px; 
+        border-radius: 10px; 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        width: 450px; 
+}
+
+
+h2 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 25px;
+}
+
+
+.form-group {
+    line-height: 30px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #555;
+    font-size: 20px;
+}
+
+
+input, select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    box-sizing: border-box;
+    margin-bottom: 10px;
+}
+
+
+.modal-actions {
+    text-align: center;
+    
+}
+
+button {
+    width: 100px;
+    padding: 10px;
+    margin-left: 20px;
+    color: white;
+    background-color: rgb(66, 69, 69);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+ 
+#watchModal{
+position: fixed;
+  inset: 0;                   /* full màn hình */
+  display: flex;              /* quan trọng */
+  background: rgba(0,0,0,.5);
+  z-index: 2000;
+
+  /* chuẩn flex center */
+  align-items: center;
+  justify-content: center;
+}
