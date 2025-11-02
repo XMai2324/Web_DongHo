@@ -1,0 +1,154 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Admin - Quản lý phiếu nhập</title>
+  <link rel="stylesheet" href="../admin/ad_css/nhaphang.css">
+</head>
+<body>
+  <div class="app">
+    <aside class="sidebar-placeholder">
+      <div class="brand">
+        <div class="logo">DH</div>
+        <div class="brand-text">
+          <div class="name">Web Đồng Hồ</div>
+          <div class="muted">Admin</div>
+        </div>
+      </div>
+      <nav class="placeholder-nav">
+        <a class="active">Nhập hàng</a>
+        <a>Đơn hàng</a>
+        <a>Sản phẩm</a>
+        <a>Báo cáo</a>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <header class="header">
+        <h1>Quản lý phiếu nhập hàng</h1>
+      </header>
+
+      <section class="content">
+        <div class="grid">
+          <!-- Form nhập phiếu -->
+          <div class="card form-card">
+            <h2>Thêm phiếu nhập mới</h2>
+            <form id="phieuForm">
+              <label for="p_hang">Hãng</label>
+              <select id="p_hang" required>
+                <option value="">-- Chọn hãng --</option>
+              </select>
+
+              <div class="form-row">
+                <label for="p_tensp">Tên sản phẩm</label>
+                <select id="p_tensp" required disabled>
+                  <option value="">-- Chọn tên sản phẩm --</option>
+                </select>
+              </div>
+
+              <div class="form-row">
+                <label for="p_loai">Loại</label>
+                <input id="p_loai" required type="text" placeholder="VD: Nam / Nữ / Smart">
+              </div>
+
+              <div class="row-3">
+                <div class="form-row">
+                  <label for="p_sl">Số lượng nhập</label>
+                  <input id="p_sl" required type="number" min="1" value="1">
+                </div>
+                <div class="form-row">
+                  <label for="p_gia">Giá nhập (VNĐ)</label>
+                  <input id="p_gia" required type="number" min="0" step="1000" value="1000000">
+                </div>
+                <div class="form-row">
+                  <label for="p_ngay">Ngày nhập</label>
+                  <input id="p_ngay" required type="date" value="">
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button type="submit" class="btn primary">Thêm phiếu nhập</button>
+              </div>
+            </form>
+          </div>
+
+          <!-- Tổng quan kho -->
+          <div class="card stats-card">
+            <h2>Tổng quan kho</h2>
+            <div class="stats-grid">
+              <div class="stat">
+                <div class="stat-title">Số sản phẩm</div>
+                <div id="statProducts" class="stat-value">0</div>
+              </div>
+              <div class="stat">
+                <div class="stat-title">Tổng tồn kho</div>
+                <div id="statTotalStock" class="stat-value">0</div>
+              </div>
+              <div class="stat">
+                <div class="stat-title">Phiếu nhập</div>
+                <div id="statPhieu" class="stat-value">0</div>
+              </div>
+              <div class="stat">
+                <div class="stat-title">Sắp hết</div>
+                <div id="statLow" class="stat-value">0</div>
+              </div>
+            </div>
+            <div style="margin-top:12px" class="small-muted">
+              Lưu ý: xóa phiếu sẽ tự động trừ lại kho.
+            </div>
+          </div>
+        </div>
+
+        <!-- Bảng phiếu nhập -->
+        <div class="card table-card">
+          <h2>Danh sách phiếu nhập</h2>
+          <div class="table-wrap">
+            <table id="tblPhieu" class="nice-table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Hãng</th>
+                  <th>Loại</th>
+                  <th>Số lượng</th>
+                  <th>Giá nhập</th>
+                  <th>Ngày nhập</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Bảng kho hàng -->
+        <div class="card table-card">
+          <h2>Tồn kho hiện tại</h2>
+          <div class="table-wrap">
+            <table id="tblKho" class="nice-table">
+              <thead>
+                <tr>
+                  <th>STT</th>
+                  <th>Mã SP</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Hãng</th>
+                  <th>Loại</th>
+                  <th>Số lượng tồn</th>
+                </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <div class="muted">© Web_DongHo - Module Quản lý nhập hàng</div>
+      </footer>
+    </main>
+  </div>
+
+  <script src="../admin/ad_js/nhaphang.js" defer></script>
+</body>
+</html>
