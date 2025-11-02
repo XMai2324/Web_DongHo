@@ -1,273 +1,255 @@
 document.addEventListener('DOMContentLoaded', () => {
-    const DOMElements = {
-        accountBtn: document.querySelector('.account'),
-        modal: document.getElementById('login_modal'),
-        loginForm: document.getElementById('loginForm'),
-        registerForm: document.getElementById('registerForm'),
-        loginIdentifier: document.getElementById('loginIdentifier'),
-        loginPassword: document.getElementById('loginPassword'),
-        logoutBtn: document.getElementById('logoutBtn'),
-        messageDiv: document.querySelector('#messageLogin') || document.querySelector('.message')
-    };
-    
-    const ACCOUNTS = [
-        { 
-          username: 'admin', 
-          email: 'admin@gmail.com', 
-          password: 'admin123', 
-          name: 'Quản Trị Viên', 
-          role: 'admin' 
-        },
+  const DOM = {
+    accountBtn: document.querySelector('.account'),
+    modal: document.getElementById('login_modal'),
+    loginForm: document.getElementById('loginForm'),
+    registerForm: document.getElementById('registerForm'),
+    loginIdentifier: document.getElementById('loginIdentifier'),
+    loginPassword: document.getElementById('loginPassword'),
+    logoutBtn: document.getElementById('logoutBtn'),
+    messageDiv: document.querySelector('#messageLogin') || document.querySelector('.message'),
+    accountLinkText: document.getElementById('accountLinkText'),
+  };
 
-        { 
-          username: 'mai', 
-          email: 'mai@gmail.com', 
-          password: '123123', 
-          name: 'Mai cute', 
-          role: 'user' }
-    ];
+  const LS_ACCOUNTS = 'accounts';
+  const LS_CURRENT = 'current_user';
 
-    // ===================================
-    // 2. HÀM HỖ TRỢ ĐIỀU KHIỂN MODAL
-    // ===================================
-    const { modal, loginForm, registerForm } = DOMElements;
+  const DEFAULT_ACCOUNTS = [
+    { username: 'admin', email: 'admin@gmail.com', password: 'admin123', name: 'Quản Trị Viên', role: 'admin' },
+    { username: 'mai', email: 'mai@gmail.com', password: '123123', name: 'Mai cute', role: 'user' },
+  ];
 
-    const showModal = (formType) => {
-        if (!modal) return;
-        modal.classList.add('show');
-        document.body.classList.add('modal-open');
-        
-        // Điều chỉnh hiển thị Form (Login/Register)
-        if (formType === 'login') {
-            loginForm.style.display = 'block';
-            registerForm.style.display = 'none';
-            DOMElements.loginIdentifier?.focus();
-        } else if (formType === 'register') {
-            loginForm.style.display = 'none';
-            registerForm.style.display = 'block';
-            document.getElementById('regUsername')?.focus();
-        }
-    };
+  let ACCOUNTS = [];
+  try {
+    const saved = JSON.parse(localStorage.getItem(LS_ACCOUNTS));
+    ACCOUNTS = Array.isArray(saved) && saved.length ? saved : DEFAULT_ACCOUNTS;
+  } catch {
+    ACCOUNTS = DEFAULT_ACCOUNTS;
+  }
+  if (!localStorage.getItem(LS_ACCOUNTS)) {
+    localStorage.setItem(LS_ACCOUNTS, JSON.stringify(ACCOUNTS));
+  }
 
-    const closeModal = () => {
-        if (!modal) return;
-        modal.classList.remove('show');
-        document.body.classList.remove('modal-open');
-        DOMElements.loginForm?.reset(); // Reset form khi đóng
-    };
+  const setAccounts = (arr) => localStorage.setItem(LS_ACCOUNTS, JSON.stringify(arr));
+  const setSession = (u) => localStorage.setItem(LS_CURRENT, JSON.stringify(u));
 
-    const showMessage = (msg, type, target = DOMElements.messageDiv) => {
-        if (!target) return;
-        target.textContent = msg;
-        target.className = 'message'; // Reset classes
-        if (msg) target.classList.add(type);
-    };
+  const showModal = (formType) => {
+    document.getElementById('profileSection')?.classList.remove('open');
+    document.documentElement.style.overflow = '';
 
+    const modal = DOM.modal;
+    if (!modal) return;
 
+    modal.classList.add('show');
+    document.body.classList.add('modal-open');
+    if (formType === 'login') {
+      DOM.loginForm.style.display = 'block';
+      DOM.registerForm.style.display = 'none';
+      DOM.loginIdentifier?.focus();
+    } else {
+      DOM.loginForm.style.display = 'none';
+      DOM.registerForm.style.display = 'block';
+      document.getElementById('regUsername')?.focus();
+    }
+  };
 
-  
-//-----------Hiện username---------------
-    function displayUserName() {
-        // ID khớp với <span id="accountLinkText">Tài khoản</span>
-        const nameDisplayElement = document.getElementById('accountLinkText');
-        const accountContainer = nameDisplayElement?.closest('.account');
-        
-        if (!nameDisplayElement) return;
+  const closeModal = () => {
+    const modal = DOM.modal;
+    if (!modal) return;
+    modal.classList.remove('show');
+    document.body.classList.remove('modal-open');
+    DOM.loginForm?.reset();
+  };
 
-        // 2. Lấy thông tin người dùng từ LocalStorage
-        const userJSON = localStorage.getItem('current_user');
+  const showMessage = (msg, type, target = DOM.messageDiv) => {
+    if (!target) return;
+    target.textContent = msg;
+    target.className = 'message';
+    if (msg) target.classList.add(type);
+  };
 
-        if (userJSON) {
-            try {
-                const user = JSON.parse(userJSON);
-                
-                // ⭐ SỬA LỖI: Dùng user.name HOẶC user.username để đảm bảo không bị rỗng
-                nameDisplayElement.textContent = user.name || user.username; 
-                
-                // Thêm class logged-in
-                accountContainer?.classList.add('logged-in'); 
+  function displayUserName() {
+    const el = DOM.accountLinkText;
+    const container = el?.closest('.account');
+    if (!el) return;
 
-            } catch (e) {
-                console.error("Lỗi dữ liệu LocalStorage:", e);
-                localStorage.removeItem('current_user');
-                
-                // Nếu lỗi, reset về trạng thái chưa đăng nhập
-                nameDisplayElement.textContent = 'Tài khoản';
-                accountContainer?.classList.remove('logged-in');
-            }
+    const userJSON = localStorage.getItem(LS_CURRENT);
+    if (userJSON) {
+      try {
+        const user = JSON.parse(userJSON);
+        el.textContent = user.name || user.username;
+        container?.classList.add('logged-in');
+      } catch (e) {
+        localStorage.removeItem(LS_CURRENT);
+        el.textContent = 'Tài khoản';
+        container?.classList.remove('logged-in');
+      }
+    } else {
+      el.textContent = 'Tài khoản';
+      container?.classList.remove('logged-in');
+    }
+  }
+  displayUserName();
+
+  const handleLogin = (event) => {
+    event.preventDefault();
+    showMessage('', '');
+
+    const identifier = DOM.loginIdentifier?.value.trim();
+    const password = DOM.loginPassword?.value.trim();
+    if (!identifier || !password) {
+      showMessage('Vui lòng điền đầy đủ thông tin.', 'error');
+      return;
+    }
+
+    const user = ACCOUNTS.find(
+      (acc) => (acc.email === identifier || acc.username === identifier) && acc.password === password
+    );
+
+    if (user) {
+      alert(`Chào mừng ${user.name || user.username}!`);
+      setSession({
+        username: user.username,
+        name: user.name,
+        role: user.role,
+        email: user.email,
+      });
+      setTimeout(() => {
+        closeModal();
+        displayUserName();
+        if (user.role === 'admin') {
+          window.location.href = '/admin/admin.html';
         } else {
-            // Trạng thái chưa đăng nhập
-            nameDisplayElement.textContent = 'Tài khoản';
-            accountContainer?.classList.remove('logged-in');
+          window.location.reload();
         }
-    } 
+      }, 400);
+    } else {
+      showMessage('Email/Tên đăng nhập hoặc Mật khẩu không chính xác.', 'error');
+    }
+  };
 
-    // Gọi hàm ngay lập tức khi JavaScript được tải
-    displayUserName(); 
+  function handleLogout() {
+    localStorage.removeItem(LS_CURRENT);
+    displayUserName();
+    document.getElementById('profileSection')?.classList.remove('open');
+    document.documentElement.style.overflow = '';
+    alert('Bạn đã đăng xuất!');
+    window.location.href = 'client.html';
+  }
+
+  const handleRegister = (event) => {
+    event.preventDefault();
+
+    const msgDiv = DOM.registerForm?.querySelector('.message');
+    showMessage('', '', msgDiv);
+    const username = document.getElementById('regUsername')?.value.trim();
+    const email = document.getElementById('regEmail')?.value.trim();
+    const password = document.getElementById('regPassword')?.value;
+    const rePassword = document.getElementById('regRePassword')?.value;
+
+    if (!username || !email || !password || !rePassword) {
+      showMessage('Vui lòng điền đầy đủ thông tin.', 'error', msgDiv);
+      return;
+    }
+    if (password !== rePassword) {
+      showMessage('Mật khẩu nhập lại không khớp.', 'error', msgDiv);
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showMessage('Email không hợp lệ.', 'error', msgDiv);
+      return;
+    }
+    if (ACCOUNTS.some((u) => u.username === username)) {
+      showMessage('Tên đăng nhập đã tồn tại.', 'error', msgDiv);
+      return;
+    }
+    if (ACCOUNTS.some((u) => u.email === email)) {
+      showMessage('Email đã được sử dụng.', 'error', msgDiv);
+      return;
+    }
+
+    const newUser = { username, email, password, name: username, role: 'user' };
+    ACCOUNTS.push(newUser);
+    setAccounts(ACCOUNTS);
+    showMessage('Đăng ký thành công! Đang chuyển đến Đăng nhập...', 'success', msgDiv);
+    DOM.registerForm.reset();
+
+    setTimeout(() => {
+      showModal('login');
+      showMessage('', '');
+      if (DOM.loginIdentifier) DOM.loginIdentifier.value = username;
+    }, 1200);
+  };
+
+  /* ===============================
+   * EVENT HANDLERS
+   * =============================== */
+  DOM.accountBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    const session = (() => {
+      try {
+        return JSON.parse(localStorage.getItem(LS_CURRENT));
+      } catch {
+        return null;
+      }
+    })();
+    const profile = document.getElementById('profileSection');
+
+    if (session) {
+      DOM.modal?.classList.remove('show');
+      profile?.classList.add('open');
+      document.documentElement.style.overflow = 'hidden';
+    } else {
+      profile?.classList.remove('open');
+      document.documentElement.style.overflow = '';
+      showModal('login');
+    }
+  });
 
 
-    // ===================================
-    // 3. LOGIC ĐĂNG NHẬP (HANDLE LOGIN) - Đã sửa lỗi chuyển hướng
-    // ===================================
-
-    const handleLogin = (event) => {
-        event.preventDefault();
-        console.log("--- Bắt đầu xử lý đăng ký ---"); // DÒNG NÀY CẦN XUẤT HIỆN TRONG CONSOLE
-
-        const identifier = DOMElements.loginIdentifier?.value.trim();
-        const password   = DOMElements.loginPassword?.value.trim();
-
-        showMessage('', ''); 
-
-        if (!identifier || !password) {
-            showMessage('Vui lòng điền đầy đủ thông tin.', 'error');
-            return;
-        }
-
-        const user = ACCOUNTS.find(acc =>
-            (acc.email === identifier || acc.username === identifier) && acc.password === password
-        );
-
-        if (user) {
-            alert(`Chào mừng ${user.name || user.username}! Bạn đã đăng nhập thành công.`);
-
-            // ⭐ ĐẢM BẢO LƯU name và role (nếu có)
-            localStorage.setItem('current_user', JSON.stringify({ 
-                username: user.username, 
-                name: user.name,
-                role: user.role 
-            }));
-
-            // Xử lý chuyển hướng sau 0.8 giây
-            setTimeout(() => {
-                closeModal();
-                
-                // Cập nhật tên hiển thị trên UI TRƯỚC KHI chuyển hướng
-                displayUserName(); 
-                
-                if (user.role === 'admin') {
-                    // Admin: CHUYỂN HƯỚNG SANG TRANG MỚI
-                    window.location.href = '/admin/admin.html'; 
-                } else {
-                    // User: Tải lại trang hiện tại để cập nhật toàn bộ giao diện
-                    // LƯU Ý: Nếu trang đích là trang khác, dùng window.location.href
-                    window.location.reload(); 
-                }
-            }, 800);
-        } else {
-            showMessage('Email/Tên đăng nhập hoặc Mật khẩu không chính xác.', 'error');
-        }
-    };
 
 
+  DOM.logoutBtn?.addEventListener('click', (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleLogout();
+  });
 
-    /**
- * Xử lý đăng xuất: Xóa phiên, cập nhật UI và tải lại trang.
- */
-    function handleLogout() {
-        localStorage.removeItem('current_user'); 
-   
-        displayUserName(); 
+  DOM.loginForm?.addEventListener('submit', handleLogin);
+  DOM.registerForm?.addEventListener('submit', handleRegister);
 
-        alert('Bạn sẽ đăng xuất ??.');
-        window.location.href = '../../view/client.html';    }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && DOM.modal?.classList.contains('show')) closeModal();
+  });
 
-    // ===================================
-    // 4. GẮN CÁC SỰ KIỆN (TRIGGERS)
-    // ===================================
-    
-    // Mở Modal (Login)
-    DOMElements.accountBtn?.addEventListener('click', (e) => {
-        e.preventDefault?.();
-        showModal('login');
+  // === Toggle giữa Login <-> Register ===
+    const linkToRegister = DOM.loginForm?.querySelector('.link a');
+    linkToRegister?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showModal('register');
     });
 
-    // Chuyển tab Login <-> Register
-    DOMElements.loginForm?.querySelector('.link a')?.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        showModal('register'); 
+    const linkToLogin = DOM.registerForm?.querySelector('.link a');
+    linkToLogin?.addEventListener('click', (e) => {
+    e.preventDefault();
+    showModal('login');
     });
 
-    DOMElements.registerForm?.querySelector('.link a')?.addEventListener('click', (e) => { 
-        e.preventDefault(); 
-        showModal('login'); 
+    // === Click ra ngoài để đóng modal ===
+    // Giả định #login_modal là lớp phủ (overlay) bọc hai form
+    DOM.modal?.addEventListener('click', (e) => {
+    // chỉ đóng khi click đúng nền ngoài form
+    if (e.target === DOM.modal) {
+        closeModal();
+    }
     });
 
-    // Đóng Modal (Click nền tối hoặc ESC)
-    modal?.addEventListener('click', (e) => { 
-        if (e.target === modal) closeModal(); 
-    });
+    // (tuỳ chọn) đảm bảo mặc định mở ra là màn hình đăng nhập
+    if (DOM.modal && !DOM.modal.classList.contains('show')) {
+    // Ẩn form đăng ký ngay từ đầu
+    if (DOM.registerForm) DOM.registerForm.style.display = 'none';
+    }
 
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal?.classList.contains('show')) closeModal();
-    });
-
-    // Gắn xử lý Đăng nhập
-    DOMElements.loginForm?.addEventListener('submit', handleLogin);
-
-    // Gắn xử lý Đăng xuất
-    DOMElements.logoutBtn?.addEventListener('click', handleLogout);
-
-
-
-
-    // ===================================
-    // 5. LOGIC ĐĂNG KÝ (HANDLE REGISTER)
-    // ===================================
-    const handleRegister = (event) => {
-        event.preventDefault();
-        
-        // Lấy Message Div của Form Đăng ký (nó có class .message trong HTML bạn cung cấp)
-        const registerMsgDiv = DOMElements.registerForm?.querySelector('.message');
-        showMessage('', '', registerMsgDiv); 
-
-        const username = document.getElementById('regUsername')?.value.trim();
-        const email = document.getElementById('regEmail')?.value.trim();
-        const password = document.getElementById('regPassword')?.value;
-        const rePassword = document.getElementById('regRePassword')?.value;
-        
-        // // 1. Validate Form
-        // if (!validateRegisterForm(username, email, password, rePassword)) {
-        //     showMessage('Vui lòng kiểm tra lại thông tin đăng ký.', 'error', registerMsgDiv);
-        //     return;
-        // }
-
-        // 2. Đăng ký thành công (Trong môi trường demo, thêm vào mảng)
-        const newUser = {
-            username: username,
-            email: email,
-            password: password,
-            name: username, // Lấy username làm tên hiển thị
-            role: 'user'
-        };
-
-        ACCOUNTS.push(newUser); // ⭐ THÊM USER MỚI VÀO MẢNG ACCOUNTS
-        console.log("Registered Accounts:", ACCOUNTS);
-
-        // 3. Thông báo và chuyển hướng
-        showMessage('Đăng ký thành công! Đang chuyển đến Đăng nhập...', 'success', registerMsgDiv);
-        
-        DOMElements.registerForm.reset();
-
-        setTimeout(() => {
-            // Chuyển sang Form Đăng nhập
-            showModal('login');
-            showMessage('', ''); // Xóa thông báo trên form Đăng nhập
-            DOMElements.loginIdentifier.value = username; // Điền sẵn username
-        }, 1500);
-
-    };
-
-
-
-    // ...
-    // Gắn xử lý Đăng nhập
-    DOMElements.loginForm?.addEventListener('submit', handleLogin);
-
-    // ⭐ GẮN XỬ LÝ ĐĂNG KÝ
-    DOMElements.registerForm?.addEventListener('submit', handleRegister);
-
-    // Gắn xử lý Đăng xuất
-    DOMElements.logoutBtn?.addEventListener('click', handleLogout);
 });
-

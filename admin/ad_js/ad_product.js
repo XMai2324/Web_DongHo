@@ -9,14 +9,9 @@
   // ===== Watches data =====
   let productsData = [];
   const fromProdLS = localStorage.getItem(STORAGE_KEY_PRODUCTS);
-  if (fromProdLS) {
-    productsData = JSON.parse(fromProdLS);
-  } else {
-    productsData = Array.isArray(window.products) ? window.products.slice() : [];
-  }
-
+  productsData = fromProdLS ? JSON.parse(fromProdLS) : (Array.isArray(window.products) ? window.products.slice() : []);
   const saveProducts = () => localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(productsData));
-  window.saveData = saveProducts; // backward compat
+  window.saveData = saveProducts;
 
   const getNextWatchId = () => {
     if (!productsData.length) return 1;
@@ -27,14 +22,8 @@
   // ===== Accessories data =====
   let accessoriesData = [];
   const fromAccLS = localStorage.getItem(STORAGE_KEY_ACCESS);
-  if (fromAccLS) {
-    accessoriesData = JSON.parse(fromAccLS);
-  } else {
-    accessoriesData = Array.isArray(window.accessories) ? window.accessories.slice() : [];
-  }
+  accessoriesData = fromAccLS ? JSON.parse(fromAccLS) : (Array.isArray(window.accessories) ? window.accessories.slice() : []);
   const saveAccessories = () => localStorage.setItem(STORAGE_KEY_ACCESS, JSON.stringify(accessoriesData));
-
-  // expose
   window.productsData    = productsData;
   window.accessoriesData = accessoriesData;
   window.saveAccessories = saveAccessories;
@@ -44,14 +33,12 @@
   const resolveImgPath = (p) => {
     let raw = (p?.image || '').trim();
     if (!raw) return '';
-    if (/^(https?:)?\/\//i.test(raw) || raw.startsWith('data:')) return raw; // absolute/data
-
+    if (/^(https?:)?\/\//i.test(raw) || raw.startsWith('data:')) return raw;
     raw = raw
       .replace(/^image\/Accessory\//i, 'image/accessories/')
       .replace(/^image\/Accessories\//i, 'image/accessories/')
       .replace(/^image\/Watchs?\//i, 'image/Watch/')
       .replace(/strap13\.jpg_\.avif$/i, 'strap13.jpg');
-
     if (raw.startsWith('image/')) return `${IMG_BASE}${raw}`;
     if (/^(Watch|accessories)\//i.test(raw)) return `${IMG_BASE}image/${raw}`;
     return `${IMG_BASE}image/${raw.replace(/^(\.\/)+/, '')}`;
@@ -77,9 +64,9 @@
   })();
 
   // ===== DOM refs (Watches) =====
-  let modal, modalBox, modalBody, form, btnAdd, btnCancel;
-  let inputId, inputName, inputPrice, inputCat, inputBrand, inputDesc, fileInput, imgPreview, modalTitle;
-  let tbody, searchInput, filterCategory, filterBrand;
+  let modal, modalBox, modalBody, form, btnAdd, btnCancel, modalTitle;
+  let inputId, inputName, inputPrice, inputCat, inputBrand, inputDesc, fileInput, imgPreview;
+  let tbody, filterCategory, filterBrand;
 
   document.addEventListener('DOMContentLoaded', () => {
     // Watches modal
@@ -102,9 +89,8 @@
 
     // Table/filters
     tbody          = document.getElementById('productTbody');
-    searchInput    = document.getElementById('searchInput');
-    filterCategory = document.getElementById('filterCategory');
-    filterBrand    = document.getElementById('filterBrand');
+    filterCategory = document.getElementById('filterCategory'); // <select id="filterCategory">
+    filterBrand    = document.getElementById('filterBrand');    // <select id="filterBrand">
 
     // ===== UI helpers =====
     const lockScroll = () => {
@@ -149,7 +135,6 @@
       unlockScroll();
       clearPreview();
     };
-
     window.openModal = openModal;
     window.closeModal = closeModal;
 
@@ -172,16 +157,11 @@
     const money = v => Number(v || 0).toLocaleString('vi-VN');
     const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
 
-    const baseFilter = (list) => {
-      const q   = (searchInput?.value || '').trim().toLowerCase();
-      const cat = filterCategory?.value || '';
-      const br  = filterBrand?.value || '';
-      return list.filter(p => {
-        const okSearch = !q || (p.name?.toLowerCase().includes(q) || p.brand?.toLowerCase().includes(q));
-        const okCat    = !cat || p.category === cat;
-        const okBrand  = !br  || p.brand === br;
-        return okSearch && okCat && okBrand;
-      });
+    // Chỉ lọc theo category/brand cho Đồng hồ (đÃ bỏ tìm kiếm bằng nhập tên)
+    const applyWatchFilter = (list) => {
+      const cat = (filterCategory?.value || '');
+      const br  = (filterBrand?.value || '');
+      return list.filter(p => (!cat || p.category === cat) && (!br || p.brand === br));
     };
 
     const render = (list) => {
@@ -194,12 +174,8 @@
         const img = esc(resolveImgPath(p));
         return `
           <tr>
-            <td>
-              <img class="thumb" src="${img}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='${NOIMG}'" />
-            </td>
-            <td title="${esc(p.description || '')}">
-              ${esc(p.name)} ${p.isHidden ? '<span class="badge muted">Ẩn</span>' : ''}
-            </td>
+            <td><img class="thumb" src="${img}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='${NOIMG}'" /></td>
+            <td title="${esc(p.description || '')}">${esc(p.name)} ${p.isHidden ? '<span class="badge muted">Ẩn</span>' : ''}</td>
             <td>${money(p.price)}</td>
             <td>${esc(p.category)}</td>
             <td>${esc(p.brand)}</td>
@@ -212,7 +188,7 @@
       }).join('');
     };
 
-    const update = () => render(baseFilter(productsData));
+    const update = () => render(applyWatchFilter(productsData));
     window.update = update;
 
     const openEdit = (id) => {
@@ -266,11 +242,11 @@
 
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const isEditing = !!inputId.value;
-      const name = inputName?.value?.trim() || '';
-      const price = Number(inputPrice?.value || 0);
-      const category = inputCat?.value || '';
-      const brand = inputBrand?.value || '';
+      const isEditing   = !!inputId.value;
+      const name        = inputName?.value?.trim() || '';
+      const price       = Number(inputPrice?.value || 0);
+      const category    = inputCat?.value || '';
+      const brand       = inputBrand?.value || '';
       const description = inputDesc?.value?.trim() || '';
       if (!name || price <= 0 || !category || !brand) { alert('Vui lòng điền đầy đủ Tên, Giá (>0), Loại và Thương hiệu.'); return; }
 
@@ -299,10 +275,14 @@
 
     // Render lần đầu
     update();
+
+    // ===== Lắng nghe thay đổi filter (chỉ cho "Đồng hồ")
+    filterCategory?.addEventListener('change', () => update());
+    filterBrand?.addEventListener('change', () => update());
   });
 })();
 
-// ===== MULTI-SECTION & ACCESSORY MODAL =====
+// ===== MULTI-SECTION & ACCESSORY MODAL (không tìm kiếm) =====
 (function(){
   const $  = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
@@ -316,12 +296,11 @@
     const table      = document.getElementById('productTable');
     const thead      = table?.querySelector('thead');
 
-    const filterCat  = document.getElementById('filterCategory');
-    const filterBr   = document.getElementById('filterBrand');
-    const searchInp  = document.getElementById('searchInput');
+    // Filter select (dù ở tab nào vẫn hiện, nhưng chỉ áp dụng cho "Đồng hồ")
+    const filterCat = document.getElementById('filterCategory');
+    const filterBr  = document.getElementById('filterBrand');
 
     let current = 'watch'; // watch | strap | box | glass
-
     const money = v => Number(v || 0).toLocaleString('vi-VN');
     const esc   = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
     const NOIMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="100%" height="100%" fill="#f3f3f3"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">No Image</text></svg>');
@@ -400,7 +379,7 @@
     }
 
     function renderBody(list) {
-      if (current === 'watch') { window.update?.(); return; }
+      if (current === 'watch') { window.update?.(); return; } // phần đồng hồ đã render ở IIFE trên
       if (!list.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#888">Không có sản phẩm</td></tr>`; return; }
       const rows = list.map((p, idx) => {
         const pid = Number(p.id ?? (p._id ?? (p._id = Date.now() + idx)));
@@ -451,46 +430,11 @@
       tbody.innerHTML = rows;
     }
 
-    function updateHeader() {
-      const map = { watch: 'Quản lý đồng hồ', strap: 'Quản lý dây đeo', box: 'Quản lý hộp đựng', glass: 'Quản lý kính cường lực' };
-      if (h1Title) h1Title.textContent = map[current];
-
-      if (current === 'watch') {
-        filterCat?.removeAttribute('disabled');
-        filterBr?.removeAttribute('disabled');
-        searchInp?.removeAttribute('disabled');
-      } else {
-        filterCat?.setAttribute('disabled','');
-        filterBr?.setAttribute('disabled','');
-      }
-
-      if (btnAdd) {
-        const labelMap = {watch: 'đồng hồ', strap:'dây đeo', box:'hộp đựng', glass:'kính cường lực'};
-        btnAdd.textContent = `+ Thêm ${labelMap[current]}`;
-      }
-    }
-
-    function baseFilter(list) {
-      const q = (searchInp?.value || '').trim().toLowerCase();
-      if (!q) return list;
-      if (current === 'watch') {
-        return list.filter(p => (p.name||'').toLowerCase().includes(q) || (p.brand||'').toLowerCase().includes(q));
-      }
-      return list.filter(p => (p.name||'').toLowerCase().includes(q) || (p.description||'').toLowerCase().includes(q));
-    }
-
     function update() {
       renderHead();
-      let list = getList();
-      if (current === 'watch') {
-        const cat = filterCat?.value || '';
-        const br  = filterBr?.value || '';
-        list = list.filter(p => (!cat || p.category === cat) && (!br || p.brand === br));
-        window.update?.();
-        return;
-      }
-      list = baseFilter(list);
-      renderBody(list);
+      const list = getList();
+      if (current === 'watch') { window.update?.(); return; } // đã apply filter ở IIFE trên
+      renderBody(list); // phụ kiện không có tìm kiếm, không filter
     }
 
     // ==== EVENTS ====
@@ -500,7 +444,12 @@
       current = li.getAttribute('data-entity');
       leftMenu.querySelectorAll('li').forEach(x => x.classList.remove('is-active'));
       li.classList.add('is-active');
-      updateHeader();
+      // Luôn bật filter cho UI (nhưng chỉ tác dụng ở tab Đồng hồ)
+      filterCat && (filterCat.disabled = false);
+      filterBr  && (filterBr.disabled  = false);
+      // Cập nhật tiêu đề + bảng
+      const titleMap = { watch:'Quản lý đồng hồ', strap:'Quản lý dây đeo', box:'Quản lý hộp đựng', glass:'Kính cường lực' };
+      if (h1Title) h1Title.textContent = titleMap[current];
       update();
     });
 
@@ -516,7 +465,6 @@
       const id = Number(btn.dataset.id);
       if (!action.startsWith('a-')) return; // not accessory action
 
-      // find in accessoriesData by id
       const idx = (window.accessoriesData || []).findIndex(x => Number(x.id) === id);
       if (idx < 0) return;
 
@@ -563,17 +511,14 @@
       accTitleEl.textContent = (mode === 'edit' ? 'Sửa ' : 'Thêm ') + (label || 'Phụ kiện');
       accModal.classList.add('show');
       document.body.style.overflow = 'hidden';
-
-      // focus
       setTimeout(()=>accNameEl?.focus(), 0);
     }
-
     function closeAccessoryModal(){ accModal?.classList.remove('show'); document.body.style.overflow = ''; }
 
     document.getElementById('btnAccCancel')?.addEventListener('click', closeAccessoryModal);
     accKindEl?.addEventListener('change', e => { const k = e.target.value; toggleAccFields(k); accTitleEl.textContent = (accIdEl.value ? 'Sửa ' : 'Thêm ') + accLabel(k || ''); });
 
-    // Preview for accessory image
+    // Preview accessory image
     accImageFile?.addEventListener('change', () => {
       const f = accImageFile.files?.[0];
       if (!f || !f.type?.startsWith('image/')) { accPreviewEl.removeAttribute('src'); accPreviewEl.style.display='none'; return; }
@@ -590,7 +535,7 @@
       const name  = (accNameEl.value || '').trim();
       const price = Number(accPriceEl.value || 0);
       const accessory = (accKindEl.value || '').toLowerCase(); // strap | box | glass
-      const category = 'phukien';
+      const category  = 'phukien';
       const description = (accDescEl.value || '').trim();
       const material = (accMatEl.value || '').trim();
       const color    = (accColorEl.value || '').trim();
@@ -601,13 +546,9 @@
       let image = '';
       const hasNewFile = (accImageFile?.files?.length || 0) > 0;
       if (hasNewFile) image = await readFileAsDataURL(accImageFile.files[0]);
-      else {
-        const slug = name.toLowerCase().replace(/\s+/g, '-');
-        image = `${slug}.jpg`;
-      }
+      else { const slug = name.toLowerCase().replace(/\s+/g, '-'); image = `${slug}.jpg`; }
 
       if (idStr) {
-        // edit
         const id = Number(idStr);
         const idx = accessoriesData.findIndex(a => Number(a.id) === id);
         if (idx === -1) { alert('Không tìm thấy phụ kiện để cập nhật.'); return; }
@@ -624,7 +565,6 @@
         update();
         alert(`Đã cập nhật: ${name}`);
       } else {
-        // add
         const nextId = (() => { const m = accessoriesData.reduce((acc,x)=>Math.max(acc, Number(x.id)||0),0); return m+1; })();
         const base = { id: nextId, name, price, accessory, category, description, image, isHidden:false };
         if (accessory === 'strap') { base.material = material; base.color = color; }
@@ -638,7 +578,10 @@
     });
 
     // INIT
-    updateHeader();
     update();
+
+    // Khi đổi filter => cập nhật danh sách (tác dụng khi current === 'watch')
+    filterCat?.addEventListener('change', () => (current === 'watch') && window.update?.());
+    filterBr ?.addEventListener('change', () => (current === 'watch') && window.update?.());
   });
 })();
