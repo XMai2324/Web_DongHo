@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Gộp phụ kiện vào products (nếu có)
+  // Gộp phụ kiện vào products
   if (Array.isArray(window.accessories) && window.accessories.length) {
     window.products = (window.products || []).concat(window.accessories);
   }

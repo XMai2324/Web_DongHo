@@ -292,8 +292,8 @@ window.products = products;
 // === PHỤ KIỆN  ===
 const accessories = [
   // Kính cường lực
-  { name:"Kính sapphire cao cấp", image:"image/Accessory/glass1.jpg", price:600000, category:"phukien", accessory:"glass", type:"glass", brand:"", description:"Phụ kiện kính cường lực bảo vệ mặt đồng hồ tốt." },
-  { name:"Kính khoáng chống trầy", image:"image/Accessory/glass2.webp", price:300000, category:"phukien", accessory:"glass", type:"glass", brand:"", description:"Phụ kiện kính cường lực bảo vệ mặt đồng hồ tốt." },
+  { name:"Kính sapphire cao cấp", image:"image/accessories/glasses/glass1.jpg", price:600000, category:"phukien", accessory:"glass", type:"glass", brand:"", description:"Phụ kiện kính cường lực bảo vệ mặt đồng hồ tốt." },
+  { name:"Kính khoáng chống trầy", image:"image/accessories/glasses/glass2.webp", price:300000, category:"phukien", accessory:"glass", type:"glass", brand:"", description:"Phụ kiện kính cường lực bảo vệ mặt đồng hồ tốt." },
 
   // Hộp đựng
   { name:"Masamu Zenbox MSM-HOP-6-V1", image:"image/Accessories/boxes/hop1.png", description:"Kích thước 24 cm x 23 cm x 10 cm với 6 ngăn đựng rộng rãi thoải mái", price:900000, category:"phukien", accessory:"box" },
