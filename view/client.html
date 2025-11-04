@@ -6,6 +6,12 @@
   <title>TickTock Shop - Sản phẩm</title>
 
   <!-- CSS -->
+  <!-- <title>TickTock Shop</title> -->
+  <link rel="stylesheet" href="css/client.css">
+  <link rel="stylesheet" href="css/product.css">
+  <link rel="stylesheet" href="css/login.css">
+  <link rel="stylesheet" href="css/profile.css">
+  <link rel="icon" type="image/png" href="image/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../view/css/client.css">
   <link rel="stylesheet" href="../view/css/product.css">
@@ -73,7 +79,7 @@
 
       </div>
 
-      <div class="name"><a href="warranty.html">Thông tin bảo hành</a></div>
+      <div class="name"><a href="warranty.html">Thông tin cá nhân</a></div>
     </div>
 
     <div class="header_other">
@@ -241,9 +247,9 @@
         <div class="delivery-content-left">
           <p>Vui lòng điền thông tin giao hàng</p>
 
-          <div class="delivery-content-left-dangnhap">
+          <!-- <div class="delivery-content-left-dangnhap">
             <i class="fa-regular fa-user"></i> Đã có tài khoản? <a href="#login" style="margin-left:6px;">Đăng nhập</a>
-          </div>
+          </div> -->
 
           <div class="delivery-content-left-input-top">
             <div class="delivery-content-left-input-top-item">
@@ -437,7 +443,11 @@
       <div class="order-row">
         <div class="order-label">Trạng thái đơn hàng :</div>
         <div class="order-value">
-          <button class="order-status" disabled>Chờ xác nhận</button>
+          <!-- Nút sẽ đổi tên/enable theo trạng thái.
+              id này để script bắt sự kiện dễ dàng -->
+          <button id="ord-status-btn" class="order-status" disabled>Chờ xác nhận</button>
+          <!-- (tuỳ chọn) hiển thị chữ trạng thái riêng -->
+          <span id="ord-status-text" class="order-status-text" style="margin-left:8px;"></span>
         </div>
       </div>
 
@@ -514,68 +524,152 @@
     </div>
   </div>
 
-  <!-- ===== JS ===== -->
+
+<!-- ===== login ===== -->  
+  <div id="login_modal">
+    <form id="loginForm">
+      <h2>Đăng nhập</h2>
+      <div class="input-group">
+        <label for="loginIdentifier">Email hoặc Tên đăng nhập</label>
+        <input type="text" id="loginIdentifier" required>
+      </div>
+      <div class="input-group">
+        <label for="loginPassword">Mật khẩu</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+      <button type="submit">Đăng Nhập</button>
+      <div id="message" class="message"></div>
+      
+      <div class="link">
+        Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+      </div>
+    </form>
+    
+    <form id="registerForm">
+      <h2>Đăng ký tài khoản</h2>
+      <div class="input-group">
+        <label for="regUsername">Tên đăng nhập (Username)</label>
+        <input type="text" id="regUsername" required>
+        <span class="error-text" id="errorUsername"></span>
+      </div>
+      <div class="input-group">
+        <label for="regEmail">Email</label>
+        <input type="email" id="regEmail" required>
+        <span class="error-text" id="errorEmail"></span>
+      </div>
+      <div class="input-group">
+        <label for="regPassword">Mật khẩu</label>
+        <input type="password" id="regPassword" required>
+        <span class="error-text" id="errorPassword"></span>
+      </div>
+      
+      <!-- Ô nhập lại mật khẩu -->
+      <div class="input-group">
+        <label for="regRePassword">Nhập lại Mật khẩu</label>
+        <input type="password" id="regRePassword" required>
+        <span class="error-text" id="errorRePassword"></span>
+      </div>
+      
+      <button type="submit">Đăng Ký</button>
+      <div id="message" class="message"></div>
+      
+      <div class="link">
+        Đã có tài khoản? <a href="#">Đăng nhập ngay</a>
+      </div>
+    </form>
+    
+    
+    
+  </div>
+  
+   <!-- ===== PROFILE OVERLAY (NO AVATAR) ===== -->
+    <section id="profileSection" aria-hidden="true">
+      <div class="profile-backdrop" id="profileBackdrop"></div>
+
+      <div class="profile-panel">
+        
+
+        <div class="profile-content">
+          <!-- Cột trái: Thông tin cơ bản -->
+          <aside class="profile-aside">
+            <p class="username" id="usernameText">Người dùng</p>
+            <span class="role-badge" id="profileRoleBadge">user</span>
+          </aside>
+
+          <!-- Cột phải: Form thông tin -->
+          <div class="profile-main">
+            <div class="card">
+              <h3>Thông tin tài khoản</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="profileName">Tên hiển thị</label>
+                  <input id="profileName" placeholder="Tên của bạn">
+                </div>
+                <div class="form-group">
+                  <label for="profileUsername">Tên đăng nhập</label>
+                  <input id="profileUsername" readonly>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="profileEmail">Email</label>
+                  <input id="profileEmail" type="email" placeholder="example@gmail.com">
+                </div>
+                <div class="form-group">
+                  <label for="profileRole">Vai trò</label>
+                  <input id="profileRole" readonly>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="saveProfile" class="btn primary">💾 Lưu thay đổi</button>
+                <span id="profileMsg" class="toast"></span>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Đổi mật khẩu</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="oldPass">Mật khẩu hiện tại</label>
+                  <input type="password" id="oldPass">
+                </div>
+                <div class="form-group">
+                  <label for="newPass">Mật khẩu mới</label>
+                  <input type="password" id="newPass">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reNewPass">Xác nhận mật khẩu mới</label>
+                  <input type="password" id="reNewPass">
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="changePass" class="btn">🔑 Đổi mật khẩu</button>
+                <span id="passMsg" class="toast"></span>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="logoutProfile" class="btn danger">🚪 Đăng xuất</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- ===== JS ===== -->
   <script src="../view/js/data.js"></script>
   <script src="../view/js/product.js"></script>
+  <script src="../view/js/product1.js"></script>
   <script src="../view/js/slider.js"></script>
   <script src="../view/js/auth.js"></script>
+  <script src="../view/js/profile.js"></script>
    <script src="../view/js/cart.js"></script>
   <script src="../view/js/checkout.js"></script>
   <script src="../view/js/payment.js"></script>
-
-<!-- ===== login ===== -->
-  <div id="login_modal">
-    <form id="loginForm">
-        <h2>Đăng nhập</h2>
-        <div class="input-group">
-            <label for="loginIdentifier">Email hoặc Tên đăng nhập</label>
-            <input type="text" id="loginIdentifier" required>
-        </div>
-        <div class="input-group">
-            <label for="loginPassword">Mật khẩu</label>
-            <input type="password" id="loginPassword" required>
-        </div>
-        <button type="submit">Đăng Nhập</button>
-        <div id="message" class="message"></div>
-
-        <div class="link">
-            Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
-        </div>
-    </form>
-
-    <form id="registerForm">
-        <h2>Đăng ký tài khoản</h2>
-        <div class="input-group">
-            <label for="regUsername">Tên đăng nhập (Username)</label>
-            <input type="text" id="regUsername" required>
-            <span class="error-text" id="errorUsername"></span>
-        </div>
-        <div class="input-group">
-            <label for="regEmail">Email</label>
-            <input type="email" id="regEmail" required>
-            <span class="error-text" id="errorEmail"></span>
-        </div>
-        <div class="input-group">
-            <label for="regPassword">Mật khẩu</label>
-            <input type="password" id="regPassword" required>
-            <span class="error-text" id="errorPassword"></span>
-        </div>
-        
-        <!-- Ô nhập lại mật khẩu -->
-        <div class="input-group">
-            <label for="regRePassword">Nhập lại Mật khẩu</label>
-            <input type="password" id="regRePassword" required>
-            <span class="error-text" id="errorRePassword"></span>
-        </div>
-
-        <button type="submit">Đăng Ký</button>
-        <div id="message" class="message"></div>
-    
-        <div class="link">
-            Đã có tài khoản? <a href="#">Đăng nhập ngay</a>
-        </div>
-    </form>
-  </div>
-  
 </body>
 </html>

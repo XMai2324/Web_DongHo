@@ -48,6 +48,12 @@ body {
   margin: 15px 0 10px; 
   padding-top: 12px;
   border-top: 1px solid #080808;
+
+}
+
+.menu-title a{
+  text-decoration: none;
+  color: #000;
 }
 .submenu { 
   list-style: none;
@@ -144,4 +150,27 @@ border-radius: 6px;
 }
 .btn.primary:active { 
   transform: translateY(1px); 
+}
+/* --- FIX DOUBLE SCROLL --- */
+html, body {
+  height: 100%;
+  overflow: hidden; /* chặn cuộn toàn trang */
+}
+
+.admin-container {
+  height: 100vh;
+  display: flex;
+  overflow: hidden; /* ngăn scroll trong container */
+}
+
+.sidebar {
+  height: 100vh;
+  overflow-y: auto; /* chỉ sidebar tự cuộn khi menu dài */
+}
+
+.main-content {
+  flex: 1;
+  height: 100vh;
+  overflow-y: auto; /* chỉ phần nội dung chính cuộn */
+  background: #f5f5f5;
 }

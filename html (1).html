@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quản lý nhập hàng - Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    /* ========== GIAO DIỆN CHUNG ========== */
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f4f6f8;
+      display: flex;
+    }
+
+    .admin-container {
+      display: flex;
+      width: 100%;
+      height: 100vh;
+    }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar {
+      width: 250px;
+      background: #1f2937;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 0;
+    }
+
+    .sidebar img {
+      width: 100px;
+      margin-bottom: 10px;
+    }
+
+    .sidebar h2 {
+      margin-bottom: 20px;
+      font-size: 18px;
+    }
+
+    .menu {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+    }
+
+    .menu li {
+      padding: 12px 20px;
+      cursor: pointer;
+    }
+
+    .menu li:hover {
+      background: #374151;
+    }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      flex: 1;
+      background: #fff;
+      margin: 20px;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      overflow-y: auto;
+    }
+
+    fieldset {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+
+    legend {
+      font-weight: bold;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: 500;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    input[type="submit"], input[type="reset"] {
+      width: auto;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 8px;
+      background-color: #2563eb;
+      color: white;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #1d4ed8;
+    }
+
+    input[type="reset"]:hover {
+      background-color: #e11d48;
+    }
+
+    /* ===== BẢNG HIỂN THỊ ===== */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #f1f5f9;
+    }
+
+    .center {
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="admin-container">
+    <!-- MENU TRÁI -->
+    <aside class="sidebar">
+      <img src="/view/image/logo2.png" alt="Logo">
+      <h2>Xin chào Admin</h2>
+      <ul class="menu">
+        <li>Sản phẩm</li>
+        <li>Đơn hàng</li>
+        <li>Khách hàng</li>
+        <li style="background:#374151;">Nhập hàng</li>
+        <li>Kho hàng</li>
+      </ul>
+    </aside>
+
+    <!-- NỘI DUNG CHÍNH -->
+    <main class="main-content">
+      <form id="importForm">
+        <fieldset>
+          <legend>Thông tin sản phẩm</legend>
+          <label for="masp">Mã sản phẩm:</label>
+          <input type="text" id="masp" required>
+
+          <label for="tensp">Tên sản phẩm:</label>
+          <input type="text" id="tensp" required>
+
+          <label for="loaisp">Loại sản phẩm:</label>
+          <input type="text" id="loaisp">
+        </fieldset>
+
+        <fieldset>
+          <legend>Thông tin nhập hàng</legend>
+          <label for="soluongnhap">Số lượng nhập:</label>
+          <input type="number" id="soluongnhap" required>
+
+          <label for="dongia">Đơn giá (VNĐ):</label>
+          <input type="number" id="dongia" required>
+
+          <label for="ngaynhap">Ngày nhập:</label>
+          <input type="date" id="ngaynhap" required>
+        </fieldset>
+
+        <fieldset>
+          <legend>Thông tin tồn kho</legend>
+          <label for="soluongton">Số lượng tồn hiện tại:</label>
+          <input type="number" id="soluongton">
+
+          <label for="vitri">Vị trí trong kho:</label>
+          <input type="text" id="vitri">
+
+          <label for="trangthai">Trạng thái:</label>
+          <select id="trangthai">
+            <option value="Còn hàng">Còn hàng</option>
+            <option value="Sắp hết hàng">Sắp hết hàng</option>
+            <option value="Hết hàng">Hết hàng</option>
+          </select>
+        </fieldset>
+
+        <fieldset>
+          <legend>Ghi chú</legend>
+          <textarea id="ghichu" rows="3" placeholder="Nhập ghi chú nếu có..."></textarea>
+        </fieldset>
+
+        <fieldset>
+          <legend>Thao tác</legend>
+          <input type="reset" value="Làm lại">
+          <input type="submit" value="Lưu thông tin">
+        </fieldset>
+      </form>
+
+      <!-- Bảng hiển thị dữ liệu -->
+      <h2 class="center">Danh sách sản phẩm đã nhập</h2>
+      <table id="tableData">
+        <thead>
+          <tr>
+            <th>Mã SP</th>
+            <th>Tên sản phẩm</th>
+            <th>Loại</th>
+            <th>Số lượng nhập</th>
+            <th>Đơn giá</th>
+            <th>Ngày nhập</th>
+            <th>Tồn kho</th>
+            <th>Vị trí</th>
+            <th>Trạng thái</th>
+            <th>Ghi chú</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    const form = document.getElementById('importForm');
+    const tableBody = document.querySelector('#tableData tbody');
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+
+      // Lấy dữ liệu từ form
+      const masp = document.getElementById('masp').value.trim();
+      const tensp = document.getElementById('tensp').value.trim();
+      const loaisp = document.getElementById('loaisp').value.trim();
+      const soluongnhap = document.getElementById('soluongnhap').value;
+      const dongia = document.getElementById('dongia').value;
+      const ngaynhap = document.getElementById('ngaynhap').value;
+      const soluongton = document.getElementById('soluongton').value;
+      const vitri = document.getElementById('vitri').value.trim();
+      const trangthai = document.getElementById('trangthai').value;
+      const ghichu = document.getElementById('ghichu').value.trim();
+
+      if (!masp || !tensp || !soluongnhap || !dongia || !ngaynhap) {
+        alert("Vui lòng nhập đầy đủ thông tin bắt buộc!");
+        return;
+      }
+
+      // Thêm dòng vào bảng
+      const row = document.createElement('tr');
+      row.innerHTML = `
+        <td>${masp}</td>
+        <td>${tensp}</td>
+        <td>${loaisp}</td>
+        <td>${soluongnhap}</td>
+        <td>${Number(dongia).toLocaleString()}</td>
+        <td>${ngaynhap}</td>
+        <td>${soluongton || 0}</td>
+        <td>${vitri}</td>
+        <td>${trangthai}</td>
+        <td>${ghichu}</td>
+      `;
+      tableBody.appendChild(row);
+
+      // Reset form
+      form.reset();
+    });
+  </script>
+</body>
+</html>
