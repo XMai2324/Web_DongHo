@@ -1,181 +1,423 @@
-const hangList = ["Casio", "Rolex", "Citizen", "Rado", "Seiko"];
+// =================== GHÉP DỮ LIỆU ===================
+const allData = { ...products };
 
-const spData = {
-  Casio: ["G-Shock GA-2100", "Edifice EFR-526", "Vintage F91W", "Pro Trek PRW-3500"],
-  Rolex: ["Submariner 124060", "Datejust 126300", "Explorer 124270"],
-  Citizen: ["Eco-Drive BM7100", "Promaster Diver", "Tsuyosa NJ015", "Chrono CA0690"],
-  Rado: ["True Thinline", "Captain Cook R325", "Centrix"],
-  Seiko: ["Presage SRPB43", "5 Sports SNK809", "Prospex Turtle", "Prospex SNE537"]
+// tạo danh mục riêng cho phụ kiện
+const PHUKIEN_KEY = "phụ kiện";
+allData[PHUKIEN_KEY] = {};
+
+accessories.forEach(a => {
+  const type = a.accessory || a.type || "Khác";
+  if (!allData[PHUKIEN_KEY][type]) allData[PHUKIEN_KEY][type] = {};
+  allData[PHUKIEN_KEY][type][a.name] = {
+    gia: a.price || 0,
+    ...a
+  };
+});
+
+// ======= SEEDED RANDOM =======
+function seededRandom(seed) {
+  return function() {
+    seed = (seed * 9301 + 49297) % 233280;
+    return seed / 233280;
+  }
+}
+
+// ======= MAP HIỂN THỊ LOẠI =======
+const LOAI_DISPLAY = {
+  nam: "Nam",
+  nu: "Nữ",
+  capdoi: "Cặp đôi",
+
+  glass: "Kính Cường Lực",
+  box: "Hộp Đựng",
+  strap: "Dây Treo"
 };
 
-// ====== PHIẾU NHẬP MẪU ======
-let phieuNhap = [
-  { tensp: "G-Shock GA-2100", hang: "Casio", loai: "Nam", sl: 10, gia: 1500000, ngay: "2025-10-18" },
-  { tensp: "Edifice EFR-526", hang: "Casio", loai: "Nam", sl: 6, gia: 2200000, ngay: "2025-08-20" },
-  { tensp: "Submariner 124060", hang: "Rolex", loai: "Nam", sl: 11, gia: 250000000, ngay: "2025-08-25" },
-  { tensp: "Datejust 126300", hang: "Rolex", loai: "Nam", sl: 10, gia: 300000000, ngay: "2025-08-28" },
-  { tensp: "Eco-Drive BM7100", hang: "Citizen", loai: "Nam", sl: 8, gia: 2600000, ngay: "2025-09-01" },
-  { tensp: "Promaster Diver", hang: "Citizen", loai: "Nam", sl: 23, gia: 3800000, ngay: "2025-10-03" },
-  { tensp: "True Thinline", hang: "Rado", loai: "Nữ", sl: 4, gia: 12000000, ngay: "2025-09-06" },
-  { tensp: "Captain Cook R325", hang: "Rado", loai: "Nam", sl: 27, gia: 9000000, ngay: "2025-09-08" },
-  { tensp: "Presage SRPB43", hang: "Seiko", loai: "Nam", sl: 7, gia: 3300000, ngay: "2025-09-10" },
-  { tensp: "5 Sports SNK809", hang: "Seiko", loai: "Nam", sl: 12, gia: 2100000, ngay: "2025-09-12" },
-  { tensp: "Vintage F91W", hang: "Casio", loai: "Unisex", sl: 15, gia: 500000, ngay: "2025-10-15" },
-  { tensp: "Prospex Turtle", hang: "Seiko", loai: "Nam", sl: 25, gia: 5200000, ngay: "2025-09-30" }
-];
+// ======= SINH PHIẾU NHẬP NGẪU NHIÊN =======
+const randPhieu = seededRandom(123); 
+phieuNhap = [];
 
-// ====== TỒN KHO MẪU ======
-let tonKho = [
-  { id: "SP01", tensp: "G-Shock GA-2100", hang: "Casio", loai: "Nam", sl: 22 },
-  { id: "SP02", tensp: "Edifice EFR-526", hang: "Casio", loai: "Nam", sl: 10 },
-  { id: "SP03", tensp: "Vintage F91W", hang: "Casio", loai: "Unisex", sl: 30 },
-  { id: "SP04", tensp: "Pro Trek PRW-3500", hang: "Casio", loai: "Nam", sl: 25 },
-
-  { id: "SP05", tensp: "Submariner 124060", hang: "Rolex", loai: "Nam", sl: 20 },
-  { id: "SP06", tensp: "Datejust 126300", hang: "Rolex", loai: "Nam", sl: 31 },
-  { id: "SP07", tensp: "Explorer 124270", hang: "Rolex", loai: "Nam", sl: 15 },
-
-  { id: "SP08", tensp: "Eco-Drive BM7100", hang: "Citizen", loai: "Nam", sl: 9 },
-  { id: "SP09", tensp: "Promaster Diver", hang: "Citizen", loai: "Nam", sl: 14 },
-  { id: "SP10", tensp: "Tsuyosa NJ015", hang: "Citizen", loai: "Nam", sl: 6 },
-
-  { id: "SP11", tensp: "True Thinline", hang: "Rado", loai: "Nữ", sl: 53 },
-  { id: "SP12", tensp: "Captain Cook R325", hang: "Rado", loai: "Nam", sl: 42 },
-  { id: "SP13", tensp: "Centrix", hang: "Rado", loai: "Nữ", sl: 5 },
-
-  { id: "SP14", tensp: "Presage SRPB43", hang: "Seiko", loai: "Nam", sl: 11 },
-  { id: "SP15", tensp: "5 Sports SNK809", hang: "Seiko", loai: "Nam", sl: 14 },
-  { id: "SP16", tensp: "Prospex Turtle", hang: "Seiko", loai: "Nam", sl: 6 },
-  { id: "SP17", tensp: "Prospex SNE537", hang: "Seiko", loai: "Nam", sl: 4 }
-];
-
-// ====== DOM REFERENCES ======
-const selHang = document.getElementById("p_hang");
-const selTenSP = document.getElementById("p_tensp");
-const form = document.getElementById("phieuForm");
-const tblPhieu = document.querySelector("#tblPhieu tbody");
-const tblKho = document.querySelector("#tblKho tbody");
-
-// ====== INIT ======
-function init() {
-  // điền hãng
-  hangList.forEach(h => {
-    const opt = document.createElement("option");
-    opt.value = h;
-    opt.textContent = h;
-    selHang.appendChild(opt);
-  });
-
-  renderPhieuNhap();
-  renderTonKho();
-  updateStats();
+for(let i=0; i<11; i++) {
+  const danhMuc = getDanhMuc()[Math.floor(randPhieu() * getDanhMuc().length)];
+  const loaiList = getLoai(danhMuc);
+  const loai = loaiList[Math.floor(randPhieu() * loaiList.length)];
+  const tenList = getTen(danhMuc, loai);
+  const tensp = tenList[Math.floor(randPhieu() * tenList.length)];
+  const sl = Math.floor(randPhieu()*10) + 7; // 1-10
+  const gia = getGia(danhMuc, loai, tensp);
+  const ngay = `2025-${String(Math.floor(randPhieu()*12)+1).padStart(2,'0')}-${String(Math.floor(randPhieu()*28)+1).padStart(2,'0')}`;
+  
+  phieuNhap.push({tensp, danhmuc: danhMuc, loai, sl, gia, ngay, locked: false});
 }
-document.addEventListener("DOMContentLoaded", init);
 
-selHang.addEventListener("change", () => {
-  const hang = selHang.value;
-  selTenSP.innerHTML = `<option value="">-- Chọn tên sản phẩm --</option>`;
-  if (!hang) return selTenSP.disabled = true;
-  (spData[hang] || []).forEach(sp => {
-    const opt = document.createElement("option");
-    opt.value = sp;
-    opt.textContent = sp;
-    selTenSP.appendChild(opt);
+// ======= SINH TỒN KHO NGẪU NHIÊN =======
+const randKho = seededRandom(789);
+tonKho = [];
+
+let totalSL = 0;
+const maxStock = 137; // tổng tồn kho mong muốn
+
+while(totalSL < maxStock) {
+  const danhMuc = getDanhMuc()[Math.floor(randKho() * getDanhMuc().length)];
+  const loaiList = getLoai(danhMuc);
+  const loai = loaiList[Math.floor(randKho() * loaiList.length)];
+  const tenList = getTen(danhMuc, loai);
+  const tensp = tenList[Math.floor(randKho() * tenList.length)];
+
+  // tránh trùng
+  if(tonKho.find(x=>x.tensp===tensp && x.danhmuc===danhMuc)) continue;
+
+  const sl = Math.min(Math.floor(randKho()*10)+13, maxStock - totalSL);
+  totalSL += sl;
+
+  tonKho.push({ ma: generateCode(tensp), tensp, danhmuc: danhMuc, loai, sl });
+
+  if(tonKho.length >= 25) break;
+}
+
+// =================== HÀM HỖ TRỢ ===================
+function rebuildStock() {
+  tonKho = [];
+  phieuNhap.forEach(p => {
+    let exist = tonKho.find(t => t.tensp === p.tensp && t.danhmuc === p.danhmuc);
+    if (!exist) {
+      tonKho.push({
+        ma: generateCode(p.tensp),
+        tensp: p.tensp,
+        danhmuc: p.danhmuc,
+        loai: p.loai,
+        sl: Number(p.sl)
+      });
+    } else {
+      exist.sl += Number(p.sl);
+    }
   });
-  selTenSP.disabled = false;
-});
+}
 
-form.addEventListener("submit", e => {
-  e.preventDefault();
-  const hang = selHang.value.trim();
-  const tensp = selTenSP.value.trim();
-  const loai = document.getElementById("p_loai").value.trim();
-  const sl = parseInt(document.getElementById("p_sl").value, 10);
-  const gia = parseInt(document.getElementById("p_gia").value, 10);
-  const ngay = document.getElementById("p_ngay").value;
+function generateCode(name) {
+  return name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 6);
+}
 
-  if (!hang || !tensp || !loai || !ngay || isNaN(sl) || isNaN(gia)) {
-    alert("Vui lòng điền đầy đủ thông tin hợp lệ.");
-    return;
-  }
+function capitalizeWords(str) {
+  return str
+    .split(' ')
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+}
 
-  phieuNhap.push({ tensp, hang, loai, sl, gia, ngay });
+function formatNumber(n) {
+  return new Intl.NumberFormat('vi-VN').format(n);
+}
 
-  const existing = tonKho.find(i => i.tensp === tensp && i.hang === hang);
-  if (existing) existing.sl += sl;
-  else tonKho.push({ id: "SP" + String(tonKho.length + 1).padStart(2, "0"), tensp, hang, loai, sl });
+// =================== HIỂN THỊ BẢNG ===================
+function renderPhieu() {
+  const tbl = document.querySelector('#tblPhieu tbody');
+  tbl.innerHTML = '';
 
-  renderPhieuNhap();
-  renderTonKho();
-  updateStats();
+  phieuNhap.forEach((p, idx) => {
+    const tr = document.createElement('tr');
+    tr.id = 'phieu-row-' + idx;
 
-  form.reset();
-  selTenSP.disabled = true;
-});
-
-function renderPhieuNhap() {
-  tblPhieu.innerHTML = "";
-  phieuNhap.forEach((p, i) => {
-    const tr = document.createElement("tr");
     tr.innerHTML = `
-      <td>${i + 1}</td>
+      <td>${idx + 1}</td>
       <td>${p.tensp}</td>
-      <td>${p.hang}</td>
-      <td>${p.loai}</td>
+      <td>${capitalizeWords(p.danhmuc)}</td>
+      <td>${LOAI_DISPLAY[p.loai?.toLowerCase()] || capitalizeWords(p.loai)}</td>
       <td>${p.sl}</td>
-      <td>${p.gia.toLocaleString("vi-VN")}đ</td>
+      <td>${formatNumber(p.gia)}</td>
       <td>${p.ngay}</td>
-      <td><button class="btn-delete" data-index="${i}">Xóa</button></td>
+      <td>
+        ${
+          p.locked
+            ? '<span style="color:green;font-weight:600;">Hoàn thành</span>'
+            : `
+              <button class="table-btn edit" data-idx="${idx}">Sửa</button>
+              <button class="table-btn complete" data-idx="${idx}">Hoàn thành</button>
+              <button class="table-btn delete" data-idx="${idx}">Xóa</button>
+            `
+        }
+      </td>
     `;
-    tblPhieu.appendChild(tr);
+    tbl.appendChild(tr);
   });
 
-  document.querySelectorAll(".btn-delete").forEach(btn =>
-    btn.addEventListener("click", e => {
-      const idx = e.target.dataset.index;
-      xoaPhieu(idx);
-    })
-  );
-}
-
-function xoaPhieu(index) {
-  const phieu = phieuNhap[index];
-  if (!confirm(`Xóa phiếu "${phieu.tensp}" (${phieu.sl} cái)?`)) return;
-
-  const sp = tonKho.find(i => i.tensp === phieu.tensp && i.hang === phieu.hang);
-  if (sp) {
-    sp.sl -= phieu.sl;
-    if (sp.sl <= 0) tonKho = tonKho.filter(x => x !== sp);
-  }
-
-  phieuNhap.splice(index, 1);
-
-  renderPhieuNhap();
-  renderTonKho();
+  renderKho();
   updateStats();
 }
 
-function renderTonKho() {
-  tblKho.innerHTML = "";
-  tonKho.forEach((sp, i) => {
-    const tr = document.createElement("tr");
+function renderKho() {
+  const tbl = document.querySelector('#tblKho tbody');
+  tbl.innerHTML = '';
+
+  tonKho.forEach((sp, idx) => {
+    const tr = document.createElement('tr');
     tr.innerHTML = `
-      <td>${i + 1}</td>
-      <td>${sp.id}</td>
+      <td>${idx + 1}</td>
+      <td>${sp.ma}</td>
       <td>${sp.tensp}</td>
-      <td>${sp.hang}</td>
-      <td>${sp.loai}</td>
-      <td>${sp.sl}</td>
+      <td>${capitalizeWords(sp.danhmuc)}</td>
+      <td>${LOAI_DISPLAY[sp.loai?.toLowerCase()] || capitalizeWords(sp.loai)}</td>
+      <td class="${sp.sl <= 3 ? 'low' : ''}">${sp.sl}</td>
     `;
-    tblKho.appendChild(tr);
+    tbl.appendChild(tr);
   });
 }
 
 function updateStats() {
   document.getElementById("statProducts").textContent = tonKho.length;
   document.getElementById("statPhieu").textContent = phieuNhap.length;
-  const tong = tonKho.reduce((acc, cur) => acc + (Number(cur.sl) || 0), 0);
+
+  const tong = tonKho.reduce((a, b) => a + (Number(b.sl) || 0), 0);
   document.getElementById("statTotalStock").textContent = tong;
+
   const sapHet = tonKho.filter(sp => sp.sl <= 3).length;
   document.getElementById("statLow").textContent = sapHet;
+}
+
+// =================== LẤY DỮ LIỆU ===================
+function getDanhMuc() {
+  const set = new Set(products.map(p => p.brand.toLowerCase()));
+  set.add("phụ kiện");
+  const order = ["casio","rolex","citizen","rado","seiko","phụ kiện"];
+  return order.filter(k => set.has(k));
+}
+
+function getLoai(danhmuc) {
+  if(danhmuc === "phụ kiện") {
+    const types = new Set(accessories.map(a => a.accessory || a.type || "Khác"));
+    return Array.from(types);
+  } else {
+    const loaiSet = new Set(products.filter(p => p.brand.toLowerCase() === danhmuc).map(p => p.category));
+    return Array.from(loaiSet);
+  }
+}
+
+function getTen(danhmuc, loai) {
+  if(danhmuc === "phụ kiện") {
+    return accessories.filter(a => (a.accessory || a.type || "Khác") === loai).map(a => a.name);
+  } else {
+    return products.filter(p => p.brand.toLowerCase() === danhmuc && p.category === loai).map(p => p.name);
+  }
+}
+
+function getGia(danhmuc, loai, tensp) {
+  if(danhmuc === "phụ kiện") {
+    const found = accessories.find(a => (a.accessory || a.type || "Khác") === loai && a.name === tensp);
+    return found ? found.price : 0;
+  } else {
+    const found = products.find(p => p.brand.toLowerCase() === danhmuc && p.category === loai && p.name === tensp);
+    return found ? found.price : 0;
+  }
+}
+
+// =================== FORM & SỰ KIỆN ===================
+document.addEventListener('DOMContentLoaded', () => {
+  rebuildStock();
+  renderPhieu();
+
+  function setupDropdowns(prefix) {
+    const dm = document.getElementById(prefix + '_danhmuc');
+    const loai = document.getElementById(prefix + '_loai');
+    const ten = document.getElementById(prefix + '_tensp');
+    const gia = document.getElementById(prefix + '_gia');
+
+    // load danh mục
+    dm.innerHTML = '<option value="">-- Chọn danh mục --</option>';
+    getDanhMuc().forEach(k => {
+      const opt = document.createElement('option');
+      opt.value = k;
+      opt.textContent = capitalizeWords(k);
+      dm.appendChild(opt);
+    });
+
+    dm.addEventListener('change', () => {
+      loai.innerHTML = '<option value="">-- Chọn loại --</option>';
+      ten.innerHTML = '<option value="">-- Chọn tên --</option>';
+      gia.value = '';
+
+      if (!dm.value) {
+        loai.disabled = true;
+        ten.disabled = true;
+        return;
+      }
+
+      getLoai(dm.value).forEach(l => {
+        const opt = document.createElement('option');
+        opt.value = l;
+        opt.textContent = LOAI_DISPLAY[l] || capitalizeWords(l);
+        loai.appendChild(opt);
+      });
+
+      loai.disabled = false;
+    });
+
+    loai.addEventListener('change', () => {
+      ten.innerHTML = '<option value="">-- Chọn tên --</option>';
+      gia.value = '';
+
+      if (!loai.value) {
+        ten.disabled = true;
+        return;
+      }
+
+      getTen(dm.value, loai.value).forEach(t => {
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        ten.appendChild(opt);
+      });
+
+      ten.disabled = false;
+    });
+
+    ten.addEventListener('change', () => {
+      if (dm.value && loai.value && ten.value) {
+        gia.value = getGia(dm.value, loai.value, ten.value);
+        gia.readOnly = true;
+      }
+    });
+  }
+
+  setupDropdowns('p');
+  setupDropdowns('e');
+
+  // Thêm phiếu nhập
+  document.getElementById('phieuForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const h = document.getElementById('p_danhmuc').value;
+    const t = document.getElementById('p_tensp').value;
+    const loai = document.getElementById('p_loai').value;
+    const sl = Number(document.getElementById('p_sl').value || 0);
+    const gia = Number(document.getElementById('p_gia').value || 0);
+    const ngay = document.getElementById('p_ngay').value || new Date().toISOString().slice(0, 10);
+
+    if (!h || !t) return alert('Chọn danh mục và sản phẩm');
+
+    phieuNhap.push({ tensp: t, danhmuc: h, loai, sl, gia, ngay, locked: false });
+
+    let rec = tonKho.find(x => x.tensp === t && x.danhmuc === h);
+    if (rec) rec.sl += sl;
+    else tonKho.push({ ma: generateCode(t), tensp: t, danhmuc: h, loai, sl });
+
+    renderPhieu();
+    e.target.reset();
+  });
+
+  // xử lý bảng phiếu nhập
+  document.getElementById('tblPhieu').addEventListener('click', e => {
+    const btn = e.target;
+    const idx = Number(btn.dataset.idx);
+    if (btn.classList.contains('edit')) openEditModal(idx);
+    else if (btn.classList.contains('complete')) completeReceipt(idx);
+    else if (btn.classList.contains('delete')) deleteReceipt(idx);
+  });
+
+  document.getElementById('btn-cancel-edit').addEventListener('click', closeEditModal);
+
+  document.getElementById('editForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const idx = Number(document.getElementById('e_index').value);
+    const newDanhmuc = document.getElementById('e_danhmuc').value;
+    const newTensp = document.getElementById('e_tensp').value;
+    const newLoai = document.getElementById('e_loai').value;
+    const newSl = Number(document.getElementById('e_sl').value || 0);
+    const newGia = Number(document.getElementById('e_gia').value || 0);
+    const newNgay = document.getElementById('e_ngay').value || new Date().toISOString().slice(0, 10);
+
+    const old = phieuNhap[idx];
+    if (!old || old.locked) return alert('Phiếu không tồn tại hoặc đã khóa');
+
+    if (old.tensp !== newTensp || old.danhmuc !== newDanhmuc) {
+      const oldStock = tonKho.find(x => x.tensp === old.tensp && x.danhmuc === old.danhmuc);
+      if (oldStock) oldStock.sl -= old.sl;
+
+      let newStock = tonKho.find(x => x.tensp === newTensp && x.danhmuc === newDanhmuc);
+      if (newStock) newStock.sl += newSl;
+      else tonKho.push({ ma: generateCode(newTensp), tensp: newTensp, danhmuc: newDanhmuc, loai: newLoai, sl: newSl });
+    } else {
+      const delta = newSl - old.sl;
+      const rec = tonKho.find(x => x.tensp === old.tensp && x.danhmuc === old.danhmuc);
+      if (rec) rec.sl += delta;
+    }
+
+    phieuNhap[idx] = { tensp: newTensp, danhmuc: newDanhmuc, loai: newLoai, sl: newSl, gia: newGia, ngay: newNgay, locked: old.locked };
+    tonKho = tonKho.filter(x => x.sl > 0);
+    renderPhieu();
+    closeEditModal();
+  });
+});
+
+// =================== MODAL ===================
+function openEditModal(idx) {
+  const rec = phieuNhap[idx];
+  if (!rec) return;
+
+  document.getElementById('e_index').value = idx;
+  const dm = document.getElementById('e_danhmuc');
+  const loai = document.getElementById('e_loai');
+  const ten = document.getElementById('e_tensp');
+  const sl = document.getElementById('e_sl');
+  const gia = document.getElementById('e_gia');
+  const ngay = document.getElementById('e_ngay');
+
+  // reset dropdown
+  dm.innerHTML = '<option value="">-- Chọn danh mục --</option>';
+  getDanhMuc().forEach(k => {
+    const opt = document.createElement('option');
+    opt.value = k;
+    opt.textContent = capitalizeWords(k);
+    dm.appendChild(opt);
+  });
+
+  dm.value = rec.danhmuc;
+
+  // load loại theo danh mục
+  loai.innerHTML = '<option value="">-- Chọn loại --</option>';
+  getLoai(dm.value).forEach(l => {
+    const opt = document.createElement('option');
+    opt.value = l;
+    opt.textContent = LOAI_DISPLAY[l] || capitalizeWords(l);
+    loai.appendChild(opt);
+  });
+  loai.value = rec.loai;
+
+  // load tên theo danh mục + loại
+  ten.innerHTML = '<option value="">-- Chọn tên --</option>';
+  getTen(dm.value, loai.value).forEach(t => {
+    const opt = document.createElement('option');
+    opt.value = t;
+    opt.textContent = t;
+    ten.appendChild(opt);
+  });
+  ten.value = rec.tensp;
+
+  // load các input còn lại
+  sl.value = rec.sl;
+  gia.value = rec.gia;
+  gia.readOnly = true;
+  ngay.value = rec.ngay;
+
+  // hiển thị modal
+  document.getElementById('modal-overlay').style.display = 'flex';
+}
+
+function closeEditModal() {
+  document.getElementById('modal-overlay').style.display = 'none';
+}
+
+function completeReceipt(idx) {
+  const rec = phieuNhap[idx];
+  if (!rec) return;
+  rec.locked = true;
+  renderPhieu();
+}
+
+function deleteReceipt(idx) {
+  const rec = phieuNhap[idx];
+  if (!rec) return;
+  const st = tonKho.find(x => x.tensp === rec.tensp && x.danhmuc === rec.danhmuc);
+  if (st) st.sl -= rec.sl;
+  tonKho = tonKho.filter(x => x.sl > 0);
+  phieuNhap.splice(idx, 1);
+  renderPhieu();
 }

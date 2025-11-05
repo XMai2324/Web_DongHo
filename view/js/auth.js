@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('profileSection')?.classList.remove('open');
     document.documentElement.style.overflow = '';
     alert('Bạn đã đăng xuất!');
-    window.location.href = 'client.html';
+    window.location.href = '/view/client.html';
   }
 
   const handleRegister = (event) => {

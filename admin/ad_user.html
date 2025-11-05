@@ -6,9 +6,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link rel="shortcut icon" href="/view/image/logo.png" type="image/x-icon">
     <link rel="stylesheet" href="../view/css/index.css">
-    <title>Admin_user</title>
-   <style>
+    <!-- <script src="./data.js"></script> -->
+    <title>Admin_Management</title>
+    <style>
     /* Global Styles */
+
+      :root {
+                --primary-color: #0d6efd;
+                --success-color: #198754;
+                --warning-color: #ffc107;
+                --danger-color: #dc3545;
+                --bg-light: #f8f9fa;
+                --border-color: #dee2e6;
+                --shadow-light: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+            }
+
     body { 
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
         background-color: #f0f4f8; 
@@ -29,6 +41,7 @@
         max-width: 400px; 
         margin: 50px auto; 
     }
+    /* Đã điều chỉnh để tránh chồng lấp với header */
     main { 
         margin-top: 170px;
         padding: 30px; 
@@ -115,143 +128,143 @@
     }
 
     /* Header & Navigation Styles (for index.html and admin.html) */
-   
-header {
-    height: 100px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    display: flex;
-    flex: 1;
-    align-items: center;
-    justify-content: space-between;
-    padding: 10px 30px;
-    background-color: rgba(225, 225, 225, 0.3) ;
-    transition: background-color 0.3s ease;
-    z-index: 1000;
-}
+    
+    header {
+        height: 100px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        display: flex;
+        flex: 1;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 30px;
+        background-color: rgba(225, 225, 225, 0.3) ;
+        transition: background-color 0.3s ease;
+        z-index: 1000;
+    }
 
-header:hover {
-    background: white;
-}
+    header:hover {
+        background: white;
+    }
 
-/* Logo */
+    /* Logo */
 
-/* Menu ngang */
-.header_menu {
-    display: flex;
-    gap: 30px; /* khoảng cách giữa các mục */
-    margin-left: 50px;
-}
+    /* Menu ngang */
+    .header_menu {
+        display: flex;
+        gap: 30px; /* khoảng cách giữa các mục */
+        margin-left: 50px;
+    }
 
-/* Mục menu chính */
-.header_menu .name {
-    position: relative;
-    font-weight: bold;
-    cursor: pointer;
-    font-size: 20px;
-}
+    /* Mục menu chính */
+    .header_menu .name {
+        position: relative;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 20px;
+    }
 
-/* Menu con */
-.header_menu .name ul {
-    list-style: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    background: white;
-    display: none; /* ẩn mặc định */
-    padding: 10px 0;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
+    /* Menu con */
+    .header_menu .name ul {
+        list-style: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background: white;
+        display: none; /* ẩn mặc định */
+        padding: 10px 0;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+    }
 
-/* Các item bên trong */
-.header_menu .name ul li {
-    padding: 8px 15px;
-    white-space: nowrap;
-}
+    /* Các item bên trong */
+    .header_menu .name ul li {
+        padding: 8px 15px;
+        white-space: nowrap;
+    }
 
-.header_menu .name ul li:hover {
-    background: #f2f2f2;
-}
+    .header_menu .name ul li:hover {
+        background: #f2f2f2;
+    }
 
-/* Hover để xổ xuống */
-.header_menu .name:hover ul {
-    display: block;
-}
+    /* Hover để xổ xuống */
+    .header_menu .name:hover ul {
+        display: block;
+    }
 
-.header_menu a {
-    text-decoration: none;
-    color: black;
-}
+    .header_menu a {
+        text-decoration: none;
+        color: black;
+    }
 
-.header_other {
-    width: 450px;
-    display: flex;
-    gap: 30px;
-    margin-left: 40px;
-}
+    .header_other {
+        width: 450px;
+        display: flex;
+        gap: 30px;
+        margin-left: 40px;
+    }
 
-.search input[type="text"] {
-  border: none;
-  outline: none;
-  background-color: transparent;
-  line-height: 15px;
-  border-bottom: solid 1px black;
-  padding-bottom: 3px;
-}
+    .search input[type="text"] {
+        border: none;
+        outline: none;
+        background-color: transparent;
+        line-height: 15px;
+        border-bottom: solid 1px black;
+        padding-bottom: 3px;
+    }
 
-/* Slider */
-.slider {
-  position: relative;
-  width: 100%;
-  height: 100%;     /* chỉnh tùy ảnh của anh */
-  aspect-ratio: 16/4;    /* giúp giữ tỉ lệ khi co giãn, có thể bỏ nếu không cần */
-  overflow: hidden;
-  border-top-left-radius: 10px;
-  padding-top: 45%;
-}
+    /* Slider */
+    .slider {
+        position: relative;
+        width: 100%;
+        height: 100%;  /* chỉnh tùy ảnh của anh */
+        aspect-ratio: 16/4; /* giúp giữ tỉ lệ khi co giãn, có thể bỏ nếu không cần */
+        overflow: hidden;
+        border-top-left-radius: 10px;
+        padding-top: 45%;
+    }
 
-/* Mỗi slide chồng lên nhau, chỉ slide.active hiện */
-.slider .slide {
-  position: absolute;
-  inset: 0;              /* top:0; right:0; bottom:0; left:0; */
-  opacity: 0;
-  transition: opacity 0.8s ease;  /* hiệu ứng fade */
-  z-index: 0;
-}
+    /* Mỗi slide chồng lên nhau, chỉ slide.active hiện */
+    .slider .slide {
+        position: absolute;
+        inset: 0; /* top:0; right:0; bottom:0; left:0; */
+        opacity: 0;
+        transition: opacity 0.8s ease;/* hiệu ứng fade */
+        z-index: 0;
+    }
 
-.slider .slide.active {
-  opacity: 1;
-  z-index: 1;
-}
+    .slider .slide.active {
+        opacity: 1;
+        z-index: 1;
+    }
 
-.slider .slide img {
-  width: 100%;
-  height: 100%;
-}
+    .slider .slide img {
+        width: 100%;
+        height: 100%;
+    }
 
-/* (tuỳ chọn) chấm chỉ báo */
-.slider-dots {
-  position: absolute;
-  left: 50%;
-  bottom: 12px;
-  transform: translateX(-50%);
-  display: flex;
-  gap: 8px;
-  z-index: 2;
-}
+    /* (tuỳ chọn) chấm chỉ báo */
+    .slider-dots {
+        position: absolute;
+        left: 50%;
+        bottom: 12px;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 8px;
+        z-index: 2;
+    }
 
-.slider-dots button {
-  width: 10px; height: 10px; border-radius: 50%;
-  border: none; background: rgba(255,255,255,.6);
-  cursor: pointer;
-}
-.fa-right-from-bracket {
-    color: black;
-    text-decoration: none;
-}
+    .slider-dots button {
+        width: 10px; height: 10px; border-radius: 50%;
+        border: none; background: rgba(255,255,255,.6);
+        cursor: pointer;
+    }
+    .fa-right-from-bracket {
+        color: black;
+        text-decoration: none;
+    }
 
     /* Admin Management Styles */
     .management-header { 
@@ -479,7 +492,7 @@ header:hover {
 /* --- 5. Nút Submit --- */
 /* Sử dụng ID form và class button để tránh xung đột */
 #addUserForm .btn-add, #editUserForm .btn-edit {
-    background-color: #007bff;
+   background-color: #28a745;
     color: white;
     padding: 12px 20px;
     border: none;
@@ -535,31 +548,326 @@ header:hover {
     background-color: #e0a800;
 }
 
+
+/* --- STYLE CHO TAB CHUYỂN ĐỔI --- */
+.tab-container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 120px auto 20px auto; /* Điều chỉnh margin-top */
+    background: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.tab-buttons {
+    display: flex;
+    justify-content: flex-start;
+    border-bottom: 2px solid #ddd;
+    padding: 0 20px;
+}
+
+.tab-btn {
+    padding: 15px 25px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 600;
+    color: #555;
+    border: none;
+    background: transparent;
+    transition: color 0.3s, border-bottom 0.3s;
+    border-bottom: 3px solid transparent; /* Tạo đường viền dưới giả */
+    margin-bottom: -2px; /* Đẩy tab lên trên đường kẻ */
+}
+
+.tab-btn.active {
+    color: #007bff;
+    border-bottom: 3px solid #007bff;
+}
+
+.tab-content {
+    padding: 20px;
+}
+
+.tab-pane {
+    /* Mặc định được ẩn bằng JS */
+    min-height: 400px; /* Đảm bảo khu vực nội dung có đủ chiều cao */
+}
+            .control-panel {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .search-box {
+                display: flex;
+                border: 1px solid var(--border-color);
+                border-radius: 0.25rem;
+                overflow: hidden;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .search-box input {
+                border: none;
+                padding: 0.5rem 0.75rem;
+                flex-grow: 1;
+                outline: none;
+            }
+            
+            .search-box button {
+                background-color: #0a58ca;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                cursor: pointer;
+                transition: background-color 0.2s;
+                width: 50px;
+            }
+
+            .search-box button:hover {
+                background-color: #0a58ca;
+            }
+
+            .btn-primary {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                padding: 0.6rem 1.2rem;
+                border-radius: 0.25rem;
+                cursor: pointer;
+                font-weight: 600;
+                transition: background-color 0.2s;
+                width: 250px;
+                font-size: 15px;
+                width: 65%;
+                height: 40px;
+                margin-top: 10px;
+                
+            }
+
+            .btn-primary:hover {
+                background-color: #1e7e34;
+            }
+
+            .btn-secondary {
+                background-color: #6c757d;
+                color: white;
+                border: none;
+                padding: 0.6rem 1.2rem;
+                border-radius: 0.25rem;
+                cursor: pointer;
+                font-weight: 600;
+                transition: background-color 0.2s;
+                font-size: 15px;
+                width: 35%;
+                height: 40px;
+                margin-top: 10px;
+                width: 170px;
+            }
+            
+            .btn-secondary:hover {
+                background-color: #5c636a;
+            }
+            /* --- BỔ SUNG CSS CHO MODAL THÊM/SỬA SẢN PHẨM & CÀI ĐẶT LỢI NHUẬN --- */
+
+/* 1. Form Group (Đảm bảo khoảng cách giữa các trường) */
+.modal-content .form-group {
+    margin-bottom: 15px;
+}
+
+/* 2. Tiêu đề Modal Sản phẩm (Để đảm bảo nó nhất quán với các Modal khác) */
+#productModalTitle, #profitSettingsModal h2 {
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+/* 3. Input & Select Styles (Sử dụng lại các styles đã có trong modal-content) */
+#productForm input[type="text"],
+#productForm input[type="number"],
+#productForm select, /* Thêm select */
+#profitSettingsForm input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px; /* Giảm margin dưới để dùng form-group */
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng */
+}
+
+/* 4. Hiệu ứng focus */
+#productForm input:focus,
+#productForm select:focus, /* Thêm select */
+#profitSettingsForm input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    outline: none;
+}
+
+/* 5. Nhóm nút (Button Group) ở cuối Form Sản phẩm */
+.btn-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px; /* Khoảng cách giữa các nút */
+    margin-top: 30px;
+}
+
+/* Điều chỉnh lại style nút trong nhóm */
+.btn-group .btn-secondary,
+.btn-group .btn-primary,
+.btn-group .btn-delete {
+    /* Đảm bảo style này ghi đè các style button chung */
+    width: 50%;
+    padding: 12px 20px;
+    border-radius: 6px;
+    font-size: 1.1em;
+    margin-top: 0; /* Ghi đè margin-top cũ */
+}
+
+/* 6. Style cho nút Xóa trong Modal xác nhận xóa */
+.btn-delete {
+    background-color: var(--danger-color); /* Sử dụng biến CSS đã định nghĩa */
+    color: white;
+    transition: background-color 0.3s;
+}
+
+.btn-delete:hover {
+    background-color: #c82333; /* Darker red */
+}
+/* --- BỔ SUNG: Định dạng tiêu đề và Nút đóng cho các Modal SẢN PHẨM (Mới) --- */
+
+/* --- CSS CƠ BẢN (TIÊU ĐỀ & NÚT ĐÓNG) --- */
+
+/* 1. Tiêu đề Modal (Áp dụng cho Add/Edit Sản phẩm, Cài đặt Lợi nhuận, Xác nhận Xóa) */
+#productModalTitle, 
+#profitSettingsModal h2, 
+#deleteConfirmationModal h2 {
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+/* QUAN TRỌNG: Đảm bảo Modal Content có position: relative */
+.modal-content {
+    position: relative; 
+    /* Thuộc tính này là cần thiết để position: absolute của nút đóng hoạt động */
+}
+
+/* 2. Nút đóng (CLOSE BUTTON) - ĐỊNH VỊ GÓC PHẢI */
+
+/* Nút đóng của các Modal Sản phẩm */
+#productModal .modal-close,
+#deleteConfirmationModal .modal-close,
+#profitSettingsModal .modal-close {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+/* 3. Hiệu ứng Hover/Focus */
+#productModal .modal-close:hover, 
+#profitSettingsModal .modal-close:hover,
+#deleteConfirmationModal .modal-close:hover {
+    color: #000;
+    text-decoration: none;
+}
+
+/* ----------------------------------------------------- */
+
+/* --- CSS BỔ SUNG CHO FORM CẬP NHẬT TỈ LỆ LỢI NHUẬN (BÊN TRONG MODAL) --- */
+
+/* 4. Form Group (Đảm bảo khoảng cách giữa các trường) */
+#profitSettingsModal .form-group {
+    margin-bottom: 15px;
+}
+
+/* 5. Style cho Input & Select */
+#profitSettingsModal input[type="number"],
+#profitSettingsModal select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng */
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* 6. Hiệu ứng focus */
+#profitSettingsModal input:focus,
+#profitSettingsModal select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    outline: none;
+}
+
+/* 7. Style cho các nút (Áp dụng lại style btn-group) */
+#profitSettingsModal .btn-group {
+    display: flex;
+    justify-content: flex-end; /* Căn nút sang phải (hoặc space-between nếu muốn 2 nút đều) */
+    gap: 15px;
+    margin-top: 30px;
+}
+
+/* Đảm bảo nút trong modal có kích thước phù hợp */
+#profitSettingsModal .btn-group button {
+    padding: 10px 20px;
+    border-radius: 6px;
+    font-size: 1em;
+}
+
 </style>
 
 </head>
 <body>
 
     <header>
-            <div class="logo">
+        <div class="logo">
             <img src="/view/image/logo2.png" alt="logoshop">
         </div>
 
         <div class="header_menu">
-                <div class="name"> Quản lý sản phẩm
-                    <ul>
-                        <li>Đồng hồ</li>
-                        <li>Dây đeo</li>
-                        <li>Hộp đựng</li>
-                        <li>Kính cường lực</li>
-                    </ul>
-                </div>
-                <div class="name"> Xử lý đơn hàng
-                </div>
-                <div class="name"> <a href="/view/warranty.html">Thông tin bảo hành</a>
-                </div>
-                <div class="name"> Khuyến mãi
-                </div>
+            <div class="name"> Quản lý sản phẩm
+                <ul>
+                    <li>Đồng hồ Cơ Tự động</li>
+                    <li>Đồng hồ Quartz (Pin)</li>
+                    <li>Đồng hồ Năng lượng ánh sáng</li>
+                    <li>Đồng hồ Thông minh (Smartwatch)</li>
+                    <li>Đồng hồ Chronograph</li>
+                    <li>Phụ kiện</li>
+                    <li>Hộp đựng</li>
+                </ul>
+            </div>
+            <div class="name"> Xử lý đơn hàng
+            </div>
+            <div class="name"> <a href="/view/warranty.html">Thông tin bảo hành</a>
+            </div>
+            <div class="name"> Khuyến mãi
+            </div>
+            <div class="tab-buttons">
+            <button class="tab-btn active" data-target="qluser" id="tabUserBtn">
+                Quản lý Người Dùng
+            </button>
+            <button class="tab-btn" data-target="qlgiabanloinhuan" id="tabPriceProfitBtn">
+                Quản lý Giá Bán & Lợi Nhuận
+            </button>
+        </div>
         </div>
 
         <div class="header_other">
@@ -578,104 +886,247 @@ header:hover {
                 <a href="#" id="logoutBtn" class="fa-solid fa-right-from-bracket"></a>
             </div>
         </div>
-        <!-- <h1>Bảng Điều Khiển Admin</h1>
-        <nav>
-            <a href="#">Quản lý Tổng quan</a>
-            <a href="ad_user.html">Quản lý Người dùng</a>
-            <a href="#" id="logoutBtn">Đăng xuất</a>
-        </nav> -->
     </header>
 
-    <main>
-        <h2>Quản lý Danh sách Người Dùng</h2>
+    <div class="tab-container">
         
-        <div class="management-header">
-            <h3>Tổng số người dùng: <span id="userCount">0</span></h3>
-            <button class="btn btn-add" id="openAddModal">➕ Thêm Người Dùng Mới</button>
-        </div>
 
-        <table class="user-table">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Username</th>
-                    <th>Email</th>
-                    <th>Mật khẩu</th>
-                    <th>Vai trò</th>
-                    <th>Trạng thái</th>
-                    <th>Hành động</th>
-                </tr>
-            </thead>
-            <tbody id="userTableBody">
-                <!-- Dữ liệu user sẽ được chèn vào đây -->
-            </tbody>
-        </table>
-    </main>
-    
-    <div id="addModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn add-close-btn">&times;</span>
-        <h3 id="addModalTitle">Thêm Người Dùng Mới</h3>
-        <form id="addUserForm">
-            <label for="addUsername">Username</label>
-            <input type="text" id="addUsername" required>
+        <div class="tab-content">
 
-            <label for="addEmail">Email</label>
-            <input type="email" id="addEmail" required>
+            <div id="qluser" class="tab-pane">
+                <h2>Quản lý Danh sách Người Dùng</h2>
+                
+                <div class="management-header">
+                    <h3>Tổng số người dùng: <span id="userCount">0</span></h3>
+                    <button class="btn btn-add" id="openAddModal">➕ Thêm Người Dùng Mới</button>
+                </div>
 
-            <label for="addPassword">Mật khẩu</label>
-            <input type="password" id="addPassword" required>
-
-            <label for="addRole">Vai trò</label>
-            <select id="addRole">
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select>
-
-            <button type="submit" class="btn btn-add">Thêm Người Dùng</button>
-        </form>
-    </div>
-</div>
-
-<div id="editModal" class="modal">
-    <div class="modal-content">
-        <span class="close-btn edit-close-btn">&times;</span>
-        <h3 id="editModalTitle">Chỉnh Sửa Người Dùng</h3>
-        <form id="editUserForm">
-            <input type="hidden" id="editUserId"> 
-            
-            <label for="editUsername">Username</label>
-            <input type="text" id="editUsername" required readonly>
-            
-            <label for="editEmail">Email</label>
-            <input type="email" id="editEmail" required readonly>
-             <label for="editPassword">Password</label>
-
-        <div class="input-row-reset" style="height: 50px;"> 
-            <input type="password" id="editPassword" required readonly placeholder="******" style="width: 80%;">
-            <button type="button" id="resetPasswordBtn" class="btn btn-reset" style="width: 20%; margin: 10px 10px 20px 10px; padding: 5px">Reset</button>
-        </div>
-            
-            <label for="editRole" style="display: none;" >Vai trò</label>
-            <select id="editRole" style="display: none;">
-                <option value="user">User</option>
-                <option value="admin">Admin</option>
-            </select>
-            
-            <!-- <button type="submit" class="btn btn-edit">Cập nhật Thay Đổi</button> -->
-             <div style="display: flex; gap: 10px; margin-top: 20px;">
-                <button type="button" id="disableUserBtn" class="btn btn-disable" style="flex: 1; background-color: #ff4d4f;">Vô hiệu hóa</button>
-                <button type="button" id="enableUserBtn" class="btn btn-enable" style="flex: 1; background-color: #52c41a;">Mở hoạt động</button>
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Mật khẩu</th>
+                            <th>Vai trò</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="userTableBody">
+                    </tbody>
+                </table>
             </div>
             
+            <div id="qlgiabanloinhuan" class="tab-pane" style="display: none;">
+                 <h2>Quản lý Giá Bán và Lợi Nhuận</h2>
+                
+               <div class="control-panel">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Tìm kiếm theo Tên SP, Mã SP...">
+                    <button onclick="searchProducts()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
+                    </svg></button>
+                </div>
+                <div style="display: flex;">
+                    <button class="btn-primary" onclick="openProductModal(null)">
+                        + Thêm Sản Phẩm Mới
+                    </button>
+                    <button class="btn-secondary" onclick="openProfitSettingsModal()" style="margin-left: 1rem;">
+                        Cập Nhật Tỉ Lệ
+                    </button>
+                </div>
+                 </div>
+                
+              
+                      <table class="user-table">
+                       <thead>
+                          <tr>
+                               <th>ID</th>
+                                <th style="display: none;">Hình ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Thương hiệu / Chi tiết PK</th> 
+                                <th>Size</th> 
+                                <th style="margin-left: 20px;">Giá vốn (VNĐ)</th>
+                                <th>Tỉ lệ lợi nhuận</th>
+                                <th>Giá bán (VNĐ)</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTableBody">
+                        </tbody>
+                        </table>
+                  </div>
+              </div>
+            </div> 
+        </div> 
+            <div id="addModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn add-close-btn">&times;</span>
+                <h3 id="addModalTitle">Thêm Người Dùng Mới</h3>
+                <form id="addUserForm">
+                    <label for="addUsername">Username</label>
+                    <input type="text" id="addUsername" required>
+
+                    <label for="addEmail">Email</label>
+                    <input type="email" id="addEmail" required>
+
+                    <label for="addPassword">Mật khẩu</label>
+                    <input type="password" id="addPassword" required>
+
+                    <label for="addRole">Vai trò</label>
+                    <select id="addRole">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+
+                    <button type="submit" class="btn btn-add">Thêm Người Dùng</button>
+                </form>
+            </div>
+        </div>
             
-            
-        </form>
+
+
+        <div id="editModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn edit-close-btn">&times;</span>
+                <h3 id="editModalTitle">Chỉnh Sửa Người Dùng</h3>
+                <form id="editUserForm">
+                    <input type="hidden" id="editUserId"> 
+                    
+                    <label for="editUsername">Username</label>
+                    <input type="text" id="editUsername" required readonly>
+                    
+                    <label for="editEmail">Email</label>
+                    <input type="email" id="editEmail" required readonly>
+                    <label for="editPassword">Password</label>
+
+                    <div class="input-row-reset" style="height: 50px;"> 
+                        <input type="password" id="editPassword" required readonly placeholder="******" style="width: 80%;">
+                        <button type="button" id="resetPasswordBtn" class="btn btn-reset" style="width: 20%; margin: 10px 10px 20px 10px; padding: 5px">Reset</button>
+                    </div>
+                    
+                    <label for="editRole" style="display: none;" >Vai trò</label>
+                    <select id="editRole" style="display: none;">
+                        <option value="user">User</option>
+                        <option value="admin">Admin</option>
+                    </select>
+                    
+                    <div style="display: flex; gap: 10px; margin-top: 20px;">
+                        <button type="button" id="disableUserBtn" class="btn btn-disable" style="flex: 1; background-color: #ff4d4f;">Vô hiệu hóa</button>
+                        <button type="button" id="enableUserBtn" class="btn btn-enable" style="flex: 1; background-color: #52c41a;">Mở hoạt động</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+            <div id="productModal" class="modal">
+                <div class="modal-content">
+                    <span class="modal-close" onclick="closeProductModal()">&times;</span>
+                    <h2 id="productModalTitle">Thêm Sản Phẩm Mới</h2>
+                    <form id="productForm">
+                        <input type="hidden" id="productId">
+
+                        <div class="form-group">
+                            <label for="productName">Tên Sản Phẩm</label>
+                            <input type="text" id="productName" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="productType">Thương hiệu</label>
+                           <select id="productType" required>
+    <option value="" disabled selected>Chọn Loại Sản Phẩm</option>
+    <option value="Rolex">Rolex</option>
+    <option value="Citizen">Citizen</option>
+    <option value="Casio">Casio</option>
+    <option value="Seiko">Seiko</option>
+    <option value="Rado">Rado</option>
+    <option value="Phụ kiện">Phụ kiện</option>
+    <option value="Hộp đựng">Hộp đựng</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group" id="sizeGroup">
+                            <label for="productSize">Kích cỡ/Đối tượng</label>
+                            <select id="productSize">
+                                <option value="N/A" selected>Không áp dụng</option>
+                                <option value="Nam">Nam</option>
+                                <option value="Nữ">Nữ</option>
+                                <option value="Cặp đôi">Cặp đôi</option>
+                            </select>
+                            <small class="form-text text-muted">Chỉ áp dụng cho Đồng hồ.</small>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="productCostPrice">Giá Vốn (VND)</label>
+                            <input type="number" id="productCostPrice" min="0" step="1000" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="productProfitPercent">Tỉ lệ Lợi Nhuận Riêng (%)</label>
+                            <input type="number" id="productProfitPercent" min="0" max="100" step="1" placeholder="Để trống để áp dụng tỉ lệ chung" >
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="button" class="btn-secondary" onclick="closeProductModal()">Hủy</button>
+                            <button type="submit" class="btn-primary">Lưu Sản Phẩm</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+           <div id="deleteConfirmationModal" class="modal">
+    <div class="modal-content" style="width: 400px;">
+        <span class="close-btn" onclick="closeDeleteConfirmation()">&times;</span>
+        <h2>Xác nhận Xóa Sản Phẩm</h2>
+        <p>Bạn có chắc chắn muốn xóa sản phẩm: "<span id="productToDeleteName" style="font-weight: bold; color: #dc3545;"></span>" không?</p>
+        
+        <input type="hidden" id="productToDeleteId" value=""> 
+
+        <div class="btn-group">
+            <button class="btn-secondary" onclick="closeDeleteConfirmation()" style="margin-top: 17px;">Hủy</button>
+            <button class="btn btn-danger" onclick="confirmDelete()">Xác nhận Xóa</button>
+        </div>
     </div>
 </div>
+    <div id="profitSettingsModal" class="modal">
+            <div class="modal-content">
+            <span class="modal-close" onclick="closeProfitSettingsModal()">&times;</span>
+            <h2>Cập Nhật Tỉ Lệ Lợi Nhuận Chung</h2> 
+            <form id="profitSettingsForm">
+                <div id="profitSettingsContainer">
+                </div>
+                <div class="btn-group">
+                <button type="button" class="btn-secondary" onclick="closeProfitSettingsModal() " style="margin-top:20px;">Hủy Bỏ</button>
+                <button type="submit" class="btn-primary" style="margin-top: 20px;">Lưu Cài Đặt</button> 
+                </div>
+            </form>
+        </div>
+        </div>
 
-<script>
+    <template id="profitInputTemplate">
+        <div class="form-group input-group">
+            <label data-label-id="label-text" for="margin-type">Tỉ lệ Lợi Nhuận {{labelText}} (%):</label>
+            <input 
+                type="number" 
+                data-input-id="margin-input"
+                data-type="{{type}}" 
+                value="0" 
+                min="0" 
+                max="100" 
+                step="1" 
+                required
+            >
+        </div>
+    </template>
+    </div>
+
+    <!-- Sản phẩm -->
+    <script src="./data.js"></script>
+ <script>
+
     const SUPERADMIN_ID = 999999;
+    
     // --- KHỞI TẠO VÀ KIỂM TRA QUYỀN TRUY CẬP ---
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser || currentUser.role !== 'admin') {
@@ -683,48 +1134,91 @@ header:hover {
         window.location.href = 'login.html';
     }
 
-
-    // --- CÁC PHẦN TỬ DOM MỚI/CẬP NHẬT ---
+    // --- CÁC PHẦN TỬ DOM ---
     const userTableBody = document.getElementById('userTableBody');
     const userCountElement = document.getElementById('userCount');
     
-    // DOM cho Modal Thêm
+    // DOM cho Tabs
+    const tabUserBtn = document.getElementById('tabUserBtn');
+    const tabPriceProfitBtn = document.getElementById('tabPriceProfitBtn');
 
+    // DOM cho Modal Thêm/Sửa Người dùng
     const addModal = document.getElementById('addModal');
     const addUserForm = document.getElementById('addUserForm');
     const addCloseBtn = document.querySelector('.add-close-btn');
-    const openAddModalBtn = document.getElementById('openAddModal'); // Nút Mở modal Thêm
-    
-    // DOM cho Modal Sửa
+    const openAddModalBtn = document.getElementById('openAddModal'); 
     const editModal = document.getElementById('editModal');
     const editUserForm = document.getElementById('editUserForm');
     const editCloseBtn = document.querySelector('.edit-close-btn');
 
     const resetPasswordBtn = document.getElementById('resetPasswordBtn');
-
     const logoutBtn = document.getElementById('logoutBtn');
-
-    // DOM cho chức năng Vô hiệu hóa/Mở khóa
     const disableUserBtn = document.getElementById('disableUserBtn');
     const enableUserBtn = document.getElementById('enableUserBtn');
     
-    // --- 1. CHỨC NĂNG TẢI & HIỂN THỊ DỮ LIỆU (READ) ---
+    // DOM cho tab QL Giá Bán & Lợi Nhuận
+    const productTableBody = document.getElementById('productTableBody');
+    const productModal = document.getElementById('productModal');
+    const productForm = document.getElementById('productForm');
+    const productModalTitle = document.getElementById('productModalTitle');
+    const deleteConfirmationModal = document.getElementById('deleteConfirmationModal');
+    const profitInputTemplate = document.getElementById('profitInputTemplate');
+    const profitSettingsModal = document.getElementById('profitSettingsModal');
+    const profitSettingsForm = document.getElementById('profitSettingsForm');
+    const profitSettingsContainer = document.getElementById('profitSettingsContainer');
+    const searchInput = document.getElementById('searchInput');
+    const profitRateForm = document.getElementById('profitRateForm');
+    const profitRateInput = document.getElementById('newGlobalProfitRate');
+    const profitRateModal = document.getElementById('profitRateModal');
+    
+    // DOM cho Product Modal fields mới
+    const productType = document.getElementById('productType');
+    const productSize = document.getElementById('productSize');
+
+    // --- LOGIC ẨN/HIỆN DIV (TAB) MỚI ---
+    function showTab(targetId) {
+        document.querySelectorAll('.tab-pane').forEach(pane => {
+            pane.style.display = 'none';
+        });
+
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active');
+        });
+
+        const targetPane = document.getElementById(targetId);
+        if (targetPane) {
+            targetPane.style.display = 'block';
+        }
+
+        const activeButton = document.querySelector(`.tab-btn[data-target="${targetId}"]`);
+        if (activeButton) {
+            activeButton.classList.add('active');
+        }
+
+        // Tải dữ liệu tùy theo tab được chọn (Đã sửa lỗi không tải sản phẩm)
+        if (targetId === 'qluser') {
+            loadUsers();
+        } else if (targetId === 'qlgiabanloinhuan') { 
+            loadProducts(); // <--- CHẮC CHẮN GỌI HÀM TẢI DỮ LIỆU SẢN PHẨM
+        }
+    }
+
+    // Gắn sự kiện cho các nút tab
+    tabUserBtn.onclick = () => showTab('qluser');
+    tabPriceProfitBtn.onclick = () => showTab('qlgiabanloinhuan');
+    
+    // --- 1. CHỨC NĂNG TẢI & HIỂN THỊ DỮ LIỆU USER (READ) ---
     function loadUsers() {
-        // Lấy dữ liệu user từ Local Storage
         let users = JSON.parse(localStorage.getItem('users')) || [];
         
         userTableBody.innerHTML = '';
         userCountElement.textContent = users.length;
         
         users.forEach(user => {
-            
-            // XÁC ĐỊNH HTML CHO HÀNH ĐỘNG
             let actionsHTML = ''; 
-            if (user.id === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
-                // Hiển thị thông báo không được chỉnh sửa cho Super Admin
+            if (user.id === SUPERADMIN_ID) { 
                 actionsHTML = '<span style="color:#dc3545; font-weight: 500;">🚫 Đã khóa</span>';
             } else {
-                // Hiển thị nút Sửa/Xóa cho các tài khoản khác
                 actionsHTML = `
                     <button class="actions-btn btn-edit" data-id="${user.id}">Sửa</button>
                     <button class="actions-btn btn-delete" data-id="${user.id}">Xóa</button>
@@ -744,8 +1238,7 @@ header:hover {
                     </span>
                 </td>
                 <td>
-                    <button class="actions-btn btn-edit" data-id="${user.id}">Sửa</button>
-                    <button class="actions-btn btn-delete" data-id="${user.id}">Xóa</button>
+                    ${actionsHTML}
                 </td>
             `;
             userTableBody.appendChild(row);
@@ -773,29 +1266,21 @@ header:hover {
         };
     }
     
-    // --- 3. CHỨC NĂNG THÊM/SỬA (CREATE & UPDATE) ---
+    // --- 3. CHỨC NĂNG THÊM/SỬA USER (CREATE & UPDATE) ---
     
     // 3.1. Đóng/Mở Modal
     openAddModalBtn.onclick = () => {
-        addUserForm.reset(); // Đảm bảo form Thêm sạch
+        addUserForm.reset(); 
         addModal.style.display = 'block';
     };
     
     addCloseBtn.onclick = () => addModal.style.display = 'none';
     editCloseBtn.onclick = () => editModal.style.display = 'none';
     
-    window.onclick = (event) => {
-        if (event.target == addModal) {
-            addModal.style.display = 'none';
-        } else if (event.target == editModal) {
-            editModal.style.display = 'none';
-        }
-    };
-
-    // 3.2. Mở Modal Sửa (Thay thế hàm openEditModal cũ)
+    // 3.2. Mở Modal Sửa 
     function openEditModal(userId) {
 
-        if (userId === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+        if (userId === SUPERADMIN_ID) { 
             alert('Bạn không thể chỉnh sửa thông tin tài khoản Super Admin.'); 
             return;
         }
@@ -805,13 +1290,11 @@ header:hover {
         const user = users.find(u => u.id === userId);
         
         if (user) {
-            // Đổ dữ liệu vào form Sửa
             document.getElementById('editUserId').value = user.id;
             document.getElementById('editUsername').value = user.username;
             document.getElementById('editEmail').value = user.email;
             document.getElementById('editRole').value = user.role; 
             
-            // ẨN/HIỆN NÚT VÔ HIỆU HÓA/MỞ KHÓA TÙY VÀO TRẠNG THÁI
             const isUserDisabled = user.status === 'disabled';
             disableUserBtn.style.display = isUserDisabled ? 'none' : 'block';
             enableUserBtn.style.display = isUserDisabled ? 'block' : 'none';
@@ -833,7 +1316,7 @@ header:hover {
         
         // Chế độ Thêm (Create)
         const newUser = { 
-            id: Date.now(), // Sử dụng timestamp làm ID
+            id: Date.now(), 
             username, 
             email, 
             password, 
@@ -844,197 +1327,976 @@ header:hover {
 
         localStorage.setItem('users', JSON.stringify(users));
         addModal.style.display = 'none';
-        loadUsers(); // Cập nhật lại bảng
+        loadUsers(); 
     });
 
     // 3.4. Xử lý Sửa Người Dùng (Submit Form Sửa)
     editUserForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-    
-    const id = parseInt(document.getElementById('editUserId').value);
-    const newrole = document.getElementById('editRole').value; 
+        e.preventDefault();
+        
+        const id = parseInt(document.getElementById('editUserId').value);
+        const newrole = document.getElementById('editRole').value; 
 
-    if (id === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+        if (id === SUPERADMIN_ID) { 
             alert('Lỗi: Không thể thay đổi vai trò của tài khoản Super Admin.'); 
             editModal.style.display = 'none';
             return;
         }
-    
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-    
-    // Chế độ Sửa (Update)
-    const index = users.findIndex(u => u.id === id);
-    
-    if (index !== -1) {
-        let updatedUser = {
-            id: id,
-            username: users[index].username, 
-            email: users[index].email,      
-            password: users[index].password,
-            role: newrole,
-            status: users[index].status || 'active'
-        };
-        users[index] = updatedUser;
+        
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        
+        const index = users.findIndex(u => u.id === id);
+        
+        if (index !== -1) {
+            let updatedUser = {
+                id: id,
+                username: users[index].username, 
+                email: users[index].email,       
+                password: users[index].password,
+                role: newrole,
+                status: users[index].status || 'active'
+            };
+            users[index] = updatedUser;
 
-        // BỔ SUNG LOGIC QUAN TRỌNG TẠI ĐÂY:
-        // 1. Kiểm tra xem người dùng đang được sửa có phải là người đang đăng nhập hay không.
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
 
-        if (currentUser && currentUser.id === id) {
-            // 2. Nếu là người đang đăng nhập, CẬP NHẬT lại currentUser
-            // để người đó nhận quyền mới ngay lập tức.
-            localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-            
-            // 3. Nếu vai trò được hạ cấp từ admin xuống user, 
-            // có thể cần chuyển hướng người dùng khỏi trang admin.
-            if (role === 'user') {
-                 alert('Vai trò của bạn đã bị thay đổi thành User. Bạn sẽ được chuyển hướng về trang chủ/đăng nhập.');
-                 window.location.href = 'login.html'; // Hoặc trang chủ
+            if (currentUser && currentUser.id === id) {
+                localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                
+                if (newrole === 'user') {
+                    alert('Vai trò của bạn đã bị thay đổi thành User. Bạn sẽ được chuyển hướng về trang chủ/đăng nhập.');
+                    window.location.href = 'login.html'; 
+                }
             }
         }
-    }
 
-    localStorage.setItem('users', JSON.stringify(users));
-    editModal.style.display = 'none';
-    loadUsers(); 
-});
-    
-    // --- 4. CHỨC NĂNG XÓA (DELETE) ---
+        localStorage.setItem('users', JSON.stringify(users));
+        editModal.style.display = 'none';
+        loadUsers(); 
+    });
+        
+    // --- 4. CHỨC NĂNG XÓA USER (DELETE) ---
     function deleteUser(userId) {
 
-        if (userId === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+        if (userId === SUPERADMIN_ID) { 
             alert('Lỗi: Không được phép xóa tài khoản Super Admin.'); 
             return;
-        }  
+        } 	
 
         if (confirm(`Bạn có chắc chắn muốn xóa người dùng ID ${userId} không?`)) {
             let users = JSON.parse(localStorage.getItem('users')) || [];
             
-            // Lọc ra user cần xóa
             users = users.filter(u => u.id !== userId);
             
             localStorage.setItem('users', JSON.stringify(users));
-            loadUsers(); // Cập nhật lại bảng
+            loadUsers(); 
         }
     }
 
     // --- CHỨC NĂNG RESET MẬT KHẨU (ADMIN) ---
-function resetPassword(userId) {
+    function resetPassword(userId) {
 
-    if (userId === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+        if (userId === SUPERADMIN_ID) { 
             alert('Lỗi: Không được phép reset mật khẩu của tài khoản Super Admin.'); 
             return;
         }
 
-    if (!confirm(`Bạn có chắc chắn muốn RESET mật khẩu cho người dùng ID ${userId} về '123456' không?`)) {
-        return; // Hủy nếu admin không xác nhận
+        if (!confirm(`Bạn có chắc chắn muốn RESET mật khẩu cho người dùng ID ${userId} về '123456' không?`)) {
+            return; 
+        }
+
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const index = users.findIndex(u => u.id === userId);
+
+        if (index !== -1) {
+            let updatedUser = {
+                ...users[index], 
+                password: '123456' 
+            };
+            users[index] = updatedUser;
+
+            localStorage.setItem('users', JSON.stringify(users));
+
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser && currentUser.id === userId) {
+                localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+            }
+
+            alert(`Đã reset mật khẩu thành công cho ID ${userId}. Mật khẩu mới: 123456`);
+            editModal.style.display = 'none';
+            loadUsers(); 
+        } else {
+            alert("Lỗi: Không tìm thấy người dùng để reset mật khẩu.");
+        }
     }
 
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-    const index = users.findIndex(u => u.id === userId);
+    resetPasswordBtn.onclick = function() {
+        const userId = parseInt(document.getElementById('editUserId').value);
+        if (userId) {
+            resetPassword(userId);
+        }
+    };
 
-    if (index !== -1) {
-        // Cập nhật trường password
-        let updatedUser = {
-            ...users[index], // Giữ nguyên các thông tin khác
-            password: '123456' // Đặt lại mật khẩu
+    if (disableUserBtn && enableUserBtn) {
+        disableUserBtn.onclick = function() {
+            const userId = parseInt(document.getElementById('editUserId').value);
+            if (userId) {
+                changeUserStatus(userId, 'disabled');
+            }
         };
-        users[index] = updatedUser;
 
-        // 1. Cập nhật Local Storage
-        localStorage.setItem('users', JSON.stringify(users));
-
-        // 2. Cập nhật currentUser (nếu admin reset chính tài khoản của mình)
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (currentUser && currentUser.id === userId) {
-            localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-        }
-
-        alert(`Đã reset mật khẩu thành công cho ID ${userId}. Mật khẩu mới: 123456`);
-        editModal.style.display = 'none';
-        loadUsers(); // Cập nhật lại bảng
-    } else {
-        alert("Lỗi: Không tìm thấy người dùng để reset mật khẩu.");
+        enableUserBtn.onclick = function() {
+            const userId = parseInt(document.getElementById('editUserId').value);
+            if (userId) {
+                changeUserStatus(userId, 'active');
+            }
+        };
     }
-}
 
-// Thêm sự kiện click cho nút Reset Mật khẩu
-resetPasswordBtn.onclick = function() {
-    // Lấy ID người dùng đang được hiển thị trong form edit
-    const userId = parseInt(document.getElementById('editUserId').value);
-    if (userId) {
-        resetPassword(userId);
-    }
-};
+    function changeUserStatus(userId, newStatus) {
 
-// --- LIÊN KẾT SỰ KIỆN MỚI CHO DISABLE/ENABLE ---
-if (disableUserBtn && enableUserBtn) {
-    disableUserBtn.onclick = function() {
-        const userId = parseInt(document.getElementById('editUserId').value);
-        if (userId) {
-            changeUserStatus(userId, 'disabled');
-        }
-    };
-
-    enableUserBtn.onclick = function() {
-        const userId = parseInt(document.getElementById('editUserId').value);
-        if (userId) {
-            changeUserStatus(userId, 'active');
-        }
-    };
-}
-
-// --- CHỨC NĂNG THAY ĐỔI TRẠNG THÁI (DISABLE/ENABLE) ---
-function changeUserStatus(userId, newStatus) {
-
-    if (userId === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+        if (userId === SUPERADMIN_ID) { 
             alert('Lỗi: Không được phép thay đổi trạng thái của tài khoản Super Admin.'); 
             return;
         }
 
-    let users = JSON.parse(localStorage.getItem('users')) || [];
-    const index = users.findIndex(u => u.id === userId);
-    
-    const action = newStatus === 'disabled' ? 'vô hiệu hóa' : 'mở hoạt động';
+        let users = JSON.parse(localStorage.getItem('users')) || [];
+        const index = users.findIndex(u => u.id === userId);
+        
+        const action = newStatus === 'disabled' ? 'vô hiệu hóa' : 'mở hoạt động';
 
-    if (!confirm(`Bạn có chắc chắn muốn ${action} người dùng ID ${userId} không?`)) {
+        if (!confirm(`Bạn có chắc chắn muốn ${action} người dùng ID ${userId} không?`)) {
+            return;
+        }
+
+        if (index !== -1) {
+            let updatedUser = {
+                ...users[index], 
+                status: newStatus 
+            };
+            users[index] = updatedUser;
+
+            localStorage.setItem('users', JSON.stringify(users));
+
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser && currentUser.id === userId) {
+                localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+                if (newStatus === 'disabled') {
+                    alert('Tài khoản của bạn đã bị vô hiệu hóa. Bạn sẽ được đăng xuất.');
+                    localStorage.removeItem('currentUser');
+                    window.location.href = 'login.html';
+                    return;
+                }
+            }
+
+            alert(`Đã ${action} thành công người dùng ID ${userId}.`);
+            editModal.style.display = 'none';
+            loadUsers(); 
+        } else {
+            alert("Lỗi: Không tìm thấy người dùng.");
+        }
+    } 	
+
+
+    
+
+   // --- HÀM TÍNH TOÁN GIÁ BÁN (BẮT BUỘC) ---
+function calculateSalePrice(costPrice, profitPercent) {
+    if (costPrice === undefined || isNaN(costPrice) || costPrice <= 0) {
+        return 0; // Tránh lỗi chia cho 0 hoặc giá vốn không hợp lệ
+    }
+    if (profitPercent === undefined || profitPercent === null || isNaN(profitPercent)) {
+        return costPrice; // Nếu không có profit %, giá bán bằng giá vốn
+    }
+    // Tính toán và làm tròn giá bán
+    return Math.round(costPrice * (1 + profitPercent / 100));
+}
+
+    function formatCurrency(amount) {
+        if (amount === undefined || amount === null) return 'N/A';
+        return amount.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
+
+    // --- LOGIC QUẢN LÝ TỈ LỆ LỢI NHUẬN CHUNG (MARGINS) ---
+function getProductMargins() {
+    const defaultMargins = {
+        'Mặc định': 35, 
+        'Đồng hồ': 30,    
+        'Phụ kiện': 40
+    };
+    const savedMargins = JSON.parse(localStorage.getItem('profit_margins'));
+    return savedMargins ? { ...defaultMargins, ...savedMargins } : defaultMargins;
+}
+// --- HÀM TẠO DYNAMIC INPUTS (Đã sửa để chỉ còn 3 loại) ---
+// --- HÀM TẠO DYNAMIC INPUTS (Đã sửa để chỉ còn 3 loại) ---
+function renderProfitInputs(margins) {
+    const container = document.getElementById('profitSettingsContainer');
+    const template = document.getElementById('profitInputTemplate');
+    if (!container || !template) return;
+
+    container.innerHTML = '';
+    
+    const categories = [
+        'Đồng hồ', 
+        'Phụ kiện', 
+        'Mặc định' 
+    ];
+
+    categories.forEach(category => {
+        const clone = template.content.cloneNode(true);
+        const labelText = clone.querySelector('[data-label-id="label-text"]');
+        const input = clone.querySelector('[data-input-id="margin-input"]');
+
+        labelText.textContent = `Tỉ lệ Lợi Nhuận ${category} (%):`;
+        input.setAttribute('data-category', category); 
+        input.value = margins[category] !== undefined ? margins[category] : ''; 
+        input.removeAttribute('required'); 
+        input.removeAttribute('data-input-id');
+        input.removeAttribute('data-type');
+
+        container.appendChild(clone);
+    });
+}   
+
+// --- HÀM MỞ MODAL (Không đổi, chỉ gọi renderInputs mới) ---
+function openProfitSettingsModal() {
+    const margins = getProductMargins();
+    renderProfitInputs(margins);
+    document.getElementById('profitSettingsModal').style.display = 'block';
+}
+/**
+ * Lưu các tỉ lệ lợi nhuận đã được chỉnh sửa từ Modal vào Local Storage
+ * và tải lại trang để áp dụng tỉ lệ mới.
+ */
+window.saveProfitSettings = function() {
+    // Đảm bảo các ID sau tồn tại: profitSettingsContainer và profitSettingsModal
+    const profitSettingsContainer = document.getElementById('profitSettingsContainer');
+    const profitSettingsModal = document.getElementById('profitSettingsModal');
+    
+    if (!profitSettingsContainer || !profitSettingsModal) {
+        alert('Lỗi: Không tìm thấy các phần tử Modal cài đặt lợi nhuận cần thiết.');
+        return;
+    }
+    
+    const inputElements = profitSettingsContainer.querySelectorAll('input');
+    const newMargins = {};
+
+    // 1. Thu thập tất cả các giá trị tỉ lệ mới
+    inputElements.forEach(input => {
+        const type = input.dataset.type; // Lấy loại sản phẩm (Rolex, Casio, Mặc định...)
+        let value = parseFloat(input.value);
+        
+        if (isNaN(value) || value < 0) {
+            value = 0;
+        } else if (value > 100) { 
+            value = 100;
+        }
+        
+        newMargins[type] = value;
+    });
+
+    // 2. Lưu trữ đối tượng tỉ lệ mới vào Local Storage
+    localStorage.setItem('profit_margins', JSON.stringify(newMargins));
+    
+    // 3. Thông báo và đóng Modal
+    alert('Đã cập nhật tỉ lệ lợi nhuận thành công! Dữ liệu đang được tính toán lại.');
+    profitSettingsModal.style.display = 'none';
+    
+    // 4. ÁP DỤNG: Buộc tải lại sản phẩm để áp dụng tỉ lệ mới
+    // Việc này kích hoạt lại hàm transformProductsFromDataJS với tỉ lệ lợi nhuận mới.
+    localStorage.removeItem('products'); 
+    window.location.reload(); 
+};
+
+    function saveProductMargins(margins) {
+        localStorage.setItem('productMargins', JSON.stringify(margins));
+    }
+
+
+
+    // --- LOGIC TẢI SẢN PHẨM & HIỂN THỊ (PRODUCT READ) ---
+  // --- LOGIC TẢI SẢN PHẨM & FORMAT DỮ LIỆU ---
+// --- LOGIC TẢI SẢN PHẨM & FORMAT DỮ LIỆU ---
+// --- LOGIC TẢI SẢN PHẨM & FORMAT DỮ LIỆU ---
+function getProducts() {
+    let products = JSON.parse(localStorage.getItem('products')) || [];
+
+    // Logic lọc trùng lặp (Giữ nguyên)
+    const uniqueProducts = [];
+    const productIds = new Set(); 
+    for (const p of products) {
+        if (!productIds.has(p.id)) {
+            productIds.add(p.id);
+            uniqueProducts.push(p);
+        }
+    }
+    products = uniqueProducts;
+
+    const margins = getProductMargins();
+
+    return products.map(p => {
+        const productCategoryName = p.categoryName || 'Mặc định'; 
+        
+        // ⭐️ FIX: Sử dụng trường 'type' ('Đồng hồ'/'Phụ kiện') để tra cứu margin
+        // Nếu không có type, dùng 'Mặc định'
+        const typeForMarginLookup = p.type || 'Mặc định';
+        
+        let profit = p.profitPercent;
+        
+        // Chỉ tính lại profit nếu người dùng KHÔNG đặt % riêng cho sản phẩm này
+        if (profit === undefined || profit === null || profit === '') {
+            profit = margins[typeForMarginLookup] !== undefined 
+                     ? margins[typeForMarginLookup] 
+                     : margins['Mặc định'];
+        }
+        
+        // Chuẩn hóa size
+        let finalSize = p.size;
+        if (!finalSize || finalSize.toString().toUpperCase().trim() === 'N/A' || finalSize.toString().trim() === '') {
+            finalSize = 'Không';
+        }
+        
+        const salePrice = calculateSalePrice(p.costPrice, profit);
+        
+        return {
+            ...p,
+            categoryName: productCategoryName,
+            profitPercent: profit,
+            salePrice: salePrice,
+            size: finalSize
+        };
+    });
+}
+
+ function loadProducts(searchTerm = '', productType = 'Tất cả') {
+    let products = getProducts();
+    productTableBody.innerHTML = '';
+
+    const lowerCaseSearchTerm = searchTerm.toLowerCase().trim();
+    
+    // Logic lọc sản phẩm (Giữ nguyên)
+    if (productType !== 'Tất cả') {
+        products = products.filter(p => p.type === productType);
+    }
+    if (lowerCaseSearchTerm) {
+        products = products.filter(p => 
+            p.name.toLowerCase().includes(lowerCaseSearchTerm) ||
+            p.id.toString().includes(lowerCaseSearchTerm)
+        );
+    }
+
+    if (products.length === 0) {
+        productTableBody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 20px;">Không tìm thấy sản phẩm nào.</td></tr>`;
         return;
     }
 
-    if (index !== -1) {
-        let updatedUser = {
-            ...users[index], 
-            status: newStatus // Cập nhật trạng thái
-        };
-        users[index] = updatedUser;
+    products.forEach(p => {
+        const row = document.createElement('tr');
+        // ⭐️ SỬA: Lấy giá trị size (đã được chuẩn hóa thành 'Không' trong getProducts)
+        const sizeValue = p.size; 
+        
+        row.innerHTML = `
+            <td>${p.id}</td>
+            <td>${p.name}</td>
+            <td style="font-weight: bold;">${p.categoryName}</td> <td>${sizeValue}</td> 
+            <td>${formatCurrency(p.costPrice)}</td>
+            <td style=" color: ${p.profitPercent > 25 ? '#198754' : '#0d6efd'}; font-weight: bold;">
+                ${p.profitPercent}% 
+            </td>
+            <td style=" font-weight: bold;">${formatCurrency(p.salePrice)}</td>
+            <td style="display: flex;">
+                <button class="actions-btn btn-edit product-actions-btn" onclick="openProductModal(${p.id})">Sửa</button>
+                <button class="actions-btn btn-delete product-actions-btn" onclick="openDeleteConfirmation(${p.id}, '${p.name.replace(/'/g, "\\'")}')">Xóa</button>
+            </td>
+        `;
+        productTableBody.appendChild(row); 
+    });
+}
 
-        localStorage.setItem('users', JSON.stringify(users));
+    // --- CHỨC NĂNG TÌM KIẾM ---
+    function searchProducts() {
+        const term = searchInput.value;
+        loadProducts(term);
+    }
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            searchProducts();
+        }
+    });
 
-        // Cập nhật currentUser
-        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
-        if (currentUser && currentUser.id === userId) {
-            localStorage.setItem('currentUser', JSON.stringify(updatedUser));
-            // Nếu tự vô hiệu hóa tài khoản admin đang dùng
-            if (newStatus === 'disabled') {
-                alert('Tài khoản của bạn đã bị vô hiệu hóa. Bạn sẽ được đăng xuất.');
-                localStorage.removeItem('currentUser');
-                window.location.href = 'login.html';
-                return;
+    // --- CHỨC NĂNG MODAL THÊM/SỬA SẢN PHẨM (CREATE/UPDATE) ---
+
+   window.openProductModal = function(productId = null) {
+    productForm.reset();
+    document.getElementById('productId').value = '';
+    document.getElementById('productProfitPercent').value = ''; 
+    document.getElementById('productType').value = ''; 
+    // ⭐️ SỬA: Reset về chuỗi rỗng trong input (người dùng sẽ nhập size)
+    document.getElementById('productSize').value = ''; 
+
+    if (productId === null) {
+        productModalTitle.textContent = 'Thêm Sản Phẩm Mới';
+    } else {
+        productModalTitle.textContent = 'Chỉnh Sửa Sản Phẩm';
+        const products = getProducts();
+        const product = products.find(p => p.id === productId);
+
+        if (product) {
+            document.getElementById('productId').value = product.id;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productType').value = product.categoryName; 
+            // ⭐️ SỬA: Hiển thị size thực tế (hoặc chuỗi rỗng nếu giá trị là 'Không')
+            document.getElementById('productSize').value = product.size === 'Không' ? '' : product.size; 
+            document.getElementById('productCostPrice').value = product.costPrice;
+            
+            let actualProducts = JSON.parse(localStorage.getItem('products')) || [];
+            const actualProduct = actualProducts.find(p => p.id === productId);
+
+            if (actualProduct && actualProduct.profitPercent !== undefined) {
+                document.getElementById('productProfitPercent').value = actualProduct.profitPercent;
+            } else {
+                document.getElementById('productProfitPercent').placeholder = `Để trống để áp dụng tỉ lệ chung (${product.profitPercent}%)`;
             }
         }
+    }
+    productModal.style.display = 'block';
+}
 
-        alert(`Đã ${action} thành công người dùng ID ${userId}.`);
-        editModal.style.display = 'none';
-        loadUsers(); 
+
+// Hàm đóng Modal (đảm bảo hàm này đã được định nghĩa)
+function closeProfitSettingsModal() {
+    document.getElementById('profitSettingsModal').style.display = 'none';
+}
+
+
+
+    window.closeProductModal = function() {
+        productModal.style.display = 'none';
+    }
+
+   productForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const id = document.getElementById('productId').value;
+    const name = document.getElementById('productName').value.trim();
+    
+    // ⭐️ FIX: Đảm bảo categoryName luôn có giá trị (Issue 2)
+    let specificCategoryName = document.getElementById('productType').value.trim() || 'Mặc định'; 
+    
+    const size = document.getElementById('productSize').value;
+    const costPrice = parseFloat(document.getElementById('productCostPrice').value);
+    
+    const profitPercentInput = document.getElementById('productProfitPercent').value.trim();
+    let profitPercent = undefined;
+
+    if (profitPercentInput !== '') {
+        const parsedProfit = parseFloat(profitPercentInput);
+        if (!isNaN(parsedProfit)) {
+            profitPercent = parsedProfit;
+        }
+    }
+    
+    let products = JSON.parse(localStorage.getItem('products')) || [];
+
+    // Danh sách Brand/Type để xác định Loại Chung (genericType)
+    const WATCH_BRANDS = ['Rolex', 'Citizen', 'Casio', 'Seiko', 'Rado', 'Cặp đôi', 'Đồng hồ', 'Mặc định'];
+    const ACCESSORIES = ['Phụ kiện', 'Dây đeo', 'Hộp đựng', 'Cường lực'];
+    
+    // Logic xác định lại Loại Chung ('Đồng hồ'/'Phụ kiện')
+    let genericType = 'Mặc định';
+    if (WATCH_BRANDS.includes(specificCategoryName)) {
+        genericType = 'Đồng hồ';
+    } else if (ACCESSORIES.includes(specificCategoryName)) {
+        genericType = 'Phụ kiện';
     } else {
-        alert("Lỗi: Không tìm thấy người dùng.");
+        // Nếu là loại tùy chỉnh (custom brand)
+        if (id) {
+            // Nếu là SỬA và không khớp brand, giữ nguyên genericType cũ
+            const index = products.findIndex(p => p.id === parseInt(id));
+            if (index !== -1) {
+                genericType = products[index].type;
+            }
+        } else {
+            genericType = 'Mặc định'; // Sản phẩm mới
+        }
+    }
+
+
+    if (id) {
+        // Cập nhật sản phẩm hiện có
+        const index = products.findIndex(p => p.id === parseInt(id));
+        if (index !== -1) {
+            products[index] = {
+                ...products[index],
+                name,
+                type: genericType, 
+                categoryName: specificCategoryName, // LƯU TÊN CỤ THỂ
+                size, 
+                costPrice,
+                profitPercent: profitPercent
+            };
+        }
+        alert('Cập nhật sản phẩm thành công!');
+    } else {
+        // Thêm sản phẩm mới
+        const newProduct = {
+            id: Date.now(),
+            name,
+            type: genericType, 
+            categoryName: specificCategoryName, // LƯU TÊN CỤ THỂ
+            size, 
+            costPrice,
+            profitPercent: profitPercent
+        };
+        products.push(newProduct);
+        alert('Thêm sản phẩm thành công!');
+    }
+
+    localStorage.setItem('products', JSON.stringify(products));
+    closeProductModal();
+    loadProducts(); 
+});
+
+
+    // --- CHỨC NĂNG XÓA SẢN PHẨM (DELETE) ---
+
+    window.openDeleteConfirmation = function(productId, productName) {
+        document.getElementById('productToDeleteId').value = productId;
+        document.getElementById('productToDeleteName').textContent = productName;
+        deleteConfirmationModal.style.display = 'block';
+    }
+
+    window.closeDeleteConfirmation = function() {
+        deleteConfirmationModal.style.display = 'none';
+    }
+
+    window.confirmDelete = function() { 
+    // Lấy giá trị từ trường ẩn. Sử dụng .trim() để loại bỏ khoảng trắng
+    const productIdString = document.getElementById('productToDeleteId').value.trim(); 
+    
+    // 💡 Cải tiến: Chỉ chuyển đổi sang số nếu chuỗi không rỗng
+    const productId = productIdString ? parseInt(productIdString) : NaN;
+    
+    // console.log("ID sản phẩm đang được xóa là:", productId, typeof productId); 
+    
+    // Kiểm tra NaN (Lỗi NaN xảy ra ở đây)
+    if (isNaN(productId) || productId === 0) { 
+        alert('Lỗi: Không tìm thấy ID sản phẩm hợp lệ để xóa. Vui lòng thử lại.');
+        closeDeleteConfirmation();
+        return;
+    }
+
+    let products = JSON.parse(localStorage.getItem('products')) || [];
+    
+    // Lọc ra sản phẩm có ID cần xóa
+    products = products.filter(p => p.id !== productId);
+    
+    localStorage.setItem('products', JSON.stringify(products));
+    
+    closeDeleteConfirmation();
+    loadProducts(); 
+    alert(`Đã xóa thành công sản phẩm ID ${productId}.`);
+}
+
+    // --- CHỨC NĂNG CẬP NHẬT TỈ LỆ LỢI NHUẬN CHUNG ---
+
+    // --- HÀM XỬ LÝ SỰ KIỆN SUBMIT (FIX CHỨC NĂNG) ---
+
+
+function openProfitSettingsModal() {
+    const margins = getProductMargins();
+    renderProfitInputs(margins);
+    document.getElementById('profitSettingsModal').style.display = 'block';
+}
+    window.closeProfitSettingsModal = function() {
+        profitSettingsModal.style.display = 'none';
+    }
+
+    profitSettingsForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const newMargins = {};
+        let isValid = true;
+
+        document.querySelectorAll('#profitSettingsContainer input').forEach(input => {
+        const type = input.dataset.type;
+        const value = parseFloat(input.value);
+
+        if (isNaN(value) || value < 0 || value > 100) {
+            alert(`Tỉ lệ lợi nhuận cho ${type} phải nằm trong khoảng 0-100.`);
+            isValid = false;
+        }
+        newMargins[type] = value;
+    });
+
+        if (isValid) {
+            saveProductMargins(newMargins);
+            closeProfitSettingsModal();
+            loadProducts(); 
+        
+        }
+    });
+
+    window.onclick = (event) => {
+        if (event.target == addModal) {
+            addModal.style.display = 'none';
+        } else if (event.target == editModal) {
+            editModal.style.display = 'none';
+        } else if (event.target == productModal) {
+            productModal.style.display = 'none';
+        } else if (event.target == deleteConfirmationModal) {
+            deleteConfirmationModal.style.display = 'none';
+        } else if (event.target == profitSettingsModal) {
+            profitSettingsModal.style.display = 'none';
+        }
+    };
+    
+
+    // --- HÀM XỬ LÝ SỰ KIỆN SUBMIT (FIX CHỨC NĂNG CẬP NHẬT) ---
+
+
+// --- HÀM XỬ LÝ SỰ KIỆN SUBMIT (Đã sửa lỗi alert) ---
+
+
+// --- HÀM XỬ LÝ SỰ KIỆN SUBMIT (FIX LỖI ALERT) ---
+
+
+if (profitSettingsForm) {
+    profitSettingsForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        e.stopPropagation(); // Giữ lại để ngăn lỗi lặp lại
+
+        const newMargins = {};
+        let isValid = true;
+        
+        const inputs = profitSettingsForm.querySelectorAll('input[data-category]');
+
+        inputs.forEach(input => {
+            const category = input.getAttribute('data-category'); 
+            const valueTrimmed = input.value.trim();
+            
+            if (valueTrimmed !== '') {
+                const value = parseFloat(valueTrimmed);
+                
+                if (!isNaN(value) && value >= 0 && value <= 100) {
+                    newMargins[category] = value;
+                } else {
+                    alert(`Lỗi: Tỉ lệ lợi nhuận cho [${category}] không hợp lệ. Vui lòng nhập số từ 0 đến 100.`);
+                    isValid = false;
+                }
+            }
+        });
+
+        if (isValid) {
+            const oldMargins = getProductMargins(); 
+            const updatedMargins = { ...oldMargins, ...newMargins }; 
+            
+            // 1. LƯU TỈ LỆ LỢI NHUẬN MỚI
+            localStorage.setItem('profit_margins', JSON.stringify(updatedMargins));
+            
+            // 2. ⭐️ CẬP NHẬT GIÁ BÁN CHO TẤT CẢ SẢN PHẨM HIỆN CÓ
+            let products = JSON.parse(localStorage.getItem('products')) || [];
+            
+            const updatedProducts = products.map(p => {
+                
+                // Chỉ áp dụng profit mới cho các sản phẩm KHÔNG CÓ % riêng
+                if (p.profitPercent === undefined || p.profitPercent === null) {
+                    
+                    const typeForMarginLookup = p.type || 'Mặc định';
+                    
+                    // Lấy tỉ lệ lợi nhuận mới đã được cập nhật
+                    const newProfit = updatedMargins[typeForMarginLookup] !== undefined 
+                                      ? updatedMargins[typeForMarginLookup] 
+                                      : updatedMargins['Mặc định'];
+
+                    // ⭐️ Tính toán lại giá bán dựa trên tỉ lệ mới
+                    const newSalePrice = calculateSalePrice(p.costPrice, newProfit);
+                    
+                    return {
+                        ...p,
+                        sellingPrice: newSalePrice, // Lưu giá bán mới
+                        // Tỉ lệ % trong localStorage VẪN giữ nguyên là undefined để loadProducts() xử lý
+                    };
+                }
+                return p;
+            });
+
+            // 3. LƯU DANH SÁCH SẢN PHẨM ĐÃ CẬP NHẬT GIÁ BÁN
+            localStorage.setItem('products', JSON.stringify(updatedProducts));
+            
+            // 4. HIỂN THỊ THÔNG BÁO VÀ TẢI LẠI
+            alert('Cập nhật tỉ lệ lợi nhuận và giá bán sản phẩm thành công!'); 
+
+            if (typeof closeProfitSettingsModal === 'function') {
+                closeProfitSettingsModal();
+            } else {
+                 document.getElementById('profitSettingsModal').style.display = 'none';
+            }
+            
+            // Tải lại bảng để hiển thị dữ liệu mới
+            if (typeof loadProducts === 'function') {
+                 loadProducts(); 
+            }
+        }
+    });
+}
+
+// Giả định hàm tính toán giá bán này đã tồn tại trong code của bạn
+function calculateSalePrice(costPrice, profitPercent) {
+    if (profitPercent === undefined || profitPercent === null || isNaN(profitPercent)) {
+        return costPrice;
+    }
+    return Math.round(costPrice * (1 + profitPercent / 100));
+}
+
+    // --- LOGIC CHUYỂN ĐỔI DỮ LIỆU TỪ data.js ---
+
+// CHÚ Ý: Bạn cần phải dán nội dung của file data.js vào đây, 
+// hoặc đảm bảo nó được link trước script này.
+// Ví dụ: const productsFromDataJS = [ { name: "Đồng hồ A", price: 750000, ... }, ... ];
+
+// --- HÀM MỚI: CHUYỂN ĐỔI DỮ LIỆU TỪ data.js ---
+   // --- HÀM CHUYỂN ĐỔI DỮ LIỆU TỪ data.js (ĐÃ CẬP NHẬT BRAND) ---
+ // --- HÀM CHUYỂN ĐỔI DỮ LIỆU TỪ data.js (ĐÃ CẬP NHẬT BRAND & SIZE) ---
+   // --- HÀM CHUYỂN ĐỔI DỮ LIỆU TỪ data.js (CẬP NHẬT CỘT KÍCH THƯỚC) ---
+    // Hàm Chuyển đổi và Gán Loại (Phụ kiện/Đồng hồ)
+// Đặt hàm này trong <script> của ad_user.html
+// Hàm Chuyển đổi và Gán Loại (Phụ kiện/Đồng hồ)
+// Hàm Chuyển đổi và Gán Loại (Phụ kiện/Đồng hồ)
+// =================================================================
+    // LOGIC CHUYỂN ĐỔI DỮ LIỆU SẢN PHẨM (FINAL FIX)
+    // Vị trí: Thay thế logic chuyển đổi cũ ở cuối file ad_user.html
+    // =================================================================
+
+    function transformProductsFromDataJS(productsFromDataJS) {
+        if (!productsFromDataJS || productsFromDataJS.length === 0) {
+            return [];
+        }
+        let currentId = 0;
+        
+        // ⭐️ DANH SÁCH THƯƠNG HIỆU ĐỒNG HỒ CẦN PHÂN LOẠI
+        const WATCH_BRANDS = ['Rolex', 'Citizen', 'Casio', 'Seiko', 'Rado'];
+
+        return productsFromDataJS.map(p => {
+            currentId++;
+            
+            const costPrice = Math.round((p.price * 0.7) / 1000) * 1000;
+            
+            let specificName = 'Mặc định'; // Tên chi tiết để hiển thị (Casio, Dây đeo)
+            let genericType = 'Mặc định'; // Loại chung để lọc UI (Đồng hồ, Phụ kiện)
+            let productSize = 'N/A'; 
+            
+            const category = p.category ? p.category.toLowerCase() : '';
+
+            // 1. Logic Phân loại Phụ kiện
+            if (category === 'phukien') {
+                genericType = 'Phụ kiện'; // ⚠️ GIỮ NGUYÊN cho bộ lọc UI
+                
+                if (p.accessory === 'strap') {
+                    specificName = 'Dây đeo'; 
+                } else if (p.accessory === 'case' || p.accessory === 'box') {
+                    specificName = 'Hộp đựng'; 
+                } else if (p.accessory === 'protector' || p.accessory === 'film') {
+                    specificName = 'Cường lực';
+                } else {
+                    specificName = 'Phụ kiện'; 
+                }
+                productSize = 'N/A'; 
+
+            // 2. Logic Phân loại Đồng hồ
+            } else if (category === 'nam' || category === 'nu' || category === 'dongho' || category === 'watches' || category === 'capdoi' || category === 'couple') {
+                
+                genericType = 'Đồng hồ'; // ⚠️ GIỮ NGUYÊN cho bộ lọc UI
+                
+                // Lấy tên thương hiệu cụ thể cho specificName
+                let normalizedBrand = 'Đồng hồ';
+                if (p.brand) {
+                    // Chuyển đổi chữ cái đầu tiên của brand thành chữ hoa (rolex -> Rolex)
+                    normalizedBrand = p.brand.charAt(0).toUpperCase() + p.brand.slice(1).toLowerCase();
+                }
+                
+                if (WATCH_BRANDS.includes(normalizedBrand)) {
+                    specificName = normalizedBrand; // Gán tên thương hiệu (Casio, Seiko...)
+                } else if (category === 'capdoi' || category === 'couple') {
+                    specificName = 'Cặp đôi';
+                } else {
+                    specificName = 'Đồng hồ'; // Fallback nếu không khớp thương hiệu
+                }
+                
+                // Gán Kích thước (Size)
+                if (category === 'nam') {
+                    productSize = 'Nam'; 
+                } else if (category === 'nu') {
+                    productSize = 'Nữ'; 
+                } else if (category === 'capdoi' || category === 'couple') {
+                    productSize = 'Cặp đôi';
+                } else {
+                    productSize = 'N/A';
+                }
+            } 
+            
+            // Logic tính giá bán và lợi nhuận (giữ nguyên)
+            const defaultProfitPercent = parseFloat(localStorage.getItem('profit_default')) || 35;
+            const profitPercent = p.profitPercent ? parseFloat(p.profitPercent) : defaultProfitPercent;
+            const salePrice = Math.round((costPrice / (1 - profitPercent / 100)) / 1000) * 1000;
+            
+            return {
+                id: currentId,
+                name: p.name || 'Sản phẩm không tên',
+                type: genericType,      // 👈 Loại chung (Phụ kiện/Đồng hồ) - Cho bộ lọc UI
+                categoryName: specificName, // 👈 Tên cụ thể (Dây đeo, Casio) - Cho hiển thị
+                size: productSize, 
+                costPrice: costPrice,
+                salePrice: salePrice,
+                profitPercent: profitPercent,
+            };
+        });
+    }
+
+    // ⭐️ Chạy hàm chuyển đổi và lưu vào Local Storage
+    // const allTransformedProducts = transformProductsFromDataJS(products);
+
+    // if (allTransformedProducts.length > 0) {
+    //     localStorage.setItem('products', JSON.stringify(allTransformedProducts));
+    // } else {
+    //     // Fallback
+    //     const initialProducts = [
+    //         { id: 1001, name: 'Đồng hồ Mẫu A', type: 'Đồng hồ', categoryName: 'Casio', size: 'Nam', costPrice: 3000000, salePrice: 5000000, profitPercent: 40 },
+    //         { id: 1002, name: 'Dây da cao cấp', type: 'Phụ kiện', categoryName: 'Dây đeo', size: 'N/A', costPrice: 150000, salePrice: 250000, profitPercent: 40 },
+    //     ];
+    //     localStorage.setItem('products', JSON.stringify(initialProducts));
+    // }
+    // Đặt hàm này trong <script> của ad_user.html
+// Đặt hàm này trong <script> của ad_user.html
+function renderProductTable() {
+    // Đảm bảo bạn có 1 phần tử <tbody id="productTableBody"> trong HTML
+    const tableBody = document.getElementById('productTableBody');
+    if (!tableBody) {
+        console.error("Không tìm thấy tbody với ID 'productTableBody'.");
+        return;
+    }
+    tableBody.innerHTML = ''; 
+    
+    // ⭐️ Lấy TẤT CẢ sản phẩm đã được chuẩn hóa từ localStorage
+    const products = JSON.parse(localStorage.getItem('products')) || [];
+
+    products.forEach(product => {
+        const row = tableBody.insertRow();
+        const isAccessory = product.type === 'Phụ kiện';
+
+        row.insertCell().textContent = product.id; 
+        
+        // Hình ảnh (Code tương tự bạn đã có)
+        const imgCell = row.insertCell();
+        const img = document.createElement('img');
+        img.src = product.image;
+        img.alt = product.name;
+        img.style.width = '50px';
+        img.style.height = '50px';
+        img.style.objectFit = 'cover';
+        imgCell.appendChild(img);
+
+        row.insertCell().textContent = product.name; 
+
+        // ⭐️ KEY: Loại sản phẩm (Hiển thị Phụ kiện)
+        row.insertCell().textContent = product.type; 
+
+        // ⭐️ KEY: Thương hiệu / Chi tiết Phụ kiện
+        const detailCell = row.insertCell();
+        if (isAccessory) {
+            // Hiển thị Chất liệu và Màu sắc cho Phụ kiện
+            detailCell.innerHTML = `Loại: <b>${product.accessoryType || 'N/A'}</b><br>Chất liệu: <b>${product.material || 'N/A'}</b>`;
+        } else {
+            // Hiển thị Thương hiệu cho Đồng hồ
+            detailCell.textContent = product.brand || 'N/A';
+        }
+
+        // Giá vốn
+        row.insertCell().textContent = product.costPrice ? Math.round(product.costPrice).toLocaleString('vi-VN') + '₫' : 'N/A';
+        
+        // Giá bán
+        row.insertCell().textContent = product.sellingPrice ? product.sellingPrice.toLocaleString('vi-VN') + '₫' : 'N/A';
+
+        // Tồn kho
+        row.insertCell().textContent = product.stock || 0;
+
+        // Hành động
+        const actionsCell = row.insertCell();
+        actionsCell.innerHTML = `<button class="actions-btn btn-edit">Sửa</button> <button class="actions-btn btn-delete">Xóa</button>`;
+    });
+}
+
+// ⭐️ Đừng quên gọi hàm này khi trang được tải xong
+// Ví dụ: Sau khi tab "Quản lý Bảng Giá" được kích hoạt hoặc khi window.onload/DOMContentLoaded
+document.addEventListener('DOMContentLoaded', () => {
+    // Gọi hàm transformProductsFromDataJS một lần đầu để lưu vào localStorage
+    // (Phần logic này có thể đã tồn tại trong file của bạn)
+    // Sau đó gọi hàm renderProductTable để hiển thị
+    // Chú ý: Nếu bạn có hệ thống tab, hãy gọi hàm này khi tab "Quản lý Bảng Giá" được mở.
+    renderProductTable(); 
+});
+
+    // --- LOGIC KHỞI TẠO TRANG (Đảm bảo dữ liệu mẫu được tạo nếu Local Storage trống) ---
+    function initializeAdminPage() {
+    // 1. Khởi tạo dữ liệu người dùng mẫu (giữ nguyên)
+    if (!localStorage.getItem('users')) {
+        const initialUsers = [
+            { id: SUPERADMIN_ID, username: 'superadmin', email: 'sa@admin.com', password: '123456', role: 'admin', status: 'active' },
+            { id: 1, username: 'admin01', email: 'admin@test.com', password: '123456', role: 'admin', status: 'active' },
+            { id: 2, username: 'user01', email: 'user@test.com', password: '123456', role: 'user', status: 'active' }
+        ];
+        localStorage.setItem('users', JSON.stringify(initialUsers));
+    }
+
+    // 2. CẬP NHẬT: Khởi tạo dữ liệu sản phẩm từ data.js (nếu chưa có)
+  // ... trong document.addEventListener('DOMContentLoaded', ...) hoặc logic khởi tạo...
+
+// 2. CẬP NHẬT: Khởi tạo dữ liệu sản phẩm từ data.js (nếu chưa có)
+// ... trong document.addEventListener('DOMContentLoaded', ...) hoặc logic khởi tạo...
+
+// 2. CẬP NHẬT: Khởi tạo dữ liệu sản phẩm từ data.js (nếu chưa có)
+if (localStorage.getItem('initial_data_loaded') !== 'true' || 
+    !localStorage.getItem('products') || 
+    JSON.parse(localStorage.getItem('products')).length === 0) 
+{
+    
+    // ⭐️ 1. Lấy dữ liệu thô từ 2 biến độc lập (products và accessories)
+    const rawWatches = typeof products !== 'undefined' ? products : []; 
+    const rawAccessories = typeof accessories !== 'undefined' ? accessories : []; 
+    
+    // 2. Chuyển đổi và gán ID + Loại riêng biệt
+    const transformedWatches = typeof transformItems !== 'undefined' ? transformItems(rawWatches, 'Đồng hồ', 101) : [];
+    const transformedAccessories = typeof transformItems !== 'undefined' ? transformItems(rawAccessories, 'Phụ kiện', 501) : [];
+
+    // ⭐️ 3. Ghép 2 mảng lại thành một
+    const allTransformedProducts = [...transformedWatches, ...transformedAccessories];
+
+    if (allTransformedProducts.length > 0) {
+         localStorage.setItem('products', JSON.stringify(allTransformedProducts));
+         // ⭐️ ĐẶT CỜ: Đánh dấu rằng dữ liệu đã được tải thành công lần đầu.
+         localStorage.setItem('initial_data_loaded', 'true'); 
+         console.log(`Đã tải ${allTransformedProducts.length} sản phẩm (Đồng hồ & Phụ kiện) từ data.js vào Local Storage.`);
+    } else {
+         // Nếu không lấy được dữ liệu, tạo dữ liệu mẫu
+         const initialProducts = [
+            { id: 101, name: 'Đồng hồ Mẫu A', type: 'Đồng hồ', categoryName: 'Mẫu', costPrice: 3000000, sellingPrice: 5000000, stock: 10, size: 'Nam' },
+            { id: 501, name: 'Dây da cao cấp', type: 'Phụ kiện', categoryName: 'Dây đeo', costPrice: 150000, sellingPrice: 250000, stock: 20, size: 'N/A' },
+         ];
+         localStorage.setItem('products', JSON.stringify(initialProducts));
+         localStorage.setItem('initial_data_loaded', 'true');
+         console.log('Không có dữ liệu từ data.js, tạo dữ liệu mẫu.');
     }
 }
 
-    // Tải dữ liệu lần đầu khi trang load xong
-    window.onload = loadUsers;
+// ⭐️ Đừng quên gọi hàm render bảng sau khi đã khởi tạo xong
+renderProductTable();
 
-</script>
+    // 3. Mặc định hiển thị tab đầu tiên (giữ nguyên)
+    showTab('qluser'); 
+}
 
-</body>
-</html>
+    // <--- FIX CỐT LÕI: Đảm bảo hàm khởi tạo chạy khi trang load
+    window.onload = initializeAdminPage;
+
+    </script>
+    </body>
+    </html>

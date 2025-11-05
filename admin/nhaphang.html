@@ -4,27 +4,51 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Admin - Quản lý phiếu nhập</title>
+
+  <link rel="stylesheet" href="../admin/ad_css/admin.css" />
   <link rel="stylesheet" href="../admin/ad_css/nhaphang.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+  <link rel="icon" type="image/png" href="../view/image/logo.png">
+
 </head>
+
 <body>
-  <div class="app">
-    <aside class="sidebar-placeholder">
-      <div class="brand">
-        <div class="logo">DH</div>
-        <div class="brand-text">
-          <div class="name">Web Đồng Hồ</div>
-          <div class="muted">Admin</div>
-        </div>
+  
+  <div class="admin-container">
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+      <div class="logo">
+        <img src="/view/image/logo2.png" alt="Logo" />
       </div>
-      <nav class="placeholder-nav">
-        <a class="active">Nhập hàng</a>
-        <a>Đơn hàng</a>
-        <a>Sản phẩm</a>
-        <a>Báo cáo</a>
-      </nav>
+      <h2 class="hello">Quản trị viên</h2>
+
+      <ul class="menu">
+        <li class="menu-title"><a href="../admin/admin.html">Sản phẩm</a></li>
+        <ul class="submenu" id="leftMenu">
+          <li data-entity="watch"  class="is-active">Đồng hồ</li>
+          <li data-entity="strap">Dây đeo</li>
+          <li data-entity="box">Hộp đựng</li>
+          <li data-entity="glass">Kính cường lực</li>
+        </ul>
+
+        <li class="menu-title">Đơn hàng</li>
+        <li class="menu-title"><a href="../admin/ad_user.html">Khách hàng</a></li>
+        <li class="menu-title"><a href="../admin/nhaphang.html">Nhập hàng</a></li>
+
+        <li><div class="actions">
+              <div class="account">
+                <i class="fa-regular fa-user"></i>
+                <span>Admin</span>
+              </div>
+              <div class="logout" id="logoutBtn" title="Đăng xuất">
+                <i class="fa-solid fa-right-from-bracket"></i>
+              </div>
+            </div>
+          </li>
+      </ul>
     </aside>
 
-    <main class="main">
+    <main class="main-content nhap-main">
       <header class="header">
         <h1>Quản lý phiếu nhập hàng</h1>
       </header>
@@ -35,10 +59,20 @@
           <div class="card form-card">
             <h2>Thêm phiếu nhập mới</h2>
             <form id="phieuForm">
-              <label for="p_hang">Hãng</label>
-              <select id="p_hang" required>
-                <option value="">-- Chọn hãng --</option>
+              <label for="p_danhmuc">Danh Mục</label>
+              <select id="p_danhmuc" required>
+                <option value="">-- Chọn danh mục --</option>
               </select>
+
+              <div class="form-row">
+                <label for="p_loai">Loại</label>
+                <select id="p_loai" required disabled>
+                  <option value="">-- Chọn loại --</option>
+                  <option value="Nam">Nam</option>
+                  <option value="Nữ">Nữ</option>
+                  <option value="Cặp đôi">Cặp đôi</option>
+                </select>
+              </div>
 
               <div class="form-row">
                 <label for="p_tensp">Tên sản phẩm</label>
@@ -47,23 +81,20 @@
                 </select>
               </div>
 
-              <div class="form-row">
-                <label for="p_loai">Loại</label>
-                <input id="p_loai" required type="text" placeholder="VD: Nam / Nữ / Smart">
-              </div>
-
               <div class="row-3">
                 <div class="form-row">
                   <label for="p_sl">Số lượng nhập</label>
                   <input id="p_sl" required type="number" min="1" value="1">
                 </div>
+
                 <div class="form-row">
-                  <label for="p_gia">Giá nhập (VNĐ)</label>
-                  <input id="p_gia" required type="number" min="0" step="1000" value="1000000">
+                  <label for="p_gia">Giá (VNĐ)</label>
+                  <input id="p_gia" required type="number" min="0" step="1000" readonly>
                 </div>
+
                 <div class="form-row">
                   <label for="p_ngay">Ngày nhập</label>
-                  <input id="p_ngay" required type="date" value="">
+                  <input id="p_ngay" required type="date">
                 </div>
               </div>
 
@@ -94,9 +125,6 @@
                 <div id="statLow" class="stat-value">0</div>
               </div>
             </div>
-            <div style="margin-top:12px" class="small-muted">
-              Lưu ý: xóa phiếu sẽ tự động trừ lại kho.
-            </div>
           </div>
         </div>
 
@@ -109,10 +137,10 @@
                 <tr>
                   <th>STT</th>
                   <th>Tên sản phẩm</th>
-                  <th>Hãng</th>
+                  <th>Danh Mục</th>
                   <th>Loại</th>
                   <th>Số lượng</th>
-                  <th>Giá nhập</th>
+                  <th>Giá</th>
                   <th>Ngày nhập</th>
                   <th>Hành động</th>
                 </tr>
@@ -132,7 +160,7 @@
                   <th>STT</th>
                   <th>Mã SP</th>
                   <th>Tên sản phẩm</th>
-                  <th>Hãng</th>
+                  <th>Danh Mục</th>
                   <th>Loại</th>
                   <th>Số lượng tồn</th>
                 </tr>
@@ -143,12 +171,65 @@
         </div>
       </section>
 
-      <footer class="footer">
-        <div class="muted">© Web_DongHo - Module Quản lý nhập hàng</div>
-      </footer>
+      
     </main>
   </div>
 
+  <!-- EDIT MODAL -->
+  <div id="modal-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div id="edit-modal" role="dialog" aria-modal="true" style="background:#fff; max-width:720px; width:95%; border-radius:8px; padding:20px; box-shadow:0 8px 24px rgba(0,0,0,0.15);">
+      <h3>Sửa phiếu nhập</h3>
+      <form id="editForm">
+        <input type="hidden" id="e_index" />
+        <label for="e_danhmuc">Danh Mục</label>
+        <select id="e_danhmuc" required>
+          <option value="">-- Chọn danh mục --</option>
+        </select>
+
+        <div class="form-row">
+          <label for="e_loai">Loại</label>
+          <select id="e_loai" required disabled>
+            <option value="">-- Chọn loại --</option>
+            <option value="Nam">Nam</option>
+            <option value="Nữ">Nữ</option>
+            <option value="Cặp đôi">Cặp đôi</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="e_tensp">Tên sản phẩm</label>
+          <select id="e_tensp" required disabled>
+            <option value="">-- Chọn tên sản phẩm --</option>
+          </select>
+        </div>
+
+        <div class="form-row">
+          <label for="e_sl">Số lượng nhập</label>
+          <input id="e_sl" required type="number" min="1" step="1" value="1">
+        </div>
+
+        <div class="form-row">
+          <label for="e_gia">Giá (VNĐ)</label>
+          <input id="e_gia" required type="number" min="0" step="1000" readonly>
+        </div>
+
+        <div class="form-row">
+          <label for="e_ngay">Ngày nhập</label>
+          <input id="e_ngay" required type="date">
+        </div>
+
+        <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:12px;">
+          <button type="button" id="btn-cancel-edit" class="btn">Hủy</button>
+          <button type="submit" id="btn-update" class="btn primary">Cập nhật</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT -->
+   <script src="../view/js/auth.js"></script>
+  <script src="../admin/ad_js/data.js"></script>
   <script src="../admin/ad_js/nhaphang.js" defer></script>
-</body>
+
+  </body>
 </html>
