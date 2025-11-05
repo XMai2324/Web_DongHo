@@ -83,15 +83,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Thêm vào giỏ
   const addToCart = (p, qty) => {
-    const cart = loadCart();
-    const idx = cart.findIndex(x => x.id === p._id);
-    if (idx > -1) cart[idx].qty += qty;
-    else cart.push({ id:p._id, name:p.name, price:Number(p.price), image:p.image,
-      brand:p.brand||'', category:p.category||'', qty });
-    saveCart(cart);
-    updateCartBadge();
+    if (window.Cart && typeof window.Cart.addToCart === 'function') {
+      window.Cart.addToCart(
+        { id: p._id, name: p.name, price: Number(p.price), image: p.image },
+        Number(qty) || 1
+      );
+    } else {
+      // Fallback hiếm khi cần: nếu cart.js chưa load
+      const CART_KEY = 'tt_cart';
+      const load = () => { try { return JSON.parse(localStorage.getItem(CART_KEY))||[]; } catch { return []; } };
+      const save = (c) => localStorage.setItem(CART_KEY, JSON.stringify(c));
+      const cart = load();
+      const i = cart.findIndex(x => x.id === p._id);
+      if (i > -1) cart[i].qty = Number(cart[i].qty||0) + (Number(qty)||1);
+      else cart.push({ id:p._id, name:p.name, price:Number(p.price), image:p.image, qty:Number(qty)||1 });
+      save(cart);
+      window.ttUpdateCartBadge && window.ttUpdateCartBadge();
+    }
   };
-
   // ===== CONFIG =====
   const PER_PAGE = 8;
   window.products.forEach((p,i)=>{ if (p._id === undefined) p._id = i; });
@@ -299,13 +308,46 @@ document.addEventListener('DOMContentLoaded', () => {
   qvEl && qvEl.addEventListener('click', (e) => { if (e.target === qvEl) closeQuickView(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeQuickView(); });
 
-  qvAdd && qvAdd.addEventListener('click', () => {
-    const p = window.products.find(x => x._id === currentProductId);
-    if (!p) return;
-    const qty = Math.max(1, parseInt(qvQty.value, 10) || 1);
-    addToCart(p, qty);
-    closeQuickView();
-  });
+  function addToCartUnified(p, qty) {
+    // Nếu cart.js đã có hàm addToCart thì dùng luôn
+    if (window.Cart && typeof window.Cart.addToCart === 'function') {
+      return window.Cart.addToCart(
+        { id: p._id, name: p.name, price: Number(p.price), image: p.image }, qty
+      );
+    }
+
+    // Nếu không có (phòng khi cart.js chưa load)
+    const CART_KEY = 'tt_cart';
+    const loadCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } };
+    const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
+
+    const cart = loadCart();
+    const idx = cart.findIndex(x => x.id === p._id);
+    if (idx > -1) cart[idx].qty = Number(cart[idx].qty || 0) + qty;
+    else cart.push({ id: p._id, name: p.name, price: Number(p.price), image: p.image, qty });
+
+    saveCart(cart);
+    if (window.ttUpdateCartBadge) window.ttUpdateCartBadge();
+  }
+
+  // --- Chỉ bind 1 lần & chống double click ---
+  let qvAddBound = false;
+  let qvAddLock  = false;
+
+  if (qvAdd && !qvAddBound) {
+    qvAdd.addEventListener('click', () => {
+      if (qvAddLock) return;               // chặn double click quá nhanh
+      qvAddLock = true; setTimeout(() => qvAddLock = false, 350);
+
+      const p = window.products.find(x => x._id === currentProductId);
+      if (!p) return;
+      const qty = Math.max(1, parseInt(qvQty.value, 10) || 1);
+
+      addToCartUnified(p, qty);
+      closeQuickView();
+    });
+    qvAddBound = true;
+  }
 
   // ===== RENDER =====
   function render(list){

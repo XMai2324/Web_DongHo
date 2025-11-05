@@ -9,7 +9,8 @@
 .payment{
   width:100%;
   max-width: var(--container-w);
-  margin: 24px auto 40px; 
+  /* margin: 24px auto 40px;  */
+  margin: 112px auto 40px;
   padding: 0 24px;
   background: transparent;
 }
@@ -186,7 +187,7 @@ body.order-confirmed .slider{ display:none !important; }
 
 /* Ẩn thêm khối ngoài main */
 body.order-confirmed #cart,
-body.order-confirmed .cart,
+/* body.order-confirmed .cart, */
 body.order-confirmed .cart-container,
 body.order-confirmed .cart-summary,
 body.order-confirmed .cart-table,
@@ -202,13 +203,16 @@ body.order-confirmed .banner{
 }
 
 /* Giữ header/footer */
-body.order-confirmed header,
-body.order-confirmed footer{
+/* body.order-confirmed header, */
+/* body.order-confirmed footer{
   display:block !important;
-  visibility:visible !important;
+  visibility:visible !important;  
   opacity:1 !important;
+} */
+body.order-confirmed header {
+  background-color: #fff !important;
+  box-shadow: 0 2px 4px rgba(0,0,0,.08);
 }
-
 
 /* lịch sử đơn hàng */
 .order-history {
@@ -268,3 +272,4 @@ body.order-confirmed footer{
   margin-top: 8px;
   text-align: center;
 }
+
