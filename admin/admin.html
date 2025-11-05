@@ -3,63 +3,101 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ticktock - Admin</title>
-   <base href="/view/">
+  <title>TickTockShop - Admin</title>
+  <base href="/view/">
 
   <!-- CSS -->
   <link rel="stylesheet" href="../admin/ad_css/admin.css" />
   <link rel="stylesheet" href="../admin/ad_css/product.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="icon" type="image/png" href="../view/image/logo.png">
+  <link rel="icon" type="image/png" href="image/logo.png">
 
+  <!-- Bổ sung CSS để đồng bộ với orders.js & UI -->
+  <style>
+    .sidebar .menu .menu-title.active { color:#00bcd4; }
 
-  <!-- JS (để defer cho an toàn) -->
-  <script src="../view/js/auth.js" defer></script>
-  <script src="../view/js/data.js" defer></script>
+    .order-table { width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; }
+    .order-table th, .order-table td { padding:12px 14px; border-bottom:1px solid #eee; text-align:left; }
+    .order-table thead th { background:#f1f1f1; font-weight:700; }
+
+    /* Badge khớp với status code của orders.js */
+    .status.cho-xac-nhan    { background:#f0ad4e; color:#fff; }   /* Chờ xác nhận */
+    .status.cho-van-chuyen  { background:#17a2b8; color:#fff; }   /* Chờ vận chuyển */
+    .status.dang-van-chuyen { background:#0d6efd; color:#fff; }   /* Đang vận chuyển */
+    .status.hoan-tat        { background:#28a745; color:#fff; }   /* Nhận hàng thành công */
+
+    .btn.small   { padding:6px 10px; font-size:12px; border-radius:6px; }
+    .btn.danger  { background:#dc3545; border-color:#dc3545; color:#fff; }
+    .btn.ghost   { background:#fff; border:1px solid #ddd; }
+    .btn.disabled[disabled]{ opacity:.5; cursor:not-allowed; pointer-events:none; }
+
+    /* Input lọc trạng thái & ngày */
+    #orderStatusFilter,
+    #orderDateFrom,
+    #orderDateTo {
+      padding: 8px 10px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      background: #fff;
+      font-size: 14px;
+      min-width: 160px;
+    }
+    .date-sep { opacity:.65; margin: 0 4px; }
+
+    @media (max-width: 768px) {
+      #orderStatusFilter, #orderDateFrom, #orderDateTo { width: 100%; min-width: 0; }
+      .date-sep { display:none; }
+    }
+  </style>
+
+  <!-- JS (defer) -->
+  <script src="js/auth.js" defer></script>
+  <script src="js/data.js" defer></script>
+  <script src="../admin/ad_js/watch_table.js" defer></script>
+  <script src="../admin/ad_js/orders.js" defer></script>
   <script src="../admin/ad_js/ad_product.js" defer></script>
- 
-
 </head>
 <body>
   <div class="admin-container">
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="logo">
-        <img src="/view/image/logo2.png" alt="Logo" />
+        <img src="image/logo2.png" alt="Logo" />
       </div>
       <h2 class="hello">Quản trị viên</h2>
 
       <ul class="menu">
-        <li class="menu-title">Sản phẩm</li>
+        <li class="menu-title" id="menuProducts">Sản phẩm</li>
         <ul class="submenu" id="leftMenu">
-          <li data-entity="watch"  class="is-active">Đồng hồ</li>
+          <li data-entity="watch" class="is-active">Đồng hồ</li>
           <li data-entity="strap">Dây đeo</li>
           <li data-entity="box">Hộp đựng</li>
           <li data-entity="glass">Kính cường lực</li>
         </ul>
 
-        <li class="menu-title">Đơn hàng</li>
+        <li class="menu-title" id="menuOrders">Đơn hàng</li>
         <li class="menu-title">Khách hàng</li>
         <li class="menu-title"><a href="../admin/ad_nhaphang.html">Nhập hàng</a></li>
         <li class="menu-title">Kho hàng</li>
 
-        <li><div class="actions">
-              <div class="account">
-                <i class="fa-regular fa-user"></i>
-                <span>Admin</span>
-              </div>
-              <div class="logout" id="logoutBtn" title="Đăng xuất">
-                <i class="fa-solid fa-right-from-bracket"></i>
-              </div>
+        <li>
+          <div class="actions">
+            <div class="account">
+              <i class="fa-regular fa-user"></i>
+              <span>Admin</span>
             </div>
-          </li>
+            <div class="logout" id="logoutBtn" title="Đăng xuất">
+              <i class="fa-solid fa-right-from-bracket"></i>
+            </div>
+          </div>
+        </li>
       </ul>
     </aside>
 
     <!-- MAIN -->
     <main class="main-content">
       <!-- DASHBOARD: Đồng hồ -->
-      <section class="dashboard">
+      <section class="dashboard" id="productsSection">
         <div class="toolbar">
           <h1>Quản lý đồng hồ</h1>
           <div class="actions">
@@ -99,6 +137,67 @@
           </table>
         </div>
       </section>
+
+      <!-- DASHBOARD: Đơn hàng -->
+      <section class="dashboard" id="ordersSection" style="display:none;">
+        <div class="toolbar">
+          <h1>Quản lý đơn hàng</h1>
+          <div class="actions">
+            <!-- Lọc theo trạng thái -->
+            <select id="orderStatusFilter">
+              <option value="">Tất cả trạng thái</option>
+              <option value="cho-xac-nhan">Chờ xác nhận</option>
+              <option value="cho-van-chuyen">Chờ vận chuyển</option>
+              <option value="dang-van-chuyen">Đang vận chuyển</option>
+              <option value="hoan-tat">Nhận hàng thành công</option>
+            </select>
+
+            <!-- Tra cứu ngày đặt -->
+            <input type="date" id="orderDateFrom" aria-label="Từ ngày">
+            <span class="date-sep">→</span>
+            <input type="date" id="orderDateTo" aria-label="Đến ngày">
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="order-table">
+            <thead>
+              <tr>
+                <th style="width:44px;"></th> <!-- cột icon -->
+                <th>Ngày đặt</th>
+                <th>Mã đơn</th>
+                <th>Khách hàng</th>
+                <th>Tổng tiền (₫)</th>
+                <th>Trạng thái</th>
+                <th>Thao tác</th>
+              </tr>
+            </thead>
+            <tbody id="orderTbody"><!-- JS render --></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- MODAL chi tiết đơn hàng -->
+      <div id="orderDetailModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:720px">
+          <h2 class="modal-title">Chi tiết đơn hàng</h2>
+          <div class="modal-body">
+            <div class="grid form-grid">
+              <div class="form-group"><label>Mã đơn</label><input id="mdOrderId" type="text" readonly></div>
+              <div class="form-group"><label>Khách hàng</label><input id="mdCustomer" type="text" readonly></div>
+              <div class="form-group"><label>Ngày đặt</label><input id="mdDate" type="text" readonly></div>
+              <div class="form-group"><label>Tổng tiền</label><input id="mdTotal" type="text" readonly></div>
+              <div class="form-group full">
+                <label>Sản phẩm</label>
+                <div id="mdItems" style="background:#fafafa;border:1px solid #eee;border-radius:8px;padding:10px;"></div>
+              </div>
+            </div>
+          </div>
+          <div class="modal-actions">
+            <button type="button" class="btn" id="btnCloseOrderDetail">Đóng</button>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -173,95 +272,116 @@
     </div>
   </div>
 
+  <!-- Nút & MODAL: Phụ kiện -->
+  <button id="btnAddAcc" class="btn primary">+ Thêm phụ kiện</button>
 
-  <!-- Thêm nút trong toolbar (ngay cạnh nút + Thêm đồng hồ) -->
-    <button id="btnAddAcc" class="btn primary">+ Thêm phụ kiện</button>
+  <div id="accessoryModal" class="modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Thêm Phụ Kiện</h2>
 
-    <!-- MODAL: Thêm/Sửa phụ kiện -->
-    <div id="accessoryModal" class="modal">
-      <div class="modal-content">
-        <h2 class="modal-title">Thêm Phụ Kiện</h2>
+      <div class="modal-body">
+        <form id="addAccForm">
+          <input type="hidden" id="accId" name="id" />
 
-        <div class="modal-body">
-          <form id="addAccForm">
-            <input type="hidden" id="accId" name="id" />
+          <div class="grid form-grid">
+            <div class="form-group">
+              <label for="accName">Tên phụ kiện</label>
+              <input type="text" id="accName" name="name" required />
+            </div>
 
-            <div class="grid form-grid">
-              <div class="form-group">
-                <label for="accName">Tên phụ kiện</label>
-                <input type="text" id="accName" name="name" required />
-              </div>
+            <div class="form-group">
+              <label for="accPrice">Giá (₫)</label>
+              <input type="number" id="accPrice" name="price" min="0" step="1000" required />
+            </div>
 
-              <div class="form-group">
-                <label for="accPrice">Giá (₫)</label>
-                <input type="number" id="accPrice" name="price" min="0" step="1000" required />
-              </div>
+            <div class="form-group">
+              <label for="accKind">Loại phụ kiện</label>
+              <select id="accKind" name="accessory" required>
+                <option value="">-- Chọn --</option>
+                <option value="glass">Kính cường lực</option>
+                <option value="box">Hộp đựng</option>
+                <option value="strap">Dây đeo</option>
+              </select>
+            </div>
 
-              <div class="form-group">
-                <label for="accKind">Loại phụ kiện</label>
-                <select id="accKind" name="accessory" required>
-                  <option value="">-- Chọn --</option>
-                  <option value="glass">Kính cường lực</option>
-                  <option value="box">Hộp đựng</option>
-                  <option value="strap">Dây đeo</option>
-                </select>
-              </div>
+            <div class="form-group">
+              <label for="accCategory">Danh mục</label>
+              <select id="accCategory" name="category" required>
+                <option value="phukien" selected>Phụ kiện</option>
+              </select>
+            </div>
 
-              <div class="form-group">
-                <label for="accCategory">Danh mục</label>
-                <select id="accCategory" name="category" required>
-                  <option value="phukien" selected>Phụ kiện</option>
-                </select>
-              </div>
+            <!-- Trường riêng cho KÍNH (glass) -->
+            <div class="form-group acc-only acc-glass">
+              <label for="accType">Loại kính</label>
+              <input type="text" id="accType" name="type" placeholder="VD: sapphire, khoáng..." />
+            </div>
 
-              <!-- Trường riêng cho KÍNH (glass) -->
-              <div class="form-group acc-only acc-glass">
-                <label for="accType">Loại kính</label>
-                <input type="text" id="accType" name="type" placeholder="VD: sapphire, khoáng..." />
-              </div>
+            <!-- Trường riêng cho DÂY (strap) -->
+            <div class="form-group acc-only acc-strap">
+              <label for="accMaterial">Chất liệu</label>
+              <input type="text" id="accMaterial" name="material" placeholder="VD: Da, Kim loại, Cao su..." />
+            </div>
 
-              <!-- Trường riêng cho DÂY (strap) -->
-              <div class="form-group acc-only acc-strap">
-                <label for="accMaterial">Chất liệu</label>
-                <input type="text" id="accMaterial" name="material" placeholder="VD: Da, Kim loại, Cao su..." />
-              </div>
+            <div class="form-group acc-only acc-strap">
+              <label for="accColor">Màu</label>
+              <input type="text" id="accColor" name="color" placeholder="VD: Đen, Nâu, Vàng hồng..." />
+            </div>
 
-              <div class="form-group acc-only acc-strap">
-                <label for="accColor">Màu</label>
-                <input type="text" id="accColor" name="color" placeholder="VD: Đen, Nâu, Vàng hồng..." />
-              </div>
+            <div class="form-group full">
+              <label for="accDesc">Mô tả</label>
+              <textarea id="accDesc" name="description" rows="3"></textarea>
+            </div>
 
-              <div class="form-group full">
-                <label for="accDesc">Mô tả</label>
-                <textarea id="accDesc" name="description" rows="3"></textarea>
-              </div>
+            <div class="form-group">
+              <label for="accImageFile">Chọn ảnh từ máy</label>
+              <input type="file" id="accImageFile" name="imageFile" accept="image/*" />
+            </div>
 
-              <div class="form-group">
-                <label for="accImageFile">Chọn ảnh từ máy</label>
-                <input type="file" id="accImageFile" name="imageFile" accept="image/*" />
-              </div>
-
-              <div class="form-group full image-preview-container">
-                <label>Xem trước ảnh</label>
-                <div class="preview-scroll">
-                  <img id="accImagePreview" class="image-preview" alt="preview" />
-                </div>
+            <div class="form-group full image-preview-container">
+              <label>Xem trước ảnh</label>
+              <div class="preview-scroll">
+                <img id="accImagePreview" class="image-preview" alt="preview" />
               </div>
             </div>
-          </form>
-        </div>
+          </div>
+        </form>
+      </div>
 
-        <div class="modal-actions">
-          <button type="button" class="btn" id="btnAccCancel">Hủy</button>
-          <button type="submit" form="addAccForm" class="btn primary" id="btnSaveAcc">Lưu</button>
-        </div>
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnAccCancel">Hủy</button>
+        <button type="submit" form="addAccForm" class="btn primary" id="btnSaveAcc">Lưu</button>
       </div>
     </div>
+  </div>
 
+  <!-- JS nhỏ để chuyển tab -->
+  <script>
+    const productsSection = document.getElementById('productsSection');
+    const ordersSection   = document.getElementById('ordersSection');
+    const menuProducts    = document.getElementById('menuProducts');
+    const menuOrders      = document.getElementById('menuOrders');
 
+    function setActive(menu) {
+      document.querySelectorAll('.menu-title').forEach(m => m.classList.remove('active'));
+      menu.classList.add('active');
+    }
+    function showProducts() {
+      productsSection.style.display = 'block';
+      ordersSection.style.display   = 'none';
+      setActive(menuProducts);
+    }
+    function showOrders() {
+      productsSection.style.display = 'none';
+      ordersSection.style.display   = 'block';
+      setActive(menuOrders);
+    }
 
+    menuProducts?.addEventListener('click', showProducts);
+    menuOrders?.addEventListener('click', showOrders);
 
-
+    // Mặc định: hiển thị Sản phẩm (đảm bảo state)
+    showProducts();
+  </script>
 </body>
-
 </html>

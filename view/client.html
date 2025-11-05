@@ -7,9 +7,7 @@
 
   <!-- CSS -->
   <!-- <title>TickTock Shop</title> -->
-  <link rel="stylesheet" href="css/client.css">
-  <link rel="stylesheet" href="css/product.css">
-  <link rel="stylesheet" href="css/login.css">
+
   <link rel="stylesheet" href="css/profile.css">
   <link rel="icon" type="image/png" href="image/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
@@ -78,18 +76,16 @@
 
 
       </div>
-
-      <div class="name"><a href="warranty.html">Thông tin cá nhân</a></div>
     </div>
 
     <div class="header_other">
       <div class="search">
-        <input type="text" placeholder="Tìm kiếm...">
-        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="searchInput" type="text" placeholder="Tìm kiếm...">
+        <i id="searchBtn" class="fa-solid fa-magnifying-glass"></i>
       </div>
       <div class="account">
         <i class="fa-regular fa-user"></i>
-        <a href="#">Tài khoản</a>
+        <a href="#" id="account-link">Tài khoản</a>
       </div>
       <div class="cart-link">
         <a href="#cart" id="cart-btn" aria-label="Giỏ hàng">
@@ -97,12 +93,12 @@
         </a>
         <span id="cart-count" class="cart-badge">0</span>
       </div>
-      <div class="logout">
+      <div class="logout" id="logout-btn" style="display: none;">
         <i class="fa-solid fa-right-from-bracket"></i>
       </div>
     </div>
   </header>
-<div id="header-spacer" style="height:100px;background:pink;"></div>
+<!-- <div id="header-spacer" style="height:100px;background:pink;"></div> -->
   <div class="slider">
         <div class="slide"><img src="../view/image/slide1.jpg" alt="slider1"></div>
         <div class="slide"><img src="../view/image/slide2.jpg" alt="slider2"></div>
@@ -246,11 +242,6 @@
         <!-- LEFT -->
         <div class="delivery-content-left">
           <p>Vui lòng điền thông tin giao hàng</p>
-
-          <!-- <div class="delivery-content-left-dangnhap">
-            <i class="fa-regular fa-user"></i> Đã có tài khoản? <a href="#login" style="margin-left:6px;">Đăng nhập</a>
-          </div> -->
-
           <div class="delivery-content-left-input-top">
             <div class="delivery-content-left-input-top-item">
               <label for="co-fullname">Họ và tên</label>
@@ -361,16 +352,6 @@
               <tr class="grand-total"><td><strong>Tổng thanh toán</strong></td><td id="co-grand"><strong>0 đ</strong></td></tr>
             </tbody>
           </table>
-
-          <!-- <div class="coupon-wrap">
-            <input type="text" id="coupon-input" placeholder="Nhập mã giảm giá">
-            <button id="apply-coupon">Áp dụng</button>
-          </div>
-
-          <select id="coupon-select" class="coupon-select" style="margin-bottom:12px; display:none;">
-            <option value="">Chọn mã khuyến mãi</option>
-          </select> -->
-
           <div class="payment-method">
             <p>Phương thức thanh toán</p>
             <label><input type="radio" name="payment" value="cod" checked> Thanh toán khi nhận hàng (COD)</label><br>
@@ -388,7 +369,7 @@
       </div>
     </div>
 
-    <!-- Modal kết quả đơn: ĐẶT BÊN TRONG #delivery -->
+    <!-- Modal kết quả đơn: -->
     <div id="order-result" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="order-result-title">
       <div class="modal-content">
         <h2 id="order-result-title">Đặt hàng thành công 🎉</h2>
@@ -551,7 +532,6 @@
       </div>
     </div>
   </div>
-
 
 <!-- ===== login ===== -->  
   <div id="login_modal">

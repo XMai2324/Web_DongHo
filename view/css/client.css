@@ -19,7 +19,6 @@ header {
   background-color: transparent;
   transition: background-color 0.3s ease;
   z-index: 1000;
-
   display: grid;
   grid-template-columns: auto 1fr auto;
   align-items: center;
@@ -91,8 +90,8 @@ header.scrolled {
 .account, .cart, .logout{
   display:flex; align-items:center; gap:6px; cursor:pointer; line-height:1;
 }
-.cart{ position:relative; }
-.cart .cart-badge{
+.cart-link{ position:relative; }
+.cart-link .cart-badge{
   position:absolute; top:-6px; right:-10px;
   background:#e11d48; color:#fff; font-size:12px; line-height:1;
   padding:3px 6px; border-radius:999px; font-weight:700; min-width:18px; text-align:center;
@@ -200,3 +199,11 @@ footer p {
     text-align: center;
   }
 }
+/* Giữ header luôn 1 hàng ổn định */
+:root { --header-h: 100px; }          /* khớp với payment.css */
+.header_menu{ min-width: 0; }         /* cho cột giữa co lại khi thiếu chỗ */
+.header_other{ min-width: max-content; } /* cột phải không bị cắt */
+.header_other .search input{
+  width: clamp(140px, 24vw, 260px);   /* tránh ô tìm kiếm chiếm quá rộng */
+}
+

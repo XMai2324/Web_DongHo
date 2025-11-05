@@ -98,15 +98,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Thêm vào giỏ
-  const addToCart = (p, qty) => {
-    const cart = loadCart();
-    const idx = cart.findIndex(x => x.id === p._id);
-    if (idx > -1) cart[idx].qty += qty;
-    else cart.push({ id:p._id, name:p.name, price:Number(p.price), image:p.image,
-      brand:p.brand||'', category:p.category||'', qty });
-    saveCart(cart);
-    updateCartBadge();
-  };
+  // const addToCart = (p, qty) => {
+  //   const cart = loadCart();
+  //   const idx = cart.findIndex(x => x.id === p._id);
+  //   if (idx > -1) cart[idx].qty += qty;
+  //   else cart.push({ id:p._id, name:p.name, price:Number(p.price), image:p.image,
+  //     brand:p.brand||'', category:p.category||'', qty });
+  //   saveCart(cart);
+  //   updateCartBadge();
+  // };
 
   // ===== CONFIG =====
   const PER_PAGE = 8;
@@ -315,13 +315,33 @@ document.addEventListener('DOMContentLoaded', () => {
   qvEl && qvEl.addEventListener('click', (e) => { if (e.target === qvEl) closeQuickView(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeQuickView(); });
 
-  qvAdd && qvAdd.addEventListener('click', () => {
-    const p = window.products.find(x => x._id === currentProductId);
-    if (!p) return;
-    const qty = Math.max(1, parseInt(qvQty.value, 10) || 1);
-    addToCart(p, qty);
-    closeQuickView();
-  });
+    qvAdd && qvAdd.addEventListener('click', () => {
+        const p = window.products.find(x => x._id === currentProductId);
+        if (!p) return;
+        const qty = Math.max(1, parseInt(qvQty.value, 10) || 1);
+
+        // === SỬA TẠI ĐÂY ===
+        // Gọi hàm "xịn" từ cart.js
+        if (window.Cart && typeof window.Cart.addToCart === 'function') {
+          
+          // cart.js dùng 'id', nhưng product.js dùng '_id'
+          // Chúng ta cần "dịch" lại cho đúng
+          const productForCart = {
+            id: p._id, // Quan trọng: đổi _id thành id
+            name: p.name,
+            price: p.price,
+            image: p.image
+            // cart.js chỉ cần nhiêu đây
+          };
+          
+          window.Cart.addToCart(productForCart, qty);
+        } else {
+          console.error('Lỗi: window.Cart.addToCart không tồn tại.');
+        }
+        // === HẾT SỬA ===
+
+        closeQuickView();
+    });
 
   // ===== RENDER =====
   function render(list){

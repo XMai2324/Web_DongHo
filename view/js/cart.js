@@ -3,10 +3,32 @@ function currency(v){try{return Number(v).toLocaleString('vi-VN')}catch{return v
 function getUser(){return JSON.parse(localStorage.getItem('auth:user')||'null')}
 function cartKey(){const u=getUser();return(u&&u.id)?`cart:${u.id}`:'cart:guest'}
 
-function updateBadge(cart=readCart()){
-  const n=cart.reduce((s,i)=>s+(i.qty||0),0);
-  const badge=document.getElementById('cart-count')||document.querySelector('.cart-badge');
-  if(badge) badge.textContent=n;
+function updateBadge(cart = readCart()) {
+  // 1. Tính toán số lượng
+  const n = cart.reduce((s, i) => s + (i.qty || 0), 0);
+
+  // 2. Tìm phần tử badge (sử dụng các bộ chọn CSS "xịn" từ product1.js)
+  const findCartCountEl = () =>
+    document.getElementById('cart-count') ||
+    document.querySelector('[data-cart-count]') ||
+    document.querySelector('.cart-count') ||
+    document.querySelector('.cart-badge') ||
+    document.querySelector('.header-cart .count, .cart__count, .count-badge');
+  
+  const el = findCartCountEl();
+  if (!el) return; // Không tìm thấy badge thì thoát
+
+  // 3. Cập nhật đầy đủ (cả text VÀ style)
+  el.textContent = n > 99 ? '99+' : String(n);
+  
+  // Đây là dòng quan trọng nhất bị thiếu:
+  el.style.display = n ? 'inline-block' : 'none';
+  
+  // Cập nhật thêm các thuộc tính khác cho đồng bộ
+  if (el.classList) {
+    el.classList.toggle('is-empty', !n);
+  }
+  el.setAttribute('aria-label', `Giỏ hàng: ${n} sản phẩm`);
 }
 
 /* ========= Storage (đồng bộ với product.js) =========
@@ -101,7 +123,7 @@ function renderCart() {
 let __lastAdd = { id: null, t: 0 };
 /* ========= Cart API ========= */
   function addToCart(product, qty = 1) {
-    if (!product || !product.id) return;
+    if (!product || product.id === null || product.id === undefined) return;
 
     // ---- Chặn double-click / double-listener ----
     const now = Date.now();
