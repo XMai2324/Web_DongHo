@@ -3,18 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>TickTock Shop</title>
-  <link rel="stylesheet" href="css/client.css">
-  <link rel="stylesheet" href="css/product.css">
-  <link rel="stylesheet" href="css/login.css">
+  <title>TickTock Shop - Sản phẩm</title>
+
+  <!-- CSS -->
+  <!-- <title>TickTock Shop</title> -->
+
+  <link rel="stylesheet" href="css/profile.css">
   <link rel="icon" type="image/png" href="image/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <link rel="stylesheet" href="../view/css/client.css">
+  <link rel="stylesheet" href="../view/css/product.css">
+  <link rel="stylesheet" href="../view/css/login.css">
+  <link rel="stylesheet" href="../view/css/cart.css">
+  <link rel="stylesheet" href="../view/css/checkout.css">
+  <link rel="stylesheet" href="../view/css/payment.css">
+  <link rel="icon" type="image/png" href="../view/image/logo.png">
 </head>
 <body>
   <!-- ===== HEADER ===== -->
   <header>
     <div class="logo">
-      <img src="image/logo2.png" alt="logo shop">
+      <img src="../view/image/logo2.png" alt="logo shop">
     </div>
 
     <div class="header_menu">
@@ -25,40 +34,40 @@
           <li><a href="client.html?brand=citizen">Citizen</a></li>
           <li><a href="client.html?brand=rado">Rado</a></li>
           <li><a href="client.html?brand=seiko">Seiko</a></li>
+        </ul>
+      </div>
+
+      <div class="name"><a href="client.html?category=nam">Nam</a>
+        <ul>
+          <li><a href="client.html?category=nam&brand=casio">Casio</a></li>
+          <li><a href="client.html?category=nam&brand=rolex">Rolex</a></li>
+          <li><a href="client.html?category=nam&brand=citizen">Citizen</a></li>
+          <li><a href="client.html?category=nam&brand=rado">Rado</a></li>
+          <li><a href="client.html?category=nam&brand=seiko">Seiko</a></li>
+        </ul>
+      </div>
+
+      <div class="name"><a href="client.html?category=nu">Nữ</a>
+        <ul>
+          <li><a href="client.html?category=nu&brand=casio">Casio</a></li>
+          <li><a href="client.html?category=nu&brand=rolex">Rolex</a></li>
+          <li><a href="client.html?category=nu&brand=citizen">Citizen</a></li>
+          <li><a href="client.html?category=nu&brand=rado">Rado</a></li>
+          <li><a href="client.html?category=nu&brand=seiko">Seiko</a></li>
           </ul>
-          </div>
+      </div>
 
-          <div class="name"><a href="client.html?category=nam">Nam</a>
-            <ul>
-              <li><a href="client.html?category=nam&brand=casio">Casio</a></li>
-              <li><a href="client.html?category=nam&brand=rolex">Rolex</a></li>
-              <li><a href="client.html?category=nam&brand=citizen">Citizen</a></li>
-              <li><a href="client.html?category=nam&brand=rado">Rado</a></li>
-              <li><a href="client.html?category=nam&brand=seiko">Seiko</a></li>
-            </ul>
-          </div>
+      <div class="name"><a href="client.html?category=capdoi">Cặp đôi</a>
+        <ul>
+          <li><a href="client.html?category=capdoi&brand=casio">Casio</a></li>
+          <li><a href="client.html?category=capdoi&brand=rolex">Rolex</a></li>
+          <li><a href="client.html?category=capdoi&brand=citizen">Citizen</a></li>
+          <li><a href="client.html?category=capdoi&brand=rado">Rado</a></li>
+          <li><a href="client.html?category=capdoi&brand=seiko">Seiko</a></li>
+        </ul>
+      </div>
 
-          <div class="name"><a href="client.html?category=nu">Nữ</a>
-            <ul>
-              <li><a href="client.html?category=nu&brand=casio">Casio</a></li>
-              <li><a href="client.html?category=nu&brand=rolex">Rolex</a></li>
-              <li><a href="client.html?category=nu&brand=citizen">Citizen</a></li>
-              <li><a href="client.html?category=nu&brand=rado">Rado</a></li>
-              <li><a href="client.html?category=nu&brand=seiko">Seiko</a></li>
-            </ul>
-          </div>
-
-          <div class="name"><a href="client.html?category=capdoi">Cặp đôi</a>
-            <ul>
-              <li><a href="client.html?category=capdoi&brand=casio">Casio</a></li>
-              <li><a href="client.html?category=capdoi&brand=rolex">Rolex</a></li>
-              <li><a href="client.html?category=capdoi&brand=citizen">Citizen</a></li>
-              <li><a href="client.html?category=capdoi&brand=rado">Rado</a></li>
-              <li><a href="client.html?category=capdoi&brand=seiko">Seiko</a></li>
-            </ul>
-          </div>
-
-          <div class="name"> Phụ kiện
+         <div class="name"> Phụ kiện
             <ul>
               <li><a href="client.html?category=phukien&accessory=glass">Kính cường lực</a></li>
               <li><a href="client.html?category=phukien&accessory=box">Hộp đựng</a></li>
@@ -74,31 +83,28 @@
         <input id="searchInput" type="text" placeholder="Tìm kiếm...">
         <i id="searchBtn" class="fa-solid fa-magnifying-glass"></i>
       </div>
-      
-      <div class="account" id="accountBtn">
+      <div class="account">
         <i class="fa-regular fa-user"></i>
-        <a href="#" id="accountLink">
-            <span id="accountLinkText">Tài khoản</span>
-        </a>
+        <a href="#">Tài khoản</a>
       </div>
-
-      <div class="cart">
-        <i class="fa-solid fa-cart-shopping"></i>
+      <div class="cart-link">
+        <a href="#cart" id="cart-btn" aria-label="Giỏ hàng">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </a>
         <span id="cart-count" class="cart-badge">0</span>
       </div>
-      
-      <div class="logout" id="logoutBtn"> 
+      <div class="logout">
         <i class="fa-solid fa-right-from-bracket"></i>
       </div>
     </div>
   </header>
 
   <div class="slider">
-        <div class="slide"><img src="image/slide1.jpg" alt="slider1"></div>
-        <div class="slide"><img src="image/slide2.jpg" alt="slider2"></div>
-        <div class="slide"><img src="image/slide3.png" alt="slider3"></div>
-        <div class="slide"><img src="image/slide4.png" alt="slider4"></div>
-        <div class="slide"><img src="image/slide5.jpg" alt="slider5"></div> <!-- thêm class="slide" -->
+        <div class="slide"><img src="../view/image/slide1.jpg" alt="slider1"></div>
+        <div class="slide"><img src="../view/image/slide2.jpg" alt="slider2"></div>
+        <div class="slide"><img src="../view/image/slide3.png" alt="slider3"></div>
+        <div class="slide"><img src="../view/image/slide4.png" alt="slider4"></div>
+        <div class="slide"><img src="../view/image/slide5.jpg" alt="slider5"></div> <!-- thêm class="slide" -->
     </div>
   <!-- ===== MAIN ===== -->
   <main>
@@ -160,11 +166,309 @@
       </div>
     </section>
   </main>
+  
+  <!-- ===== CART (embedded) ===== -->
+  <div id="cart" class="cart hidden">
+    <div class="container">
+      <div class="cart-top-wrap">
+        <div class="cart-top-item active">
+          <i class="fa-solid fa-cart-shopping"></i>
+        </div>
+        <div class="cart-top-item">
+          <i class="fa-solid fa-location-dot"></i>
+        </div>
+        <div class="cart-top-item">
+          <i class="fa-solid fa-money-check-dollar"></i>
+        </div>
+      </div>
+
+      <div class="cart-content">
+        <div class="cart-content-left">
+          <table id="cart-table">
+            <thead>
+              <tr>
+                <th>Sản phẩm</th>
+                <th>Tên sản phẩm</th>
+                <th>SL</th>
+                <th>Thành tiền</th>
+                <th>Xóa</th>
+              </tr>
+            </thead>
+            <tbody id="cart-body"></tbody>
+          </table>
+        </div>
+
+        <div class="cart-content-right">
+          <table>
+            <tr>
+              <th colspan="2">TỔNG TIỀN GIỎ HÀNG</th>
+            </tr>
+            <tr>
+              <td>Tổng Sản Phẩm</td>
+              <td id="sum-qty">0</td>
+            </tr>
+            <tr>
+              <td>Tạm tính</td>
+              <td><p id="subtotal">0 <sub>đ</sub></p></td>
+            </tr>
+            <tr>
+              <td class="grand">Tổng Tiền Hàng</td>
+              <td><p id="grand-total" class="grand">0 <sub>đ</sub></p></td>
+            </tr>
+          </table>
+
+          <div class="cart-content-right-text">
+            <p id="shipping-msg">Bạn sẽ được miễn phí ship nếu như mua thêm…</p>
+            <p>Hãy <a href="#login">Đăng nhập</a> để nhận được nhiều khuyến mãi nhé</p>
+          </div>
+
+          <button id="checkout-btn" class="checkout" type="button">Đặt Hàng</button>
+          <a id="cart-close" href="#" class="go-shopping">← Tiếp tục mua sắm</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== DELIVERY / CHECKOUT (embedded) ===== -->
+  <div id="delivery" class="delivery hidden" role="region" aria-label="Thanh toán">
+    <div class="delivery-top-wrap">
+      <div class="delivery-top-item"><i class="fa-solid fa-cart-shopping"></i></div>
+      <div class="delivery-top-item active"><i class="fa-solid fa-location-dot"></i></div>
+      <div class="delivery-top-item"><i class="fa-solid fa-money-check-dollar"></i></div>
+    </div>
+
+    <div class="container">
+      <div class="delivery-content">
+        <!-- LEFT -->
+        <div class="delivery-content-left">
+          <p>Vui lòng điền thông tin giao hàng</p>
+          <div class="delivery-content-left-input-top">
+            <div class="delivery-content-left-input-top-item">
+              <label for="co-fullname">Họ và tên</label>
+              <input type="text" id="co-fullname" placeholder="VD: Nguyễn Văn A" required>
+            </div>
+            <div class="delivery-content-left-input-top-item">
+              <label for="co-phone">Số điện thoại</label>
+              <input type="tel" id="co-phone" inputmode="tel" placeholder="09xx xxx xxx" required>
+            </div>
+            <div class="delivery-content-left-input-top-item">
+              <label for="co-email">Email (tuỳ chọn)</label>
+              <input type="email" id="co-email" placeholder="you@example.com">
+            </div>
+            <div class="delivery-content-left-input-top-item">
+              <label for="co-address">Địa chỉ</label>
+              <input type="text" id="co-address" placeholder="Số nhà, đường" required>
+            </div>
+          </div>
+
+          <div class="delivery-content-left-input-bottom">
+          <label for="co-city">Tỉnh/Thành</label>
+          <div class="combo" id="city-combo">
+            <input id="co-city" name="co-city" type="text"
+                  class="form-input"
+                  placeholder="-- Chọn hoặc nhập Tỉnh/Thành --"
+                  required autocomplete="off">
+            <button type="button" class="combo-toggle" aria-label="Mở danh sách"></button>
+            <ul class="combo-list" role="listbox">
+              <li>Hà Nội</li>
+              <li>Tp Hồ Chí Minh</li>
+              <li>Đà Nẵng</li>
+              <li>Hải Phòng</li>
+              <li>Cần Thơ</li>
+              <li>Tp Huế</li>
+              <li>Tuyên Quang</li>
+              <li>Lào Cai</li>
+              <li>Thái Nguyên</li>
+              <li>Phú Thọ</li>
+              <li>Bắc Ninh</li>
+              <li>Hưng Yên</li>
+              <li>Ninh Bình</li>
+              <li>Quảng Trị</li>
+              <li>Quảng Ngãi</li>
+              <li>Gia Lai</li>
+              <li>Khánh Hòa</li>
+              <li>Lâm Đồng</li>
+              <li>Đắk Lắk</li>
+              <li>Đồng Nai</li>
+              <li>Tây Ninh</li>
+              <li>Vĩnh Long</li>
+              <li>Đồng Tháp</li>
+              <li>Cà Mau</li>
+              <li>An Giang</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- QUẬN/HUYỆN -->
+        <div class="delivery-content-left-input-bottom">
+          <label for="co-district">Quận/Huyện</label>
+          <div class="combo" id="district-combo">
+            <input id="co-district" name="co-district" type="text"
+                  class="form-input"
+                  placeholder="-- Chọn hoặc nhập Quận/Huyện --"
+                  required autocomplete="off">
+            <button type="button" class="combo-toggle" aria-label="Mở danh sách"></button>
+            <ul class="combo-list" role="listbox">
+              <li>Quận 1</li>
+              <li>Quận 3</li>
+              <li>Quận 4</li>
+              <li>Quận 5</li>
+              <li>Quận 6</li>
+              <li>Quận 7</li>
+              <li>Quận 8</li>
+              <li>Quận 10</li>
+              <li>Quận 11</li>
+              <li>Quận 12</li>
+              <li>Bình Tân</li>
+              <li>Bình Thạnh</li>
+              <li>Tân Bình</li>
+              <li>Tân Phú</li>
+              <li>Phú Nhuận</li>
+              <li>Gò Vấp</li>
+            </ul>
+          </div>
+        </div>
+          <div class="delivery-content-left-input-bottom">
+            <label for="co-ward">Phường/Xã</label>
+            <input type="text" id="co-ward" placeholder="Phường 5" required>
+          </div>
+          <div class="delivery-content-left-input-bottom">
+            <label for="co-note">Ghi chú (tuỳ chọn)</label>
+            <input type="text" id="co-note" placeholder="Ghi chú cho shipper...">
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="delivery-content-right">
+          <table>
+            <thead>
+              <tr><th>Thông tin</th><th>Giá trị</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Tổng Sản Phẩm</td><td id="co-qty">0</td></tr>
+              <tr><td>Tạm tính</td><td id="co-subtotal">0 đ</td></tr>
+              <tr class="total"><td>Phí vận chuyển</td><td id="co-shipfee">—</td></tr>
+              <!-- <tr><td>Giảm giá</td><td id="co-discount">0 đ</td></tr> -->
+              <tr class="grand-total"><td><strong>Tổng thanh toán</strong></td><td id="co-grand"><strong>0 đ</strong></td></tr>
+            </tbody>
+          </table>
+          <div class="payment-method">
+            <p>Phương thức thanh toán</p>
+            <label><input type="radio" name="payment" value="cod" checked> Thanh toán khi nhận hàng (COD)</label><br>
+            <label><input type="radio" name="payment" value="bank"> Chuyển khoản ngân hàng</label><br>
+            <label><input type="radio" name="payment" value="ewallet"> Ví điện tử (MoMo/VNPay)</label>
+          </div>
+
+          <div class="delivery-content-left-button">
+            <button id="place-order-btn">Xác nhận thanh toán</button>
+            <a href="#cart" id="delivery-back">← Quay lại giỏ hàng</a>
+          </div>
+
+          
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal kết quả đơn: -->
+    <div id="order-result" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="order-result-title">
+      <div class="modal-content">
+        <h2 id="order-result-title">Đặt hàng thành công 🎉</h2>
+        <p id="order-result-msg">Cảm ơn bạn đã mua sắm tại TickTock Shop!</p>
+        <div class="modal-actions">
+          <a href="client.html" class="btn-primary">Tiếp tục mua sắm</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== payment ===== -->
+  <div class="payment" hidden>
+    <div class="order-wrap" id="order-summary">
+        <h3 class="order-title">Đơn hàng của bạn</h3>
+
+      <div class="delivery-top-wrap">
+        <div class="delivery-top-item"><i class="fa-solid fa-cart-shopping"></i></div>
+        <div class="delivery-top-item"><i class="fa-solid fa-location-dot"></i></div>
+        <div class="delivery-top-item active"><i class="fa-solid fa-money-check-dollar"></i></div>
+      </div>
+
+      <div class="order-row">
+        <div class="order-label">Date :</div>
+        <div class="order-value" id="ord-date">--/--/----</div>
+      </div>
+
+      <div class="order-row">
+        <div class="order-label">Mã đơn hàng:</div>
+        <div class="order-value" id="ord-code">TT-XXXXXX</div>
+      </div>
+
+      <div class="order-row">
+        <div class="order-label">Tên khách hàng :</div>
+        <div class="order-value" id="ord-customer">Khách lẻ</div>
+      </div>
+
+      <div class="order-row order-products-row">
+        <div class="order-label">Sản phẩm:</div>
+        <div class="order-value">
+          <div class="order-products">
+            <ul class="order-list" id="ord-items"></ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-row">
+        <div class="order-label">Tổng Tiền:</div>
+        <div class="order-value order-total" id="ord-total">0 đ</div>
+      </div>
+
+      <div class="order-row">
+        <div class="order-label">Trạng thái đơn hàng :</div>
+        <div class="order-value">
+          <!-- Nút sẽ đổi tên/enable theo trạng thái.
+              id này để script bắt sự kiện dễ dàng -->
+          <button id="ord-status-btn" class="order-status" disabled>Chờ xác nhận</button>
+          <!-- (tuỳ chọn) hiển thị chữ trạng thái riêng -->
+          <span id="ord-status-text" class="order-status-text" style="margin-left:8px;"></span>
+        </div>
+      </div>
+
+      <div class="order-footer" id="ord-note">
+        Cảm ơn bạn đã mua hàng tại TickTock. Chúng tôi sẽ liên hệ để xác nhận đơn.
+      </div>
+
+      <!-- ====== LỊCH SỬ MUA HÀNG ====== -->
+      <section class="order-history">
+        <button id="btn-history" class="history-btn">Lịch sử mua hàng</button>
+
+        <div id="history-panel" class="history-panel" hidden>
+          <div class="history-table-wrap">
+            <table id="history-table" class="history-table">
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Số lượng</th>
+                  <th>Ngày mua</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Hàng dữ liệu sẽ được render bằng JS -->
+              </tbody>
+            </table>
+          </div>
+          <p class="history-note">
+            * Lịch sử được lấy từ các đơn hàng đã đặt trên thiết bị này.
+          </p>
+        </div>
+      </section>
+    </div>
+  </div>
+
 
   <!-- ===== FOOTER ===== -->
   <footer>
         <div class="left_footer">
-            <img src="image/logo2.png" alt="logo" class="footer-logo">
+            <img src="../view/image/logo2.png" alt="logo" class="footer-logo">
             <p><strong>TickTock Shop</strong> là hệ thống cửa hàng đồng hồ chính hãng tại Việt Nam, 
                 chuyên cung cấp các thương hiệu nổi tiếng thế giới như Casio, Seiko, Citizen, 
                 Rolex, Rado cùng nhiều phụ kiện đi kèm (dây đeo, hộp đựng, kính cường lực).
@@ -237,61 +541,151 @@
   <script src="js/search.js"></script>
 
 
-
+<!-- ===== login ===== -->  
   <div id="login_modal">
     <form id="loginForm">
-        <h2>Đăng nhập</h2>
-        <div class="input-group">
-            <label for="loginIdentifier">Email hoặc Tên đăng nhập</label>
-            <input type="text" id="loginIdentifier" required>
-        </div>
-        <div class="input-group">
-            <label for="loginPassword">Mật khẩu</label>
-            <input type="password" id="loginPassword" required>
-        </div>
-        <button type="submit">Đăng Nhập</button>
-        <div id="message" class="message"></div>
-
-        <div class="link">
-            Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
-        </div>
+      <h2>Đăng nhập</h2>
+      <div class="input-group">
+        <label for="loginIdentifier">Email hoặc Tên đăng nhập</label>
+        <input type="text" id="loginIdentifier" required>
+      </div>
+      <div class="input-group">
+        <label for="loginPassword">Mật khẩu</label>
+        <input type="password" id="loginPassword" required>
+      </div>
+      <button type="submit">Đăng Nhập</button>
+      <div id="message" class="message"></div>
+      
+      <div class="link">
+        Chưa có tài khoản? <a href="#">Đăng ký ngay</a>
+      </div>
     </form>
-
-    <form id="registerForm">
-        <h2>Đăng ký tài khoản</h2>
-        <div class="input-group">
-            <label for="regUsername">Tên đăng nhập (Username)</label>
-            <input type="text" id="regUsername" required>
-            <span class="error-text" id="errorUsername"></span>
-        </div>
-        <div class="input-group">
-            <label for="regEmail">Email</label>
-            <input type="email" id="regEmail" required>
-            <span class="error-text" id="errorEmail"></span>
-        </div>
-        <div class="input-group">
-            <label for="regPassword">Mật khẩu</label>
-            <input type="password" id="regPassword" required>
-            <span class="error-text" id="errorPassword"></span>
-        </div>
-        
-        <!-- Ô nhập lại mật khẩu -->
-        <div class="input-group">
-            <label for="regRePassword">Nhập lại Mật khẩu</label>
-            <input type="password" id="regRePassword" required>
-            <span class="error-text" id="errorRePassword"></span>
-        </div>
-
-        <button type="submit">Đăng Ký</button>
-        <div id="message" class="message"></div>
     
-        <div class="link">
-            Đã có tài khoản? <a href="#">Đăng nhập ngay</a>
-        </div>
+    <form id="registerForm">
+      <h2>Đăng ký tài khoản</h2>
+      <div class="input-group">
+        <label for="regUsername">Tên đăng nhập (Username)</label>
+        <input type="text" id="regUsername" required>
+        <span class="error-text" id="errorUsername"></span>
+      </div>
+      <div class="input-group">
+        <label for="regEmail">Email</label>
+        <input type="email" id="regEmail" required>
+        <span class="error-text" id="errorEmail"></span>
+      </div>
+      <div class="input-group">
+        <label for="regPassword">Mật khẩu</label>
+        <input type="password" id="regPassword" required>
+        <span class="error-text" id="errorPassword"></span>
+      </div>
+      
+      <!-- Ô nhập lại mật khẩu -->
+      <div class="input-group">
+        <label for="regRePassword">Nhập lại Mật khẩu</label>
+        <input type="password" id="regRePassword" required>
+        <span class="error-text" id="errorRePassword"></span>
+      </div>
+      
+      <button type="submit">Đăng Ký</button>
+      <div id="message" class="message"></div>
+      
+      <div class="link">
+        Đã có tài khoản? <a href="#">Đăng nhập ngay</a>
+      </div>
     </form>
+    
+    
+    
   </div>
+  
+   <!-- ===== PROFILE OVERLAY (NO AVATAR) ===== -->
+    <section id="profileSection" aria-hidden="true">
+      <div class="profile-backdrop" id="profileBackdrop"></div>
 
+      <div class="profile-panel">
+        
 
+        <div class="profile-content">
+          <!-- Cột trái: Thông tin cơ bản -->
+          <aside class="profile-aside">
+            <p class="username" id="usernameText">Người dùng</p>
+            <span class="role-badge" id="profileRoleBadge">user</span>
+          </aside>
 
+          <!-- Cột phải: Form thông tin -->
+          <div class="profile-main">
+            <div class="card">
+              <h3>Thông tin tài khoản</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="profileName">Tên hiển thị</label>
+                  <input id="profileName" placeholder="Tên của bạn">
+                </div>
+                <div class="form-group">
+                  <label for="profileUsername">Tên đăng nhập</label>
+                  <input id="profileUsername" readonly>
+                </div>
+              </div>
+
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="profileEmail">Email</label>
+                  <input id="profileEmail" type="email" placeholder="example@gmail.com">
+                </div>
+                <div class="form-group">
+                  <label for="profileRole">Vai trò</label>
+                  <input id="profileRole" readonly>
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="saveProfile" class="btn primary"> Lưu thay đổi</button>
+                <span id="profileMsg" class="toast"></span>
+              </div>
+            </div>
+
+            <div class="card">
+              <h3>Đổi mật khẩu</h3>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="oldPass">Mật khẩu hiện tại</label>
+                  <input type="password" id="oldPass">
+                </div>
+                <div class="form-group">
+                  <label for="newPass">Mật khẩu mới</label>
+                  <input type="password" id="newPass">
+                </div>
+              </div>
+              <div class="form-row">
+                <div class="form-group">
+                  <label for="reNewPass">Xác nhận mật khẩu mới</label>
+                  <input type="password" id="reNewPass">
+                </div>
+              </div>
+
+              <div class="actions">
+                <button id="changePass" class="btn"> Đổi mật khẩu</button>
+                <span id="passMsg" class="toast"></span>
+              </div>
+            </div>
+
+            <div class="actions">
+              <button id="logoutProfile" class="btn danger">Đăng xuất</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  
+    <!-- ===== JS ===== -->
+  <script src="../view/js/data.js"></script>
+  <!-- <script src="../view/js/product.js"></script> -->
+  <script src="../view/js/product1.js"></script>
+  <script src="../view/js/slider.js"></script>
+  <script src="../view/js/auth.js"></script>
+  <script src="../view/js/profile.js"></script>
+   <script src="../view/js/cart.js"></script>
+  <script src="../view/js/checkout.js"></script>
+  <script src="../view/js/payment.js"></script>
 </body>
 </html>

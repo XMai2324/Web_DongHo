@@ -1,15 +1,14 @@
-// ../admin/ad_js/orders.js
+// ../admin/ad_js/orders.js (no seed version)
 (function () {
   // ====== tiện ích ======
   const STATUS_TEXT = {
-    'cho-xac-nhan': 'Chờ xác nhận',
-    'cho-van-chuyen': 'Chờ vận chuyển',
-    'dang-van-chuyen': 'Đang vận chuyển',
-    'hoan-tat': 'Nhận hàng thành công'
+    'cho-xac-nhan':     'Chờ xác nhận',
+    'cho-van-chuyen':   'Chờ vận chuyển',
+    'dang-van-chuyen':  'Đang vận chuyển',
+    'hoan-tat':         'Nhận hàng thành công'
   };
   const ORDERS_KEY = 'orders';
   const money = n => (Number(n) || 0).toLocaleString('vi-VN');
-
   const qsi = (sel) => document.getElementById(sel);
 
   // parse ngày từ input date (yyyy-mm-dd)
@@ -36,7 +35,7 @@
       const start = Date.now();
       (function loop() {
         if (Array.isArray(window.products) && window.products.length) return resolve();
-        if (Date.now() - start > maxMs) return resolve(); // hết thời gian vẫn resolve
+        if (Date.now() - start > maxMs) return resolve();
         setTimeout(loop, 100);
       })();
     });
@@ -54,7 +53,7 @@
     localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
   }
 
-  // Tính tổng từ items + products (nếu item không có price thì lấy theo tên trong products)
+  // Map sản phẩm
   function buildProductMap() {
     return (window.products || []).reduce((m, p) => (m[p.name] = p, m), {});
   }
@@ -72,18 +71,50 @@
     return `<span class="status ${code}">${STATUS_TEXT[code] || code}</span>`;
   }
   function rowIconCell(id) {
-    // icon con mắt
     return `<button class="icon-cell-btn" title="Chi tiết" data-action="detail" data-id="${id}">
               <i class="fa-regular fa-eye"></i>
             </button>`;
   }
 
-  // Render bảng theo cột: (icon) Ngày đặt, Mã đơn, Khách hàng, Tổng tiền, Trạng thái, Thao tác
+  // ====== MIGRATE từ “inbox” của payment sang orders (1 lần) ======
+  function mapStatusFromPayment(st) {
+    // payment.js dùng: pending_confirmation, pending_shipment, shipping, delivered
+    if (st === 'pending_confirmation') return 'cho-xac-nhan';
+    if (st === 'pending_shipment')    return 'cho-van-chuyen';
+    if (st === 'shipping')            return 'dang-van-chuyen';
+    if (st === 'delivered')           return 'hoan-tat';
+    return 'cho-xac-nhan';
+  }
+  function migrateFromAdminInboxIfNeeded() {
+    const cur = loadOrders();
+    if (cur.length) return; // đã có dữ liệu rồi thì thôi
+
+    let inbox = [];
+    try { inbox = JSON.parse(localStorage.getItem('admin:orders') || '[]'); } catch {}
+    if (!Array.isArray(inbox) || !inbox.length) return;
+
+    const mapped = inbox.map(o => ({
+      id:        o.code || o.id || ('TT-' + Math.random().toString(36).slice(2,8).toUpperCase()),
+      customer:  o.customer || 'Khách lẻ',
+      date:      o.date || new Date().toISOString(),
+      status:    mapStatusFromPayment(o.status),
+      items:     (o.items || []).map(it => ({
+        productName: it.name || it.productName || ('Sản phẩm #' + (it.id || '')),
+        qty:         Number(it.qty) || 1,
+        price:       typeof it.price === 'number' ? it.price : undefined
+      }))
+    }));
+
+    // Ghi vào ORDERS_KEY để admin dùng chung 1 kho ổn định
+    saveOrders(mapped);
+  }
+
+  // ====== Render ======
   function renderOrders(PRODUCT_MAP) {
     const tbody  = qsi('orderTbody');
     const status = qsi('orderStatusFilter')?.value || '';
 
-    // đọc bộ lọc ngày (nếu nhập 1 trong 2 ô ngày => dùng lọc ngày, bỏ lọc trạng thái)
+    // lọc ngày (ưu tiên)
     const df = parseDateInput(qsi('orderDateFrom')?.value || '');
     const dt = parseDateInput(qsi('orderDateTo')?.value || '');
     const useDateFilter = !!(df || dt);
@@ -104,7 +135,6 @@
         const total   = calcTotal(o, PRODUCT_MAP);
         const dateStr = new Date(o.date).toLocaleDateString('vi-VN');
 
-        // làm mờ nút theo trạng thái
         const confirmDisabled = o.status !== 'cho-xac-nhan';
         const shipDisabled    = o.status !== 'cho-van-chuyen';
 
@@ -154,104 +184,35 @@
     }).join('');
     qsi('mdItems').innerHTML = html || 'Không có sản phẩm';
 
-    // show modal center
     qsi('orderDetailModal').style.display = 'flex';
   }
 
-  // Seed dữ liệu mẫu nếu rỗng hoặc merge nếu có sẵn (tránh trùng id)
-  function seedOrMergeSamples() {
-    const cur = loadOrders();
-    const exist = new Set(cur.map(o => o.id));
-
-    const samples = [
-      { id: 'DH001', customer: 'Nguyễn Văn A', date: new Date().toISOString(),
-        status: 'cho-xac-nhan',
-        items: [{ productName: 'Casio World Time AE-1200WHD-1A', qty: 1 }] },
-
-      { id: 'DH002', customer: 'Trần Thị B',
-        date: new Date(Date.now() - 86400000).toISOString(),
-        status: 'hoan-tat',
-        items: [{ productName: 'Casio W-737H-8AV Digital 10-Year Battery', qty: 1 }] },
-
-      { id: 'DH003', customer: 'Lê Văn C',
-        date: new Date(Date.now() - 2*86400000).toISOString(),
-        status: 'cho-xac-nhan',
-        items: [{ productName: 'Citizen Eco-Drive BM7100-59E', qty: 1 }] },
-
-      { id: 'DH004', customer: 'Phạm Thị D',
-        date: new Date(Date.now() - 3*86400000).toISOString(),
-        status: 'cho-van-chuyen',
-        items: [{ productName: 'Rolex Oyster Perpetual 126000', qty: 1 }] },
-
-      { id: 'DH005', customer: 'Ngô Văn E',
-        date: new Date(Date.now() - 4*86400000).toISOString(),
-        status: 'dang-van-chuyen',
-        items: [{ productName: 'Seiko 5 Sports SRPD55K1', qty: 2 }] },
-
-      { id: 'DH006', customer: 'Hoàng Thị F',
-        date: new Date(Date.now() - 5*86400000).toISOString(),
-        status: 'hoan-tat',
-        items: [{ productName: 'Rado Centrix Automatic Open Heart', qty: 1 }] },
-
-      { id: 'DH007', customer: 'Đỗ Quang G',
-        date: new Date(Date.now() - 6*86400000).toISOString(),
-        status: 'cho-xac-nhan',
-        items: [{ productName: 'Casio MTP-V300D-1A2V', qty: 1 }] },
-
-      { id: 'DH008', customer: 'Bùi Thị H',
-        date: new Date(Date.now() - 7*86400000).toISOString(),
-        status: 'cho-van-chuyen',
-        items: [{ productName: 'Citizen EM0680-50D Eco-Drive', qty: 1 }] },
-
-      { id: 'DH009', customer: 'Phan Văn I',
-        date: new Date(Date.now() - 8*86400000).toISOString(),
-        status: 'dang-van-chuyen',
-        items: [{ productName: 'Seiko Presage Cocktail Time SRPB43J1', qty: 1 }] },
-
-      { id: 'DH010', customer: 'Trịnh Thị K',
-        date: new Date(Date.now() - 9*86400000).toISOString(),
-        status: 'hoan-tat',
-        items: [{ productName: 'Casio Edifice EFV-540D-1AV', qty: 1 }] },
-    ];
-
-    const merged = cur.concat(samples.filter(o => !exist.has(o.id)));
-    saveOrders(merged);
-  }
-
-  // ===== Helpers reset để không chạy cùng lúc =====
-  function clearDateInputs() {
-    const df = qsi('orderDateFrom');
-    const dt = qsi('orderDateTo');
-    if (df) df.value = '';
-    if (dt) dt.value = '';
-  }
-  function clearStatusFilter() {
-    const st = qsi('orderStatusFilter');
-    if (st) st.value = '';
-  }
-
-  // ==== Khởi tạo an toàn ====
+  // ===== Khởi tạo =====
   ready(async () => {
     await waitProducts();
     const PRODUCT_MAP = buildProductMap();
-    seedOrMergeSamples();
+
+    // Quan trọng: nhập dữ liệu từ "admin:orders" nếu "orders" còn trống
+    migrateFromAdminInboxIfNeeded();
+
     renderOrders(PRODUCT_MAP);
 
-    // Lọc trạng thái: khi đổi trạng thái -> xóa 2 ô ngày (độc lập)
+    // Lọc trạng thái -> clear ô ngày
     qsi('orderStatusFilter')?.addEventListener('change', () => {
-      clearDateInputs();
+      const df = qsi('orderDateFrom'); const dt = qsi('orderDateTo');
+      if (df) df.value = ''; if (dt) dt.value = '';
       renderOrders(PRODUCT_MAP);
     });
 
-    // Tra cứu theo ngày: khi đổi ngày -> xóa lọc trạng thái (độc lập)
+    // Lọc ngày -> clear trạng thái
     ['orderDateFrom', 'orderDateTo'].forEach(id => {
       qsi(id)?.addEventListener('change', () => {
-        clearStatusFilter();
+        const st = qsi('orderStatusFilter'); if (st) st.value = '';
         renderOrders(PRODUCT_MAP);
       });
     });
 
-    // Click hành động trong bảng
+    // Click trong bảng
     qsi('orderTbody')?.addEventListener('click', (e) => {
       const btn = e.target.closest('button[data-action]');
       if (!btn) return;
@@ -268,7 +229,6 @@
       }
 
       if (action === 'confirm') {
-        // "Xác nhận" -> "Chờ vận chuyển"
         if (order.status === 'cho-xac-nhan') {
           order.status = 'cho-van-chuyen';
           saveOrders(orders);
@@ -278,7 +238,6 @@
       }
 
       if (action === 'ship') {
-        // Admin đẩy tới "Đang vận chuyển" (KH nhấn 'Đã nhận hàng' ở phía khách mới thành 'hoan-tat')
         if (order.status === 'cho-van-chuyen') {
           order.status = 'dang-van-chuyen';
           saveOrders(orders);
@@ -288,18 +247,22 @@
       }
     });
 
-    // Modal close
+    // Đóng modal
     qsi('btnCloseOrderDetail')?.addEventListener('click', () => qsi('orderDetailModal').style.display = 'none');
     qsi('orderDetailModal')?.addEventListener('click', (e) => {
       if (e.target === qsi('orderDetailModal')) qsi('orderDetailModal').style.display = 'none';
     });
 
-    // Tự cập nhật khi localStorage.orders thay đổi (ví dụ phía khách nhấn "Đã nhận hàng")
+    // Đồng bộ khi tab khác cập nhật
     window.addEventListener('storage', (e) => {
-      if (e.key === 'orders') renderOrders(PRODUCT_MAP);
+      if (e.key === ORDERS_KEY || e.key === 'admin:orders') {
+        // nếu có thay đổi ở 'admin:orders' mà 'orders' rỗng -> migrate lại
+        if (loadOrders().length === 0) migrateFromAdminInboxIfNeeded();
+        renderOrders(PRODUCT_MAP);
+      }
     });
 
-    // API public cho trang khách (tuỳ bạn dùng)
+    // API công khai (nếu phía khách gọi về)
     window.OrderAPI = {
       markReceived(id) {
         try {

@@ -1,17 +1,25 @@
+// FILE: product.js (client side)
 document.addEventListener('DOMContentLoaded', () => {
-  const STORAGE_KEY = 'admin_products';
+  const STORAGE_KEY_PRODUCTS = 'admin_products';
+  const STORAGE_KEY_ACCESS   = 'admin_accessories';
 
-  
-  function getAdminData(){
-    try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-    catch { return []; }
+  function safeJSON(key, fallback=[]) {
+    try { return JSON.parse(localStorage.getItem(key) || '[]'); }
+    catch { return fallback; }
   }
 
   function useAdminOrDefault(){
-    const adminData = getAdminData();
-    if (Array.isArray(adminData) && adminData.length) {
-      window.products = adminData;   // thay bộ dữ liệu gốc
+    // Watches
+    const adminProducts = safeJSON(STORAGE_KEY_PRODUCTS);
+    if (Array.isArray(adminProducts) && adminProducts.length) {
+      window.products = adminProducts;   // thay bộ dữ liệu gốc
     }
+    // Accessories
+    const adminAccessories = safeJSON(STORAGE_KEY_ACCESS);
+    if (Array.isArray(adminAccessories) && adminAccessories.length) {
+      window.accessories = adminAccessories.map(a => ({ category: 'phukien', ...a }));
+    }
+
     update(); // gọi hàm render hiện có của bạn
   }
 
@@ -20,7 +28,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Khi admin lưu (ở tab khác) -> client auto nhận
   window.addEventListener('storage', (e) => {
-    if (e.key === STORAGE_KEY) useAdminOrDefault();
+    if (e.key === STORAGE_KEY_PRODUCTS || e.key === STORAGE_KEY_ACCESS) useAdminOrDefault();
   });
 
   // Nếu người dùng quay lại tab, cũng refresh từ localStorage
@@ -76,7 +84,15 @@ document.addEventListener('DOMContentLoaded', () => {
     return;
   }
 
-  // Gộp phụ kiện vào products
+  // Fallback: nếu chưa có window.accessories thì đọc từ LS (phòng lúc block đầu chưa chạy kịp)
+  if (!Array.isArray(window.accessories)) {
+    try {
+      const acc = JSON.parse(localStorage.getItem('admin_accessories') || '[]');
+      if (acc.length) window.accessories = acc.map(a => ({ category:'phukien', ...a }));
+    } catch {}
+  }
+
+  // Gộp phụ kiện vào products (nếu có)
   if (Array.isArray(window.accessories) && window.accessories.length) {
     window.products = (window.products || []).concat(window.accessories);
   }
@@ -356,21 +372,4 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Render lần đầu
   update();
-});
-// FILE: client_script.js (hoặc file JS dành cho client.html)
-
-document.addEventListener('DOMContentLoaded', () => {
-    const STORAGE_KEY = 'admin_products';
-    
-    // Tải dữ liệu đã cập nhật từ LocalStorage
-    let products = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    
-    if (products && products.length > 0) {
-        console.log("Sản phẩm được tải cho trang Client:", products);
-        // ⭐ LOGIC HIỂN THỊ SẢN PHẨM Ở ĐÂY ⭐
-        // Ví dụ: products.forEach(p => { renderProductCard(p); });
-    } else if (window.products) {
-        // Nếu LocalStorage trống, fallback về dữ liệu gốc (nếu có)
-        products = window.products;
-    }
 });

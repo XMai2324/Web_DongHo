@@ -4,26 +4,32 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>TickTockShop - Admin</title>
+  <base href="/view/">
 
   <!-- CSS -->
   <link rel="stylesheet" href="../admin/ad_css/admin.css" />
   <link rel="stylesheet" href="../admin/ad_css/product.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-  <link rel="icon" type="image/png" href="../view/image/logo.png">
+  <link rel="icon" type="image/png" href="image/logo.png">
 
-  <!-- Bổ sung một ít CSS để hoạt động ngay -->
+  <!-- Bổ sung CSS để đồng bộ với orders.js & UI -->
   <style>
-    .sidebar .menu .menu-title.active { color: #00bcd4; }
-    .order-table { width: 100%; border-collapse: collapse; background: #fff; border-radius: 10px; overflow: hidden; }
-    .order-table th, .order-table td { padding: 12px 14px; border-bottom: 1px solid #eee; text-align: left; }
-    .order-table thead th { background: #f1f1f1; font-weight: 700; }
-    .status { display:inline-block; padding:4px 10px; border-radius:999px; color:#fff; font-size:12px; }
-    .status.pending { background:#f0ad4e; }
-    .status.completed { background:#5cb85c; }
-    .status.cancelled { background:#d9534f; }
-    .btn.small { padding:6px 10px; font-size:12px; border-radius:6px; }
-    .btn.danger { background:#dc3545; border-color:#dc3545; color:#fff; }
-    .btn.ghost { background:#fff; border:1px solid #ddd; }
+    .sidebar .menu .menu-title.active { color:#00bcd4; }
+
+    .order-table { width:100%; border-collapse:collapse; background:#fff; border-radius:10px; overflow:hidden; }
+    .order-table th, .order-table td { padding:12px 14px; border-bottom:1px solid #eee; text-align:left; }
+    .order-table thead th { background:#f1f1f1; font-weight:700; }
+
+    /* Badge khớp với status code của orders.js */
+    .status.cho-xac-nhan    { background:#f0ad4e; color:#fff; }   /* Chờ xác nhận */
+    .status.cho-van-chuyen  { background:#17a2b8; color:#fff; }   /* Chờ vận chuyển */
+    .status.dang-van-chuyen { background:#0d6efd; color:#fff; }   /* Đang vận chuyển */
+    .status.hoan-tat        { background:#28a745; color:#fff; }   /* Nhận hàng thành công */
+
+    .btn.small   { padding:6px 10px; font-size:12px; border-radius:6px; }
+    .btn.danger  { background:#dc3545; border-color:#dc3545; color:#fff; }
+    .btn.ghost   { background:#fff; border:1px solid #ddd; }
+    .btn.disabled[disabled]{ opacity:.5; cursor:not-allowed; pointer-events:none; }
 
     /* Input lọc trạng thái & ngày */
     #orderStatusFilter,
@@ -37,40 +43,41 @@
       min-width: 160px;
     }
     .date-sep { opacity:.65; margin: 0 4px; }
+
     @media (max-width: 768px) {
       #orderStatusFilter, #orderDateFrom, #orderDateTo { width: 100%; min-width: 0; }
       .date-sep { display:none; }
     }
   </style>
 
-  <!-- JS (để defer cho an toàn) -->
-  <script src="../view/js/auth.js" defer></script>
-  <script src="../admin/ad_js/product.js" defer></script>
-  <script src="../view/js/data.js" defer></script>
+  <!-- JS (defer) -->
+  <script src="js/auth.js" defer></script>
+  <script src="js/data.js" defer></script>
   <script src="../admin/ad_js/watch_table.js" defer></script>
   <script src="../admin/ad_js/orders.js" defer></script>
+  <script src="../admin/ad_js/ad_product.js" defer></script>
 </head>
 <body>
   <div class="admin-container">
     <!-- SIDEBAR -->
     <aside class="sidebar">
       <div class="logo">
-        <img src="/view/image/logo2.png" alt="Logo" />
+        <img src="image/logo2.png" alt="Logo" />
       </div>
       <h2 class="hello">Quản trị viên</h2>
 
       <ul class="menu">
         <li class="menu-title" id="menuProducts">Sản phẩm</li>
-        <ul class="submenu">
-          <li>Đồng hồ</li>
-          <li>Dây đeo</li>
-          <li>Hộp đựng</li>
-          <li>Kính cường lực</li>
+        <ul class="submenu" id="leftMenu">
+          <li data-entity="watch" class="is-active">Đồng hồ</li>
+          <li data-entity="strap">Dây đeo</li>
+          <li data-entity="box">Hộp đựng</li>
+          <li data-entity="glass">Kính cường lực</li>
         </ul>
 
         <li class="menu-title" id="menuOrders">Đơn hàng</li>
         <li class="menu-title">Khách hàng</li>
-        <li class="menu-title">Nhập hàng</li>
+        <li class="menu-title"><a href="../admin/ad_nhaphang.html">Nhập hàng</a></li>
         <li class="menu-title">Kho hàng</li>
 
         <li>
@@ -110,7 +117,6 @@
               <option value="rado">Rado</option>
             </select>
 
-            <input id="searchInput" type="text" placeholder="Tìm theo tên/brand..." />
             <button id="btnAdd" class="btn primary">+ Thêm đồng hồ</button>
           </div>
         </div>
@@ -266,7 +272,90 @@
     </div>
   </div>
 
-  <!-- JS nhỏ để chuyển tab ngay trong file -->
+  <!-- Nút & MODAL: Phụ kiện -->
+  <button id="btnAddAcc" class="btn primary">+ Thêm phụ kiện</button>
+
+  <div id="accessoryModal" class="modal">
+    <div class="modal-content">
+      <h2 class="modal-title">Thêm Phụ Kiện</h2>
+
+      <div class="modal-body">
+        <form id="addAccForm">
+          <input type="hidden" id="accId" name="id" />
+
+          <div class="grid form-grid">
+            <div class="form-group">
+              <label for="accName">Tên phụ kiện</label>
+              <input type="text" id="accName" name="name" required />
+            </div>
+
+            <div class="form-group">
+              <label for="accPrice">Giá (₫)</label>
+              <input type="number" id="accPrice" name="price" min="0" step="1000" required />
+            </div>
+
+            <div class="form-group">
+              <label for="accKind">Loại phụ kiện</label>
+              <select id="accKind" name="accessory" required>
+                <option value="">-- Chọn --</option>
+                <option value="glass">Kính cường lực</option>
+                <option value="box">Hộp đựng</option>
+                <option value="strap">Dây đeo</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label for="accCategory">Danh mục</label>
+              <select id="accCategory" name="category" required>
+                <option value="phukien" selected>Phụ kiện</option>
+              </select>
+            </div>
+
+            <!-- Trường riêng cho KÍNH (glass) -->
+            <div class="form-group acc-only acc-glass">
+              <label for="accType">Loại kính</label>
+              <input type="text" id="accType" name="type" placeholder="VD: sapphire, khoáng..." />
+            </div>
+
+            <!-- Trường riêng cho DÂY (strap) -->
+            <div class="form-group acc-only acc-strap">
+              <label for="accMaterial">Chất liệu</label>
+              <input type="text" id="accMaterial" name="material" placeholder="VD: Da, Kim loại, Cao su..." />
+            </div>
+
+            <div class="form-group acc-only acc-strap">
+              <label for="accColor">Màu</label>
+              <input type="text" id="accColor" name="color" placeholder="VD: Đen, Nâu, Vàng hồng..." />
+            </div>
+
+            <div class="form-group full">
+              <label for="accDesc">Mô tả</label>
+              <textarea id="accDesc" name="description" rows="3"></textarea>
+            </div>
+
+            <div class="form-group">
+              <label for="accImageFile">Chọn ảnh từ máy</label>
+              <input type="file" id="accImageFile" name="imageFile" accept="image/*" />
+            </div>
+
+            <div class="form-group full image-preview-container">
+              <label>Xem trước ảnh</label>
+              <div class="preview-scroll">
+                <img id="accImagePreview" class="image-preview" alt="preview" />
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <div class="modal-actions">
+        <button type="button" class="btn" id="btnAccCancel">Hủy</button>
+        <button type="submit" form="addAccForm" class="btn primary" id="btnSaveAcc">Lưu</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JS nhỏ để chuyển tab -->
   <script>
     const productsSection = document.getElementById('productsSection');
     const ordersSection   = document.getElementById('ordersSection');
@@ -291,8 +380,8 @@
     menuProducts?.addEventListener('click', showProducts);
     menuOrders?.addEventListener('click', showOrders);
 
-    // Mặc định: hiển thị Sản phẩm
-    setActive(menuProducts);
+    // Mặc định: hiển thị Sản phẩm (đảm bảo state)
+    showProducts();
   </script>
 </body>
 </html>

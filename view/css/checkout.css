@@ -1,0 +1,275 @@
+/* ==================== DELIVERY / CHECKOUT (scoped) — CLEAN ==================== */
+:root{
+  --brand:#0db7ea;
+  --ctl-h:40px;            /* chiều cao control */
+  --ctl-fs:13px;
+  --ctl-pad-x:12px;
+  --ctl-pad-y:8px;
+  --ctl-radius:6px;
+  --ctl-border:#ccc;
+}
+
+#delivery{padding:100px}
+
+/* ---------- Progress (ba bước) ---------- */
+#delivery .delivery-top-wrap{
+  position:relative; 
+  width:70%; 
+  margin:50px auto 60px;
+  display:flex; 
+  justify-content:space-between; 
+  align-items:center;
+}
+#delivery .delivery-top-wrap::before{
+  content:''; 
+  position:absolute; 
+  top:50%; 
+  left:0; 
+  width:100%; 
+  height:2px;
+  background:#ddd; 
+  transform:translateY(-50%); 
+  z-index:0;
+}
+#delivery .delivery-top-item{
+  width:40px; 
+  height:40px; 
+  border-radius:50%; 
+  border:2px solid #ddd; 
+  background:#fff;
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  position:relative; 
+  z-index:1;
+  transition:border-color .2s, box-shadow .2s;
+}
+#delivery .delivery-top-item i{
+  color:#ddd; 
+  font-size:16px; 
+  transition:color .2s
+}
+#delivery .delivery-top-item.active{
+  border-color:var(--brand); 
+  box-shadow:0 0 0 3px rgba(13,183,234,.12)}
+#delivery .delivery-top-item.active i{color:var(--brand)}
+
+/* ---------- Layout ---------- */
+#delivery .container{max-width:1200px; margin:0 auto; padding:0 20px}
+#delivery .delivery-content{display:flex; gap:24px}
+#delivery .delivery-content-left{width:60%; padding-right:12px; position:relative; z-index:2}
+#delivery .delivery-content-right{width:40%; padding-left:12px; border-left:2px solid #ddd}
+
+#delivery .delivery-content-left>p{
+  font-weight:bold; margin-bottom:15px; font-size:14px; font-family:var(--main-text-font)
+}
+#delivery .delivery-content-left-dangnhap,
+#delivery .delivery-content-left-khachle,
+#delivery .delivery-content-left-dangky{
+  display:flex; align-items:center; margin-bottom:12px;
+  font-size:13px; font-family:var(--main-text-font)
+}
+#delivery .delivery-content-left-dangnhap i{font-size:14px; margin-right:8px}
+
+/* ---------- Form controls (input + select) ---------- */
+#delivery .delivery-content-left-input-top{
+  display:flex; flex-wrap:wrap; justify-content:space-between; gap:12px
+}
+#delivery .delivery-content-left-input-top-item{width:calc(50% - 6px)}
+#delivery .delivery-content-left-input-bottom{margin-top:12px; margin-bottom:15px}
+
+#delivery .delivery-content-left-input-top-item input,
+#delivery .delivery-content-left-input-bottom input,
+#delivery .delivery-content-left-input-bottom select{
+  display:block; width:100%; height:var(--ctl-h);
+  padding:var(--ctl-pad-y) var(--ctl-pad-x);
+  border:1px solid var(--ctl-border); border-radius:var(--ctl-radius);
+  font-size:var(--ctl-fs); font-family:var(--main-text-font);
+  box-sizing:border-box; background:#fff; transition:border-color .15s, box-shadow .15s;
+  -webkit-appearance:none; appearance:none;
+}
+#delivery .delivery-content-left-input-top-item label,
+#delivery .delivery-content-left-input-bottom label{
+  font-size:12px; font-family:var(--main-text-font); margin-bottom:6px; display:block; color:#333
+}
+
+/* Focus thống nhất */
+#delivery .delivery-content-left-input-top-item input:focus,
+#delivery .delivery-content-left-input-bottom input:focus,
+#delivery .delivery-content-left-input-bottom select:focus{
+  outline:none; border-color:var(--brand); box-shadow:0 0 0 3px rgba(13,183,234,.12)
+}
+
+/* Select: mũi tên bên phải */
+#delivery .delivery-content-left-input-bottom select{
+  padding-right:34px;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%23666' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat:no-repeat; background-position:right 10px center;
+}
+
+/* ---------- Combo component (City/District) ---------- */
+#delivery .combo{position:relative; width:100%}
+#delivery .combo>input.form-input{
+  width:100%; 
+  height:var(--ctl-h); 
+  padding:var(--ctl-pad-y) 36px var(--ctl-pad-y) var(--ctl-pad-x);
+  border:1px solid var(--ctl-border); 
+  border-radius:var(--ctl-radius);
+  background:#fff; 
+  box-sizing:border-box; 
+  font-size: 13px; 
+  font-family: var(--main-text-font, inherit);
+  transition:border-color .15s, box-shadow .15s;
+}
+#delivery .combo>input.form-input:focus{
+  outline:none; 
+  border-color:var(--brand); 
+  box-shadow:0 0 0 3px rgba(13,183,234,.12)
+}
+#delivery .combo .combo-toggle{
+  all:unset; 
+  position:absolute; 
+  right:8px; 
+  top:50%; 
+  transform:translateY(-50%);
+  width:28px; 
+  height:28px; 
+  display:flex; 
+  align-items:center; 
+  justify-content:center; 
+  cursor:pointer
+}
+#delivery .combo .combo-toggle::before{
+  content:''; width:10px; height:10px; border-right:2px solid #666; border-bottom:2px solid #666;
+  transform:rotate(45deg); margin-top:-2px;
+}
+#delivery .combo .combo-list{
+  position:absolute; top:calc(100% + 4px); left:0; right:0; z-index:1000;
+  max-height:240px; overflow:auto; margin:0; padding:6px 0; list-style:none;
+  background:#fff; border:1px solid #ddd; border-radius:8px; box-shadow:0 8px 20px rgba(0,0,0,.08);
+  display:none;
+}
+#delivery .combo .combo-list.show{display:block}
+#delivery .combo .combo-list li{padding:8px 12px; cursor:pointer; white-space:nowrap; font-size: 13px; font-family: var(--main-text-font, inherit);}
+#delivery .combo .combo-list li:hover,
+#delivery .combo .combo-list li.active{background:#f4f7ff}
+
+/* ---------- Bảng tóm tắt (bên phải) ---------- */
+#delivery .delivery-content-right table{
+  width:100%; border-collapse:collapse; font-family:var(--main-text-font); font-size:13px
+}
+#delivery .delivery-content-right table th,
+#delivery .delivery-content-right table td{
+  padding:12px; vertical-align:middle; border-bottom:1px solid #eee
+}
+#delivery .delivery-content-right table th{font-weight:bold}
+#delivery .delivery-content-right table td:last-child,
+#delivery .delivery-content-right table th:last-child{text-align:right}
+#delivery .delivery-content-right table td:first-child,
+#delivery .delivery-content-right table th:first-child{text-align:left}
+#delivery .delivery-content-right tr.total td:first-child,
+#delivery .delivery-content-right tr.grand-total td:first-child{text-align:left !important}
+
+/* ---------- Coupon ---------- */
+#delivery .coupon-wrap{
+  display:flex; gap:8px; align-items:center; justify-content:flex-start; margin-bottom:10px
+}
+#delivery .coupon-wrap input{
+  height:38px; padding:8px 10px; border:1px solid #ccc; border-radius:6px
+}
+#delivery .coupon-wrap button{
+  height:38px; padding:8px 12px; border:1px solid #000; border-radius:10px; background:#000;
+  cursor:pointer; transition:all .15s
+}
+#delivery .coupon-wrap button:hover{background:#fff; color:#000}
+#delivery .coupon-select{width:100%; padding:10px; border:1px solid #ddd; border-radius:6px}
+
+#delivery #place-order-btn,
+#delivery .btn-place-order {
+  display: inline-block;
+  width: 100%;
+  height: 44px;
+  padding: 0 18px;
+  border: 2px solid #000;
+  border-radius: 10px;
+  background: #000;           /* nền đen */
+  color: #fff;                /* chữ trắng */
+  font-weight: 700;
+  text-align: center;
+  cursor: pointer;
+  transition: background-color .2s ease, color .2s ease, border-color .2s ease;
+}
+
+/* Hover: đảo ngược */
+#delivery #place-order-btn:hover,
+#delivery .btn-place-order:hover {
+  background: #fff;           /* nền trắng */
+  color: #000;                /* chữ đen */
+  border-color: #000;
+}
+
+/* Disabled (nếu có trạng thái này) */
+#delivery #place-order-btn:disabled,
+#delivery .btn-place-order:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* ---------- Payment method ---------- */
+#delivery .payment-method{margin-top:20px; font-family:var(--main-text-font); font-size:13px}
+#delivery .payment-method>p{font-weight:bold; margin-bottom:10px; font-size:14px}
+#delivery .payment-method input[type="radio"]{margin-right:6px}
+
+/* ---------- Utilities & Route visibility ---------- */
+.hidden{display:none !important}
+body.route-delivery .slider,
+body.route-delivery .product-page{display:none !important}
+#cart, #delivery{display:none}
+#cart:target, body.show-cart #cart{display:block !important}
+#cart.hidden, #delivery.hidden{display:none !important}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1024px){
+  #delivery .delivery-top-wrap{width:85%}
+}
+@media (max-width:900px){
+  #delivery .delivery-content{flex-direction:column}
+  #delivery .delivery-content-left, #delivery .delivery-content-right{
+    width:100%; padding:0; border-left:0
+  }
+  #delivery .delivery-content-right{margin-top:16px}
+}
+@media (max-width:600px){
+  #delivery .delivery-top-wrap{width:92%; margin:30px auto 40px}
+  #delivery .delivery-content-left-input-top-item{width:100%}
+}
+
+/* Ô thiếu dữ liệu */
+#delivery .invalid {
+  border-color: #e53935 !important;
+  box-shadow: 0 0 0 3px rgba(229,57,53,.12) !important;
+}
+
+/* Banner cảnh báo/ lỗi ở đầu form */
+#delivery .auth-alert{
+  margin-bottom:12px;
+  padding:10px 12px;
+  border:1px solid #ffeeba;
+  background:#fff3cd;
+  border-radius:8px;
+  font-size:13px;
+}
+#delivery .auth-alert button.auth-alert-login{
+  all:unset;
+  cursor:pointer;
+  text-decoration: underline;
+  font-weight: 600;
+}
+
+.field-error {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #d93025; /* đỏ */
+}
+.invalid { border-color: #d93025 !important; }
