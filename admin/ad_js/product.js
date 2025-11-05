@@ -37,7 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         e.preventDefault?.();
         // Setup UI cho chế độ Thêm mới
         if (modalTitle) modalTitle.textContent = 'Thêm Đồng Hồ';
-        document.getElementById('watchId')?.value = ''; // Xóa ID cũ
+        document.getElementById('watchId')?.value = ''; 
         window.openModal('add');
     });
 
