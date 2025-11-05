@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="test.css">
+    <title>Document</title>
+</head>
+<body>
+    <div id="watchModal">
+        <form id="addForm">
+                <h2>Thêm Đồng Hồ</h2> 
+
+                <input type="hidden" id="watchId" name="id"> 
+                <div class="grid form-grid">
+                    <div class="form-group">
+                        <label for="watchName">Tên đồng hồ</label>
+                        <input type="text" id="watchName" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="watchPrice">Giá (₫)</label>
+                        <input type="number" id="watchPrice" name="price" min="0" step="1000" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="watchCategory">Loại</label>
+                        <select id="watchCategory" name="category" required>
+                            <option value="">-- Chọn --</option>
+                            <option value="nam">Nam</option>
+                            <option value="nu">Nữ</option>
+                            <option value="capdoi">Cặp đôi</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="watchBrand">Thương hiệu</label>
+                        <select id="watchBrand" name="brand" required>
+                            <option value="">-- Chọn --</option>
+                            <option value="casio">Casio</option>
+                            <option value="citizen">Citizen</option>
+                            <option value="rado">Rado</option>
+                            <option value="seiko">Seiko</option>
+                            <option value="rolex">Rolex</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="watchDes">Mô tả</label>
+                        <input type="text" id="watchName" name="name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="watchImageFile">Chọn Ảnh từ máy</label>
+                        <input type="file" id="watchImageFile" name="imageFile" accept="image/*">
+                    </div>
+
+                    <div class="form-group full-width image-preview-container">
+                        <label>Xem trước ảnh</label>
+                        <img id="imagePreview" src="" alt="preview" class="image-preview">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-cancel" id="btnCancel">Hủy</button>
+                    <button type="submit" class="btn btn-primary" id="btnSaveWatch">Lưu</button>
+                </div>
+            </form>
+    </div>
+</body>
+</html>

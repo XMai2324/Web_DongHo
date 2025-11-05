@@ -1,0 +1,147 @@
+/* RESET */
+* { 
+  box-sizing: border-box; 
+  margin: 0; 
+  padding: 0; 
+}
+body { 
+  font-family: Arial, sans-serif; 
+  color: #111; 
+}
+
+
+/* LAYOUT */
+.admin-container { 
+  display: flex; 
+  height: 100vh; 
+}
+
+/* SIDEBAR */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 250px;
+  height: 100vh;           /* chiếm full chiều cao màn hình */
+  overflow: auto;          /* menu dài thì sidebar tự cuộn */
+  background: rgb(203,203,203);
+  color: #000;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;  
+}
+.sidebar .logo { 
+  text-align: center; 
+  margin-bottom: 18px; 
+}
+.sidebar .hello { 
+  font-size: 18px; 
+  margin-bottom: 10px; 
+}
+.sidebar .menu { 
+  list-style: none; 
+}
+.sidebar .menu .menu-title {
+  font-size: 16px; 
+  font-weight: 700;
+  margin: 15px 0 10px; 
+  padding-top: 12px;
+  border-top: 1px solid #080808;
+}
+.submenu { 
+  list-style: none;
+   margin-left: 12px; 
+  }
+.sidebar .menu > li { padding: 8px 0; cursor: pointer; font-weight: 600; }
+.sidebar .menu > li:hover, .submenu li:hover { color: #00bcd4; }
+.submenu li { font-size: 14px; padding: 6px 0; color: #6c6969; cursor: pointer; }
+
+/* MAIN */
+.main-content { 
+margin-left: 250px; /* Đẩy nội dung chính sang phải để tránh sidebar */
+flex-grow: 1; /* Cho phép nó chiếm hết phần không gian còn lại */
+flex-shrink: 1; /* Cho phép nó co lại nếu cần */
+background: #f5f5f5;
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+/* BỔ SUNG: Ẩn cuộn ngang nếu có bất kỳ lỗi tràn nào xảy ra */
+overflow-x: hidden;
+}
+
+
+.search {
+  display: flex; align-items: center;
+  border: 1px solid #ccc; border-radius: 6px;
+  padding: 6px 10px; background: #fff;
+}
+.search input { border: 0; outline: none; width: 200px; font-size: 14px; }
+.search i { color: #555; }
+
+.actions { display: flex; align-items: center; gap: 22px; font-size: 18px; }
+.actions .account { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.actions .account span { font-size: 15px; font-weight: 500; }
+.logout { display: flex; align-items: center; cursor: pointer; padding-left: 5px; }
+
+/* DASHBOARD */
+.dashboard { 
+padding: 24px; 
+}
+.dashboard h1 { 
+margin-bottom: 12px; 
+}
+
+/* KHỐI .toolbar CẦN CHỈNH SỬA */
+.toolbar { 
+display: flex; 
+align-items: center; 
+justify-content: space-between; 
+margin-bottom: 14px; 
+ /* BỔ SUNG: Cho phép tiêu đề và các actions xuống dòng nếu cần */
+flex-wrap: wrap; 
+}
+
+/* KHỐI .toolbar .actions CẦN CHỈNH SỬA */
+.toolbar .actions { 
+display: flex; 
+gap: 10px; 
+align-items: center; 
+ /* BỔ SUNG: Cho phép các bộ lọc (select/input/button) xuống dòng */
+flex-wrap: wrap; 
+ 
+ /* QUAN TRỌNG: Để khi xuống dòng không bị dính vào h1, thêm margin top */
+margin-top: 10px; 
+}
+
+.toolbar input, .toolbar select {
+padding: 8px 10px; 
+border: 1px solid #ccc; 
+border-radius: 6px;
+  /* Thêm độ linh hoạt cho các ô lọc */
+  flex-grow: 1; /* Cho phép nó mở rộng */
+  min-width: 150px; /* Ngăn nó quá nhỏ */
+}
+
+/* Đảm bảo ô input tìm kiếm không cố định chiều rộng */
+.toolbar .actions input#searchInput {
+    flex-grow: 1; /* Cho phép input tìm kiếm co giãn để lấp đầy */
+    min-width: 150px; /* Chiều rộng tối thiểu để input vẫn dùng được */
+}
+
+/* BUTTONS (shared) */
+.btn {
+  padding: 8px 12px; border: 1px solid #ddd; background: #fff; border-radius: 8px;
+  cursor: pointer; transition: background-color .15s ease;
+}
+.btn:hover { background: #f3f3f3; }
+.btn.primary {
+   background: #0ea5e9; 
+   border-color: #0ea5e9; 
+   color: #fff; }
+.btn.primary:hover { 
+  filter: brightness(.96); 
+}
+.btn.primary:active { 
+  transform: translateY(1px); 
+}

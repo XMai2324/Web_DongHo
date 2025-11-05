@@ -324,3 +324,20 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render lần đầu
   update();
 });
+// FILE: client_script.js (hoặc file JS dành cho client.html)
+
+document.addEventListener('DOMContentLoaded', () => {
+    const STORAGE_KEY = 'admin_products';
+    
+    // Tải dữ liệu đã cập nhật từ LocalStorage
+    let products = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    
+    if (products && products.length > 0) {
+        console.log("Sản phẩm được tải cho trang Client:", products);
+        // ⭐ LOGIC HIỂN THỊ SẢN PHẨM Ở ĐÂY ⭐
+        // Ví dụ: products.forEach(p => { renderProductCard(p); });
+    } else if (window.products) {
+        // Nếu LocalStorage trống, fallback về dữ liệu gốc (nếu có)
+        products = window.products;
+    }
+});

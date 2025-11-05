@@ -314,7 +314,7 @@ header:hover {
     .btn-edit { 
         background-color: #ffc107; 
         color: #333; 
-        display: none;
+        /* display: none; */
     }
     .btn-delete { 
         background-color: #dc3545; 
@@ -366,7 +366,175 @@ header:hover {
     .modal-content button { 
         margin-top: 15px; 
     }
-    
+
+/* --- 1. Modal Containers (Nền mờ) --- */
+/* Áp dụng cho cả hai Modal bằng cách liệt kê ID */
+#addModal, #editModal {
+    display: none; /* Mặc định ẩn */
+    position: fixed;
+    z-index: 100; 
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4); 
+    padding-top: 50px;
+}
+
+/* --- 2. Modal Content (Hộp chứa form) --- */
+/* Áp dụng cho nội dung bên trong của cả hai Modal */
+#addModal .modal-content, #editModal .modal-content {
+    background-color: #ffffff;
+    margin: 5% auto; 
+    padding: 30px;
+    border: 1px solid #888;
+    width: 90%; 
+    max-width: 500px; 
+    border-radius: 12px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    position: relative;
+    animation-name: animatetop;
+    /* animation-duration: 0.4s; */
+    font-family: Arial, sans-serif; /* Đảm bảo font không bị ảnh hưởng */
+}
+
+@keyframes animatetop {
+    from {top: -300px; opacity: 0}
+    to {top: 0; opacity: 1}
+}
+
+/* --- 3. Tiêu đề và Nút đóng --- */
+#addModal h3, #editModal h3 {
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    font-size: 1.5em;
+    font-weight: 600;
+}
+
+/* Nút đóng (close-btn) sử dụng class bạn đã đặt */
+#addModal .close-btn, #editModal .close-btn {
+    color: #aaa;
+    position: absolute;
+    top: 10px;
+    right: 20px;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+#addModal .close-btn:hover, #editModal .close-btn:focus {
+    color: #000;
+    text-decoration: none;
+}
+
+/* --- 4. Form Controls (Inputs, Selects, Labels) --- */
+/* Áp dụng cho các phần tử bên trong FORM Thêm (addUserForm) */
+#addUserForm label, #editUserForm label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: #555;
+    font-weight: 500;
+}
+
+/* Áp dụng cho tất cả INPUT và SELECT bên trong cả hai form */
+#addUserForm input[type="text"], 
+#addUserForm input[type="email"], 
+#addUserForm input[type="password"], 
+#addUserForm select,
+#editUserForm input[type="text"], 
+#editUserForm input[type="email"], 
+#editUserForm input[type="password"], 
+#editUserForm select {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    font-size: 1em;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+/* Hiệu ứng focus cho các trường nhập liệu */
+#addUserForm input:focus, 
+#editUserForm input:focus, 
+#addUserForm select:focus, 
+#editUserForm select:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+    outline: none;
+}
+
+/* Style riêng cho input chỉ đọc (readonly) trong form Sửa */
+#editUserForm input[readonly] {
+    background-color: #e9ecef;
+    opacity: 0.8;
+    cursor: default;
+}
+
+/* --- 5. Nút Submit --- */
+/* Sử dụng ID form và class button để tránh xung đột */
+#addUserForm .btn-add, #editUserForm .btn-edit {
+    background-color: #007bff;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 20px;
+    font-size: 1.1em;
+    transition: background-color 0.3s, transform 0.1s;
+}
+
+#addUserForm .btn-add:hover, #editUserForm .btn-edit:hover {
+    background-color: #0056b3;
+    transform: translateY(-1px);
+}
+#addUserForm .btn-add:active, #editUserForm .btn-edit:active {
+    transform: translateY(0);
+}
+/* --- FIX CẤU TRÚC PASSWORD RESET (Input & Button cùng hàng) --- */
+/* Cần đảm bảo input-row-reset không bị ảnh hưởng bởi input-group chung */
+.input-row-reset {
+    display: flex; /* Kích hoạt Flexbox */
+    align-items: center; /* Căn giữa theo chiều dọc */
+    gap: 10px; /* Khoảng cách giữa input và button */
+    margin-bottom: 15px; /* Tạo khoảng cách dưới cùng */
+}
+
+/* Áp dụng cho input trong hàng reset */
+.input-row-reset input[type="password"] {
+    flex-grow: 1; /* Cho phép input chiếm phần lớn không gian */
+    width: auto; /* Quan trọng: Ghi đè style width: 100% cũ */
+    margin-bottom: 0; /* Loại bỏ margin-bottom cũ */
+}
+
+/* Style nút Reset */
+.btn-reset {
+    flex-shrink: 0; /* Ngăn nút bị co lại */
+    background-color: #ffc107; /* Màu vàng cam */
+    color: #333;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    /* Đảm bảo chiều cao phù hợp với input */
+    height: 40px; 
+    line-height: 1; /* Căn chữ trong nút */
+    margin: 0; /* Loại bỏ margin không cần thiết */
+    width: 100px; /* Chiều rộng cố định cho nút */
+}
+
+.btn-reset:hover {
+    background-color: #e0a800;
+}
+
 </style>
 
 </head>
@@ -434,6 +602,7 @@ header:hover {
                     <th>Email</th>
                     <th>Mật khẩu</th>
                     <th>Vai trò</th>
+                    <th>Trạng thái</th>
                     <th>Hành động</th>
                 </tr>
             </thead>
@@ -443,35 +612,70 @@ header:hover {
         </table>
     </main>
     
-    <!-- Modal Thêm/Sửa Người Dùng -->
-    <div id="userModal" class="modal">
-        <div class="modal-content">
-            <span class="close-btn">&times;</span>
-            <h3 id="modalTitle">Thêm Người Dùng Mới</h3>
-            <form id="userForm">
-                <input type="hidden" id="userId">
-                
-                <label for="formUsername">Username</label>
-                <input type="text" id="formUsername" required>
-                
-                <label for="formEmail">Email</label>
-                <input type="email" id="formEmail" required>
-                
-                <label for="formPassword">Mật khẩu</label>
-                <input type="text" id="formPassword" required>
-                
-                <label for="formRole">Vai trò</label>
-                <select id="formRole">
-                    <option value="user">User</option>
-                    <option value="admin">Admin</option>
-                </select>
-                
-                <button type="submit" id="submitButton" class="btn btn-add">Lưu Thay Đổi</button>
-            </form>
-        </div>
+    <div id="addModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn add-close-btn">&times;</span>
+        <h3 id="addModalTitle">Thêm Người Dùng Mới</h3>
+        <form id="addUserForm">
+            <label for="addUsername">Username</label>
+            <input type="text" id="addUsername" required>
+
+            <label for="addEmail">Email</label>
+            <input type="email" id="addEmail" required>
+
+            <label for="addPassword">Mật khẩu</label>
+            <input type="password" id="addPassword" required>
+
+            <label for="addRole">Vai trò</label>
+            <select id="addRole">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+
+            <button type="submit" class="btn btn-add">Thêm Người Dùng</button>
+        </form>
     </div>
+</div>
+
+<div id="editModal" class="modal">
+    <div class="modal-content">
+        <span class="close-btn edit-close-btn">&times;</span>
+        <h3 id="editModalTitle">Chỉnh Sửa Người Dùng</h3>
+        <form id="editUserForm">
+            <input type="hidden" id="editUserId"> 
+            
+            <label for="editUsername">Username</label>
+            <input type="text" id="editUsername" required readonly>
+            
+            <label for="editEmail">Email</label>
+            <input type="email" id="editEmail" required readonly>
+             <label for="editPassword">Password</label>
+
+        <div class="input-row-reset" style="height: 50px;"> 
+            <input type="password" id="editPassword" required readonly placeholder="******" style="width: 80%;">
+            <button type="button" id="resetPasswordBtn" class="btn btn-reset" style="width: 20%; margin: 10px 10px 20px 10px; padding: 5px">Reset</button>
+        </div>
+            
+            <label for="editRole" style="display: none;" >Vai trò</label>
+            <select id="editRole" style="display: none;">
+                <option value="user">User</option>
+                <option value="admin">Admin</option>
+            </select>
+            
+            <!-- <button type="submit" class="btn btn-edit">Cập nhật Thay Đổi</button> -->
+             <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button type="button" id="disableUserBtn" class="btn btn-disable" style="flex: 1; background-color: #ff4d4f;">Vô hiệu hóa</button>
+                <button type="button" id="enableUserBtn" class="btn btn-enable" style="flex: 1; background-color: #52c41a;">Mở hoạt động</button>
+            </div>
+            
+            
+            
+        </form>
+    </div>
+</div>
 
 <script>
+    const SUPERADMIN_ID = 999999;
     // --- KHỞI TẠO VÀ KIỂM TRA QUYỀN TRUY CẬP ---
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
     if (!currentUser || currentUser.role !== 'admin') {
@@ -479,15 +683,30 @@ header:hover {
         window.location.href = 'login.html';
     }
 
-    // --- CÁC PHẦN TỬ DOM ---
+
+    // --- CÁC PHẦN TỬ DOM MỚI/CẬP NHẬT ---
     const userTableBody = document.getElementById('userTableBody');
     const userCountElement = document.getElementById('userCount');
-    const userModal = document.getElementById('userModal');
-    const userForm = document.getElementById('userForm');
-    const modalTitle = document.getElementById('modalTitle');
-    const closeBtn = document.querySelector('.close-btn');
-    const openAddModalBtn = document.getElementById('openAddModal');
+    
+    // DOM cho Modal Thêm
+
+    const addModal = document.getElementById('addModal');
+    const addUserForm = document.getElementById('addUserForm');
+    const addCloseBtn = document.querySelector('.add-close-btn');
+    const openAddModalBtn = document.getElementById('openAddModal'); // Nút Mở modal Thêm
+    
+    // DOM cho Modal Sửa
+    const editModal = document.getElementById('editModal');
+    const editUserForm = document.getElementById('editUserForm');
+    const editCloseBtn = document.querySelector('.edit-close-btn');
+
+    const resetPasswordBtn = document.getElementById('resetPasswordBtn');
+
     const logoutBtn = document.getElementById('logoutBtn');
+
+    // DOM cho chức năng Vô hiệu hóa/Mở khóa
+    const disableUserBtn = document.getElementById('disableUserBtn');
+    const enableUserBtn = document.getElementById('enableUserBtn');
     
     // --- 1. CHỨC NĂNG TẢI & HIỂN THỊ DỮ LIỆU (READ) ---
     function loadUsers() {
@@ -498,6 +717,20 @@ header:hover {
         userCountElement.textContent = users.length;
         
         users.forEach(user => {
+            
+            // XÁC ĐỊNH HTML CHO HÀNH ĐỘNG
+            let actionsHTML = ''; 
+            if (user.id === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+                // Hiển thị thông báo không được chỉnh sửa cho Super Admin
+                actionsHTML = '<span style="color:#dc3545; font-weight: 500;">🚫 Đã khóa</span>';
+            } else {
+                // Hiển thị nút Sửa/Xóa cho các tài khoản khác
+                actionsHTML = `
+                    <button class="actions-btn btn-edit" data-id="${user.id}">Sửa</button>
+                    <button class="actions-btn btn-delete" data-id="${user.id}">Xóa</button>
+                `;
+            }
+
             const row = document.createElement('tr');
             row.innerHTML = `
                 <td>${user.id}</td>
@@ -505,6 +738,11 @@ header:hover {
                 <td>${user.email}</td>
                 <td><span style="color:#555;font-style:italic;">(Đã ẩn)</span></td>
                 <td>${user.role}</td>
+                <td>
+                    <span style="color: ${user.status === 'disabled' ? '#dc3545' : '#28a745'}; font-weight: bold;">
+                        ${user.status === 'disabled' ? 'Vô hiệu hóa' : 'Hoạt động'}
+                    </span>
+                </td>
                 <td>
                     <button class="actions-btn btn-edit" data-id="${user.id}">Sửa</button>
                     <button class="actions-btn btn-delete" data-id="${user.id}">Xóa</button>
@@ -537,74 +775,138 @@ header:hover {
     
     // --- 3. CHỨC NĂNG THÊM/SỬA (CREATE & UPDATE) ---
     
-    openAddModalBtn.onclick = () => openEditModal(null);
-    closeBtn.onclick = () => userModal.style.display = 'none';
+    // 3.1. Đóng/Mở Modal
+    openAddModalBtn.onclick = () => {
+        addUserForm.reset(); // Đảm bảo form Thêm sạch
+        addModal.style.display = 'block';
+    };
+    
+    addCloseBtn.onclick = () => addModal.style.display = 'none';
+    editCloseBtn.onclick = () => editModal.style.display = 'none';
+    
     window.onclick = (event) => {
-        if (event.target == userModal) {
-            userModal.style.display = 'none';
+        if (event.target == addModal) {
+            addModal.style.display = 'none';
+        } else if (event.target == editModal) {
+            editModal.style.display = 'none';
         }
     };
 
-    // Mở Modal (Cho Thêm hoặc Sửa)
+    // 3.2. Mở Modal Sửa (Thay thế hàm openEditModal cũ)
     function openEditModal(userId) {
-        userForm.reset();
-        document.getElementById('userId').value = userId || '';
-        
-        if (userId) {
-            modalTitle.textContent = 'Chỉnh Sửa Người Dùng';
-            const users = JSON.parse(localStorage.getItem('users'));
-            const user = users.find(u => u.id === userId);
-            
-            if (user) {
-                document.getElementById('formUsername').value = user.username;
-                document.getElementById('formEmail').value = user.email;
-                document.getElementById('formPassword').value = user.password; 
-                document.getElementById('formRole').value = user.role;
-            }
-        } else {
-            modalTitle.textContent = 'Thêm Người Dùng Mới';
+
+        if (userId === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+            alert('Bạn không thể chỉnh sửa thông tin tài khoản Super Admin.'); 
+            return;
         }
+
+        editUserForm.reset();
+        const users = JSON.parse(localStorage.getItem('users'));
+        const user = users.find(u => u.id === userId);
         
-        userModal.style.display = 'block';
+        if (user) {
+            // Đổ dữ liệu vào form Sửa
+            document.getElementById('editUserId').value = user.id;
+            document.getElementById('editUsername').value = user.username;
+            document.getElementById('editEmail').value = user.email;
+            document.getElementById('editRole').value = user.role; 
+            
+            // ẨN/HIỆN NÚT VÔ HIỆU HÓA/MỞ KHÓA TÙY VÀO TRẠNG THÁI
+            const isUserDisabled = user.status === 'disabled';
+            disableUserBtn.style.display = isUserDisabled ? 'none' : 'block';
+            enableUserBtn.style.display = isUserDisabled ? 'block' : 'none';
+
+            editModal.style.display = 'block';
+        }
     }
-    
-    // Lưu Form (Submit)
-    userForm.addEventListener('submit', function(e) {
+
+    // 3.3. Xử lý Thêm Người Dùng (Submit Form Thêm)
+    addUserForm.addEventListener('submit', function(e) {
         e.preventDefault();
         
-        const id = document.getElementById('userId').value ? parseInt(document.getElementById('userId').value) : null;
-        const username = document.getElementById('formUsername').value.trim();
-        const email = document.getElementById('formEmail').value.trim();
-        const password = document.getElementById('formPassword').value.trim();
-        const role = document.getElementById('formRole').value;
+        const username = document.getElementById('addUsername').value.trim();
+        const email = document.getElementById('addEmail').value.trim();
+        const password = document.getElementById('addPassword').value.trim();
+        const role = document.getElementById('addRole').value;
         
         let users = JSON.parse(localStorage.getItem('users')) || [];
         
-        if (id) {
-            // Chế độ Sửa (Update)
-            const index = users.findIndex(u => u.id === id);
-            if (index !== -1) {
-                users[index] = { id, username, email, password, role };
-            }
-        } else {
-            // Chế độ Thêm (Create)
-            const newUser = { 
-                id: Date.now(), 
-                username, 
-                email, 
-                password, 
-                role 
-            };
-            users.push(newUser);
-        }
+        // Chế độ Thêm (Create)
+        const newUser = { 
+            id: Date.now(), // Sử dụng timestamp làm ID
+            username, 
+            email, 
+            password, 
+            role,
+            status: 'active'
+        };
+        users.push(newUser);
 
         localStorage.setItem('users', JSON.stringify(users));
-        userModal.style.display = 'none';
+        addModal.style.display = 'none';
         loadUsers(); // Cập nhật lại bảng
     });
+
+    // 3.4. Xử lý Sửa Người Dùng (Submit Form Sửa)
+    editUserForm.addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const id = parseInt(document.getElementById('editUserId').value);
+    const newrole = document.getElementById('editRole').value; 
+
+    if (id === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+            alert('Lỗi: Không thể thay đổi vai trò của tài khoản Super Admin.'); 
+            editModal.style.display = 'none';
+            return;
+        }
+    
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    
+    // Chế độ Sửa (Update)
+    const index = users.findIndex(u => u.id === id);
+    
+    if (index !== -1) {
+        let updatedUser = {
+            id: id,
+            username: users[index].username, 
+            email: users[index].email,      
+            password: users[index].password,
+            role: newrole,
+            status: users[index].status || 'active'
+        };
+        users[index] = updatedUser;
+
+        // BỔ SUNG LOGIC QUAN TRỌNG TẠI ĐÂY:
+        // 1. Kiểm tra xem người dùng đang được sửa có phải là người đang đăng nhập hay không.
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+
+        if (currentUser && currentUser.id === id) {
+            // 2. Nếu là người đang đăng nhập, CẬP NHẬT lại currentUser
+            // để người đó nhận quyền mới ngay lập tức.
+            localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+            
+            // 3. Nếu vai trò được hạ cấp từ admin xuống user, 
+            // có thể cần chuyển hướng người dùng khỏi trang admin.
+            if (role === 'user') {
+                 alert('Vai trò của bạn đã bị thay đổi thành User. Bạn sẽ được chuyển hướng về trang chủ/đăng nhập.');
+                 window.location.href = 'login.html'; // Hoặc trang chủ
+            }
+        }
+    }
+
+    localStorage.setItem('users', JSON.stringify(users));
+    editModal.style.display = 'none';
+    loadUsers(); 
+});
     
     // --- 4. CHỨC NĂNG XÓA (DELETE) ---
     function deleteUser(userId) {
+
+        if (userId === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+            alert('Lỗi: Không được phép xóa tài khoản Super Admin.'); 
+            return;
+        }  
+
         if (confirm(`Bạn có chắc chắn muốn xóa người dùng ID ${userId} không?`)) {
             let users = JSON.parse(localStorage.getItem('users')) || [];
             
@@ -615,6 +917,119 @@ header:hover {
             loadUsers(); // Cập nhật lại bảng
         }
     }
+
+    // --- CHỨC NĂNG RESET MẬT KHẨU (ADMIN) ---
+function resetPassword(userId) {
+
+    if (userId === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+            alert('Lỗi: Không được phép reset mật khẩu của tài khoản Super Admin.'); 
+            return;
+        }
+
+    if (!confirm(`Bạn có chắc chắn muốn RESET mật khẩu cho người dùng ID ${userId} về '123456' không?`)) {
+        return; // Hủy nếu admin không xác nhận
+    }
+
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    const index = users.findIndex(u => u.id === userId);
+
+    if (index !== -1) {
+        // Cập nhật trường password
+        let updatedUser = {
+            ...users[index], // Giữ nguyên các thông tin khác
+            password: '123456' // Đặt lại mật khẩu
+        };
+        users[index] = updatedUser;
+
+        // 1. Cập nhật Local Storage
+        localStorage.setItem('users', JSON.stringify(users));
+
+        // 2. Cập nhật currentUser (nếu admin reset chính tài khoản của mình)
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser && currentUser.id === userId) {
+            localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+        }
+
+        alert(`Đã reset mật khẩu thành công cho ID ${userId}. Mật khẩu mới: 123456`);
+        editModal.style.display = 'none';
+        loadUsers(); // Cập nhật lại bảng
+    } else {
+        alert("Lỗi: Không tìm thấy người dùng để reset mật khẩu.");
+    }
+}
+
+// Thêm sự kiện click cho nút Reset Mật khẩu
+resetPasswordBtn.onclick = function() {
+    // Lấy ID người dùng đang được hiển thị trong form edit
+    const userId = parseInt(document.getElementById('editUserId').value);
+    if (userId) {
+        resetPassword(userId);
+    }
+};
+
+// --- LIÊN KẾT SỰ KIỆN MỚI CHO DISABLE/ENABLE ---
+if (disableUserBtn && enableUserBtn) {
+    disableUserBtn.onclick = function() {
+        const userId = parseInt(document.getElementById('editUserId').value);
+        if (userId) {
+            changeUserStatus(userId, 'disabled');
+        }
+    };
+
+    enableUserBtn.onclick = function() {
+        const userId = parseInt(document.getElementById('editUserId').value);
+        if (userId) {
+            changeUserStatus(userId, 'active');
+        }
+    };
+}
+
+// --- CHỨC NĂNG THAY ĐỔI TRẠNG THÁI (DISABLE/ENABLE) ---
+function changeUserStatus(userId, newStatus) {
+
+    if (userId === SUPERADMIN_ID) { // [SUPERADMIN CẤM]
+            alert('Lỗi: Không được phép thay đổi trạng thái của tài khoản Super Admin.'); 
+            return;
+        }
+
+    let users = JSON.parse(localStorage.getItem('users')) || [];
+    const index = users.findIndex(u => u.id === userId);
+    
+    const action = newStatus === 'disabled' ? 'vô hiệu hóa' : 'mở hoạt động';
+
+    if (!confirm(`Bạn có chắc chắn muốn ${action} người dùng ID ${userId} không?`)) {
+        return;
+    }
+
+    if (index !== -1) {
+        let updatedUser = {
+            ...users[index], 
+            status: newStatus // Cập nhật trạng thái
+        };
+        users[index] = updatedUser;
+
+        localStorage.setItem('users', JSON.stringify(users));
+
+        // Cập nhật currentUser
+        const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+        if (currentUser && currentUser.id === userId) {
+            localStorage.setItem('currentUser', JSON.stringify(updatedUser));
+            // Nếu tự vô hiệu hóa tài khoản admin đang dùng
+            if (newStatus === 'disabled') {
+                alert('Tài khoản của bạn đã bị vô hiệu hóa. Bạn sẽ được đăng xuất.');
+                localStorage.removeItem('currentUser');
+                window.location.href = 'login.html';
+                return;
+            }
+        }
+
+        alert(`Đã ${action} thành công người dùng ID ${userId}.`);
+        editModal.style.display = 'none';
+        loadUsers(); 
+    } else {
+        alert("Lỗi: Không tìm thấy người dùng.");
+    }
+}
 
     // Tải dữ liệu lần đầu khi trang load xong
     window.onload = loadUsers;
