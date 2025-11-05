@@ -25,6 +25,8 @@ header {
   align-items: center;
   column-gap: 24px;
 }
+
+
 header:hover {
   background-color: white;
 }
@@ -41,13 +43,19 @@ header.scrolled {
 /* ===== MENU GIỮA ===== */
 .header_menu{
   justify-self:center;
-  display:flex; align-items:center; gap:28px;
-  font-weight:bold; font-size:18px;
+  display:flex; 
+  align-items:center; 
+  gap:30px;
+  font-weight:bold;
+  font-size:18px;
   text-transform:uppercase;
   white-space:nowrap; line-height:1;
 }
 .header_menu .name{
-  position:relative; display:inline-flex; align-items:center; cursor:pointer;
+  position:relative;
+  display:inline-flex; 
+  align-items:center; 
+  cursor:pointer;
 }
 .header_menu .name > a{
   color:#000; text-decoration:none;
@@ -88,6 +96,11 @@ header.scrolled {
   border:0; outline:0; background:transparent;
   width:200px; height:20px; line-height:1; font-size:14px;
 }
+
+#accountLinkText{
+  font-size:18px; font-weight:600;
+}
+
 .account, .cart, .logout{
   display:flex; align-items:center; gap:6px; cursor:pointer; line-height:1;
 }

@@ -287,6 +287,9 @@ const products = [
   { name:"Seiko SUR525P1 & SUR531P1", image:"image/Watch/Watch_cap/SeikoCouple3.jpg", price:2800000, category:"capdoi", brand:"seiko", description:"Nam SUR525P1 xanh dương và nữ SUR531P1 trắng, thiết kế nhẹ nhàng, kính sapphire chất lượng cao." },
   { name:"Seiko SRP/SRP His & Hers Military", image:"image/Watch/Watch_cap/SeikoCouple4.jpg", price:3500000, category:"capdoi", brand:"seiko", description:"Nam SRP227 & nữ SRP189 - phong cách quân đội, automatic, đồng bộ dây và bộ máy." }
 ];
+
+//  Gán ID tự động cho mỗi sản phẩm
+products.forEach((p, i) => { if (!p.id) p.id = 'p' + (i + 1); });
 window.products = products;
 
 // === PHỤ KIỆN  ===
@@ -321,4 +324,7 @@ const accessories = [
   { name:"Dây da lộn nâu be", material:"Da lộn", color:"Nâu be", price:520000, image:"image/Accessories/straps/strap19.jpg", category:"phukien", accessory:"strap" },
   { name:"Dây giả kim mắt to", material:"Kim loại giả", color:"Bạc", price:310000, image:"image/Accessories/straps/strap20.jpg", category:"phukien", accessory:"strap" }
 ];
+
+// Gán ID tự động cho mỗi phụ kiện
+accessories.forEach((p, i) => { if (!p.id) p.id = 'a' + (i + 1); });
 window.accessories = accessories;

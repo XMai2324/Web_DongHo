@@ -1,0 +1,142 @@
+
+/* ====== Cart Page ====== */
+/* .cart{padding:120px 0 40px} */
+
+/* Steps */
+.cart-top-wrap{
+  position:relative; display:flex; align-items:center; justify-content:space-between;
+  gap:48px; padding:24px 0; margin:50px auto 40px;
+}
+.cart-top-wrap::before{
+  content:""; position:absolute; top:50%; left:0; height:2px; width:100%;
+  background:#ddd; transform:translateY(-50%); z-index:0;
+}
+.cart-top-item{
+  width:42px; height:42px; border-radius:50%; border:2px solid #ddd; background:#fff;
+  display:flex; align-items:center; justify-content:center; z-index:1;
+}
+.cart-top-item i{font-size:16px;color:#ddd}
+.cart-top-item.active{border-color:var(--brand)}
+.cart-top-item.active i{color:var(--brand)}
+
+/* Layout */
+.cart-content{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(280px,.9fr);gap:28px;align-items:start}
+
+/* Left table */
+.cart-content-left{overflow-x:auto}
+.cart-content-left table{
+  width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line);
+  border-radius:14px; overflow:hidden;
+}
+.cart-content-left th,.cart-content-left td{
+  padding:14px 12px; border-bottom:1px solid #f0f0f0; text-align:left; vertical-align:middle;
+}
+.cart-content-left th{background:#fafafa;font-weight:700;font-size:14px}
+.cart-content-left tr:last-child td{border-bottom:none}
+.cart-content-left td img{width:80px;height:80px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.cart-content-left td p{margin:0;color:#333;font-weight:600}
+.cart-content-left input[type="number"]{
+    width:68px;
+    height:36px;
+    padding:0 8px;
+    border:1px solid var(--line);
+    border-radius:8px;
+    -moz-appearance: auto;      /* Firefox */
+    appearance: auto;           /* Chuẩn */
+}
+.cart-content-left input[type="number"]::-webkit-outer-spin-button,
+.cart-content-left input[type="number"]{-moz-appearance:textfield}
+
+
+.cart-content-left input[type="number"]::-webkit-outer-spin-button,
+.cart-content-left input[type="number"]::-webkit-inner-spin-button{
+  -webkit-appearance: inner-spin-button; /* Chrome/Edge/Safari */
+  margin: 0;
+}
+/* ô Xóa — an toàn hơn last-child */
+.cart-content-left td.delete-cell{color:var(--danger);font-weight:700;cursor:pointer;user-select:none}
+.cart-content-left td.delete-cell:hover{opacity:.85;text-decoration:underline}
+
+/* Right summary */
+.cart-content-right table{
+  width:100%; border-collapse:collapse; background:#fff; border:1px solid var(--line);
+  border-radius:14px; overflow:hidden;
+}
+.cart-content-right th{padding:14px 16px;text-align:left;font-size:15px;background:#fafafa}
+.cart-content-right td{padding:12px 16px;border-bottom:1px solid #f5f5f5;font-size:14px}
+.cart-content-right tr:last-child td{border-bottom:none}
+.cart-content-right td:last-child{text-align:right}
+.cart-content-right .grand{font-weight:800;font-size:16px}
+.cart-content-right .checkout{
+  width: 100%;
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: #111;
+  color: #fff;
+  font-weight: 800;
+  cursor: pointer;
+}
+.cart-content-right .checkout:disabled{background:#bbb;cursor:not-allowed}
+.cart-content-right .go-shopping{
+  display: block; /* để nó xuống hàng */
+  margin-top: 10px;
+  text-align: center;
+  font-weight: 700;
+  color: #333;
+}
+.cart-content-right .go-shopping:hover{text-decoration:underline}
+
+.cart-content-right-text{
+  margin-top:12px; font-size:13px; color:#444; background:#fff; border:1px solid var(--line);
+  border-radius:12px; padding:12px 14px; line-height:1.5;
+}
+.cart-content-right-text a{color:var(--brand);font-weight:700}
+
+/* Empty state (nếu dùng) */
+.cart-empty{
+  background:#fff; border:1px solid var(--line); border-radius:14px; padding:24px; text-align:center; color:#555;
+}
+.cart-empty .go-shopping{margin-top:10px;display:inline-block;padding:10px 14px;border-radius:10px;background:#111;color:#fff;font-weight:700}
+
+/* ====== Chế độ chỉ hiển thị giỏ ====== */
+body.show-cart{display:flex;flex-direction:column;min-height:100vh}
+body.show-cart .slider, 
+body.show-cart main, 
+body.show-cart #quickview, 
+body.show-cart #login_modal{display:none!important}
+body.show-cart #cart{display:block!important;flex:1;padding-top:120px}
+body.show-cart footer{margin-top:auto}
+
+
+/* ====== Responsive ====== */
+/* @media (max-width:992px){
+  .header_menu{gap:18px}
+  .cart-content{grid-template-columns:1fr}
+  footer{grid-template-columns:1fr}
+}
+@media (max-width:600px){
+  header{padding:10px 14px}
+  .header_menu{display:none}
+  .header_other input{width:54vw}
+  .cart{padding-top:100px}
+  .cart-top-wrap{gap:28px}
+  .cart-content-left td img{width:64px;height:64px}
+} */
+
+
+/* Ẩn giỏ hàng mặc định */
+#cart { display: none; }
+
+/* Chỉ hiện khi user thực sự mở giỏ (#cart trong URL) hoặc khi site đang ở chế độ show-cart */
+#cart:target,
+body.show-cart #cart {
+  display: block !important;
+}
+
+/* Đảm bảo hai section “ăn chắc” khi có .hidden */
+#cart.hidden,
+#delivery.hidden {
+  display: none !important;
+}

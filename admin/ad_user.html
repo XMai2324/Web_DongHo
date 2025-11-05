@@ -1,965 +1,166 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link rel="shortcut icon" href="/view/image/logo.png" type="image/x-icon">
-    <link rel="stylesheet" href="../view/css/index.css">
-    <!-- <script src="./data.js"></script> -->
-    <title>Admin_Management</title>
-    <style>
-    /* Global Styles */
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin_Management</title>
 
-      :root {
-                --primary-color: #0d6efd;
-                --success-color: #198754;
-                --warning-color: #ffc107;
-                --danger-color: #dc3545;
-                --bg-light: #f8f9fa;
-                --border-color: #dee2e6;
-                --shadow-light: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-            }
+  <!-- Font Awesome (giống admin.html) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
 
-    body { 
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-        background-color: #f0f4f8; 
-        margin: 0; 
-        padding: 0; 
-    }
-    h2 { 
-        text-align: center; 
-        color: #333; 
-        margin-bottom: 25px; 
-    }
-    .container { 
-        background: white; 
-        padding: 30px; 
-        border-radius: 10px; 
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-        width: 90%; 
-        max-width: 400px; 
-        margin: 50px auto; 
-    }
-    /* Đã điều chỉnh để tránh chồng lấp với header */
-    main { 
-        margin-top: 170px;
-        padding: 30px; 
+  <!-- CSS dùng chung từ trang admin -->
+  <!-- ⚠️ chỉnh lại đường dẫn nếu cấu trúc thư mục khác -->
+  <link rel="stylesheet" href="../admin/ad_css/admin.css" />
+  <!-- <script src="../view/js/auth.js"></script> -->
+
+  <!-- (tuỳ chọn) favicon/logo nếu có -->
+  <!-- <link rel="icon" type="image/png" href="/view/image/logo.png"> -->
+
+  <style>
+    /* Ẩn header cũ nếu trang bạn có, tránh xô lệch layout khi dùng sidebar cố định */
+   
+    /* vùng nội dung chính có khoảng đệm đẹp hơn trong layout mới */
+    .tab-container{
+      width: min(1200px, 100% - 48px);
+      margin: 24px auto 20px;
     }
 
-    /* Form Styles */
-    .form-page {
-        display: flex; 
-        justify-content: center; 
-        align-items: center; 
-        height: 100vh; 
-        margin: 0; 
+    /* Một số lớp sẵn có trong giao diện người dùng gốc:
+       Nếu bạn đã có CSS riêng thì có thể bỏ bớt. Chủ yếu để bảng/btn trông ổn. */
+    .tab-buttons{ display:flex; gap:8px; flex-wrap:wrap; }
+    .tab-btn{
+      border:1px solid #e5e7eb; background:#fff; padding:10px 14px; border-radius:10px; cursor:pointer;
     }
-    .input-group { 
-        margin-bottom: 15px; 
-        position: relative; 
-    }
-    .input-group label { 
-        display: block; 
-        margin-bottom: 5px; 
-        font-weight: 600; 
-        color: #555; 
-    }
-    .input-group input, .modal-content select { 
-        width: 100%; 
-        padding: 10px; 
-        border: 1px solid #ccc; 
-        border-radius: 5px; 
-        box-sizing: border-box; 
-    }
-    button { 
-        width: 100%; 
-        padding: 10px; 
-        background-color: #007bff; 
-        color: white; 
-        border: none; 
-        border-radius: 5px; 
-        cursor: pointer; 
-        font-size: 16px; 
-        transition: background-color 0.3s; 
-    }
-    button:hover { 
-        background-color: #0056b3; 
-    }
-    .message { 
-        margin-top: 15px; 
-        text-align: center; 
-        padding: 10px; 
-        border-radius: 5px; 
-    }
-    .success { 
-        background-color: #d4edda; 
-        color: #155724; 
-        border: 1px solid #c3e6cb; 
-    }
-    .error { 
-        background-color: #f8d7da; 
-        color: #721c24; 
-        border: 1px solid #f5c6cb; 
-    }
-    .link { 
-        text-align: center; 
-        margin-top: 20px; 
-        font-size: 14px; 
-    }
-    .link a { 
-        color: #007bff; 
-        text-decoration: none; 
-    }
-    
-    /* Form Validation Styles */
-    .input-group.invalid input { 
-        border-color: #dc3545; 
-        box-shadow: 0 0 0 0.1rem rgba(220, 53, 69, 0.25); 
-    } 
-    .input-group .error-text { 
-        color: #dc3545; 
-        font-size: 0.85em; 
-        margin-top: 3px; 
-        display: none; 
-    } 
-    .input-group.invalid .error-text { 
-        display: block; 
-    }
-
-    /* Header & Navigation Styles (for index.html and admin.html) */
-    
-    header {
-        height: 100px;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        display: flex;
-        flex: 1;
-        align-items: center;
-        justify-content: space-between;
-        padding: 10px 30px;
-        background-color: rgba(225, 225, 225, 0.3) ;
-        transition: background-color 0.3s ease;
-        z-index: 1000;
-    }
-
-    header:hover {
-        background: white;
-    }
-
-    /* Logo */
-
-    /* Menu ngang */
-    .header_menu {
-        display: flex;
-        gap: 30px; /* khoảng cách giữa các mục */
-        margin-left: 50px;
-    }
-
-    /* Mục menu chính */
-    .header_menu .name {
-        position: relative;
-        font-weight: bold;
-        cursor: pointer;
-        font-size: 20px;
-    }
-
-    /* Menu con */
-    .header_menu .name ul {
-        list-style: none;
-        position: absolute;
-        top: 100%;
-        left: 0;
-        background: white;
-        display: none; /* ẩn mặc định */
-        padding: 10px 0;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-    }
-
-    /* Các item bên trong */
-    .header_menu .name ul li {
-        padding: 8px 15px;
-        white-space: nowrap;
-    }
-
-    .header_menu .name ul li:hover {
-        background: #f2f2f2;
-    }
-
-    /* Hover để xổ xuống */
-    .header_menu .name:hover ul {
-        display: block;
-    }
-
-    .header_menu a {
-        text-decoration: none;
-        color: black;
-    }
-
-    .header_other {
-        width: 450px;
-        display: flex;
-        gap: 30px;
-        margin-left: 40px;
-    }
-
-    .search input[type="text"] {
-        border: none;
-        outline: none;
-        background-color: transparent;
-        line-height: 15px;
-        border-bottom: solid 1px black;
-        padding-bottom: 3px;
-    }
-
-    /* Slider */
-    .slider {
-        position: relative;
-        width: 100%;
-        height: 100%;  /* chỉnh tùy ảnh của anh */
-        aspect-ratio: 16/4; /* giúp giữ tỉ lệ khi co giãn, có thể bỏ nếu không cần */
-        overflow: hidden;
-        border-top-left-radius: 10px;
-        padding-top: 45%;
-    }
-
-    /* Mỗi slide chồng lên nhau, chỉ slide.active hiện */
-    .slider .slide {
-        position: absolute;
-        inset: 0; /* top:0; right:0; bottom:0; left:0; */
-        opacity: 0;
-        transition: opacity 0.8s ease;/* hiệu ứng fade */
-        z-index: 0;
-    }
-
-    .slider .slide.active {
-        opacity: 1;
-        z-index: 1;
-    }
-
-    .slider .slide img {
-        width: 100%;
-        height: 100%;
-    }
-
-    /* (tuỳ chọn) chấm chỉ báo */
-    .slider-dots {
-        position: absolute;
-        left: 50%;
-        bottom: 12px;
-        transform: translateX(-50%);
-        display: flex;
-        gap: 8px;
-        z-index: 2;
-    }
-
-    .slider-dots button {
-        width: 10px; height: 10px; border-radius: 50%;
-        border: none; background: rgba(255,255,255,.6);
-        cursor: pointer;
-    }
-    .fa-right-from-bracket {
-        color: black;
-        text-decoration: none;
-    }
-
-    /* Admin Management Styles */
-    .management-header { 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center; 
-        margin-bottom: 20px; 
-    }
-    .btn { 
-        padding: 10px 15px; 
-        border: none; 
-        border-radius: 5px; 
-        cursor: pointer; 
-        transition: background-color 0.3s; 
-        color: white; 
-        font-weight: 600; 
-    }
-    .btn-add { 
-        width: 250px;
-        background-color: #28a745; 
-    }
-    .btn-add:hover { 
-        background-color: #1e7e34; 
-    }
-    
-    /* Table Styles */
-    .user-table { 
-        width: 100%; 
-        border-collapse: collapse; 
-        background-color: white; 
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
-        border-radius: 8px; 
-        overflow: hidden; 
-    }
-    .user-table th, .user-table td { 
-        padding: 12px; 
-        text-align: left; 
-        border-bottom: 1px solid #ddd; 
-    }
-    .user-table th { 
-        background-color: #007bff; 
-        color: white; 
-        font-weight: 600; 
-    }
-    .user-table tr:hover { 
-        background-color: #f0f0f0; 
-    }
-    
-    .actions-btn { 
-        padding: 6px 10px; 
-        margin-right: 5px; 
-        cursor: pointer; 
-        border: none; 
-        border-radius: 4px; 
-        font-size: 13px; 
-        font-weight: 500; 
-        margin: 5px 5px;
-        width: 60px;
-    }
-    .btn-edit { 
-        background-color: #ffc107; 
-        color: #333; 
-        /* display: none; */
-    }
-    .btn-delete { 
-        background-color: #dc3545; 
-        color: white; 
-    }
-
-    /* Modal Styles */
-    .modal { 
-        display: none; 
-        position: fixed; 
-        z-index: 1000; 
-        left: 0; 
-        top: 0; 
-        width: 100%; 
-        height: 100%; 
-        overflow: auto; 
-        background-color: rgba(0,0,0,0.4); 
-    }
-    .modal-content { 
-        background-color: #fefefe; 
-        margin: 10% auto; 
-        padding: 20px; 
-        border: 1px solid #888; 
-        width: 90%; 
-        max-width: 500px; 
-        border-radius: 10px; 
-        position: relative; 
-    }
-    .close-btn { 
-        color: #aaa; 
-        float: right; 
-        font-size: 28px; 
-        font-weight: bold; 
-    }
-    .close-btn:hover, .close-btn:focus { 
-        color: #000; 
-        text-decoration: none; 
-        cursor: pointer; 
-    }
-    .modal-content label { 
-        display: block; 
-        width: 100%; 
-        margin-bottom: 5px; 
-        font-weight: 600;
-    }
-    .modal-content input, .modal-content select { 
-        margin-bottom: 15px; 
-    }
-    .modal-content button { 
-        margin-top: 15px; 
-    }
-
-/* --- 1. Modal Containers (Nền mờ) --- */
-/* Áp dụng cho cả hai Modal bằng cách liệt kê ID */
-#addModal, #editModal {
-    display: none; /* Mặc định ẩn */
-    position: fixed;
-    z-index: 100; 
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgba(0, 0, 0, 0.4); 
-    padding-top: 50px;
-}
-
-/* --- 2. Modal Content (Hộp chứa form) --- */
-/* Áp dụng cho nội dung bên trong của cả hai Modal */
-#addModal .modal-content, #editModal .modal-content {
-    background-color: #ffffff;
-    margin: 5% auto; 
-    padding: 30px;
-    border: 1px solid #888;
-    width: 90%; 
-    max-width: 500px; 
-    border-radius: 12px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-    position: relative;
-    animation-name: animatetop;
-    /* animation-duration: 0.4s; */
-    font-family: Arial, sans-serif; /* Đảm bảo font không bị ảnh hưởng */
-}
-
-@keyframes animatetop {
-    from {top: -300px; opacity: 0}
-    to {top: 0; opacity: 1}
-}
-
-/* --- 3. Tiêu đề và Nút đóng --- */
-#addModal h3, #editModal h3 {
-    color: #333;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    font-size: 1.5em;
-    font-weight: 600;
-}
-
-/* Nút đóng (close-btn) sử dụng class bạn đã đặt */
-#addModal .close-btn, #editModal .close-btn {
-    color: #aaa;
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-#addModal .close-btn:hover, #editModal .close-btn:focus {
-    color: #000;
-    text-decoration: none;
-}
-
-/* --- 4. Form Controls (Inputs, Selects, Labels) --- */
-/* Áp dụng cho các phần tử bên trong FORM Thêm (addUserForm) */
-#addUserForm label, #editUserForm label {
-    display: block;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    color: #555;
-    font-weight: 500;
-}
-
-/* Áp dụng cho tất cả INPUT và SELECT bên trong cả hai form */
-#addUserForm input[type="text"], 
-#addUserForm input[type="email"], 
-#addUserForm input[type="password"], 
-#addUserForm select,
-#editUserForm input[type="text"], 
-#editUserForm input[type="email"], 
-#editUserForm input[type="password"], 
-#editUserForm select {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1em;
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-/* Hiệu ứng focus cho các trường nhập liệu */
-#addUserForm input:focus, 
-#editUserForm input:focus, 
-#addUserForm select:focus, 
-#editUserForm select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    outline: none;
-}
-
-/* Style riêng cho input chỉ đọc (readonly) trong form Sửa */
-#editUserForm input[readonly] {
-    background-color: #e9ecef;
-    opacity: 0.8;
-    cursor: default;
-}
-
-/* --- 5. Nút Submit --- */
-/* Sử dụng ID form và class button để tránh xung đột */
-#addUserForm .btn-add, #editUserForm .btn-edit {
-   background-color: #28a745;
-    color: white;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    width: 100%;
-    margin-top: 20px;
-    font-size: 1.1em;
-    transition: background-color 0.3s, transform 0.1s;
-}
-
-#addUserForm .btn-add:hover, #editUserForm .btn-edit:hover {
-    background-color: #0056b3;
-    transform: translateY(-1px);
-}
-#addUserForm .btn-add:active, #editUserForm .btn-edit:active {
-    transform: translateY(0);
-}
-/* --- FIX CẤU TRÚC PASSWORD RESET (Input & Button cùng hàng) --- */
-/* Cần đảm bảo input-row-reset không bị ảnh hưởng bởi input-group chung */
-.input-row-reset {
-    display: flex; /* Kích hoạt Flexbox */
-    align-items: center; /* Căn giữa theo chiều dọc */
-    gap: 10px; /* Khoảng cách giữa input và button */
-    margin-bottom: 15px; /* Tạo khoảng cách dưới cùng */
-}
-
-/* Áp dụng cho input trong hàng reset */
-.input-row-reset input[type="password"] {
-    flex-grow: 1; /* Cho phép input chiếm phần lớn không gian */
-    width: auto; /* Quan trọng: Ghi đè style width: 100% cũ */
-    margin-bottom: 0; /* Loại bỏ margin-bottom cũ */
-}
-
-/* Style nút Reset */
-.btn-reset {
-    flex-shrink: 0; /* Ngăn nút bị co lại */
-    background-color: #ffc107; /* Màu vàng cam */
-    color: #333;
-    padding: 10px 15px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: 500;
-    /* Đảm bảo chiều cao phù hợp với input */
-    height: 40px; 
-    line-height: 1; /* Căn chữ trong nút */
-    margin: 0; /* Loại bỏ margin không cần thiết */
-    width: 100px; /* Chiều rộng cố định cho nút */
-}
-
-.btn-reset:hover {
-    background-color: #e0a800;
-}
-
-
-/* --- STYLE CHO TAB CHUYỂN ĐỔI --- */
-.tab-container {
-    width: 90%;
-    max-width: 1200px;
-    margin: 120px auto 20px auto; /* Điều chỉnh margin-top */
-    background: #ffffff;
-    border-radius: 12px;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.tab-buttons {
-    display: flex;
-    justify-content: flex-start;
-    border-bottom: 2px solid #ddd;
-    padding: 0 20px;
-}
-
-.tab-btn {
-    padding: 15px 25px;
-    cursor: pointer;
-    font-size: 18px;
-    font-weight: 600;
-    color: #555;
-    border: none;
-    background: transparent;
-    transition: color 0.3s, border-bottom 0.3s;
-    border-bottom: 3px solid transparent; /* Tạo đường viền dưới giả */
-    margin-bottom: -2px; /* Đẩy tab lên trên đường kẻ */
-}
-
-.tab-btn.active {
-    color: #007bff;
-    border-bottom: 3px solid #007bff;
-}
-
-.tab-content {
-    padding: 20px;
-}
-
-.tab-pane {
-    /* Mặc định được ẩn bằng JS */
-    min-height: 400px; /* Đảm bảo khu vực nội dung có đủ chiều cao */
-}
-            .control-panel {
-                display: flex;
-                justify-content: space-between;
-                align-items: center;
-                margin-bottom: 1.5rem;
-                flex-wrap: wrap;
-                gap: 1rem;
-            }
-
-            .search-box {
-                display: flex;
-                border: 1px solid var(--border-color);
-                border-radius: 0.25rem;
-                overflow: hidden;
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .search-box input {
-                border: none;
-                padding: 0.5rem 0.75rem;
-                flex-grow: 1;
-                outline: none;
-            }
-            
-            .search-box button {
-                background-color: #0a58ca;
-                color: white;
-                border: none;
-                padding: 0.5rem 1rem;
-                cursor: pointer;
-                transition: background-color 0.2s;
-                width: 50px;
-            }
-
-            .search-box button:hover {
-                background-color: #0a58ca;
-            }
-
-            .btn-primary {
-                background-color: #28a745;
-                color: white;
-                border: none;
-                padding: 0.6rem 1.2rem;
-                border-radius: 0.25rem;
-                cursor: pointer;
-                font-weight: 600;
-                transition: background-color 0.2s;
-                width: 250px;
-                font-size: 15px;
-                width: 65%;
-                height: 40px;
-                margin-top: 10px;
-                
-            }
-
-            .btn-primary:hover {
-                background-color: #1e7e34;
-            }
-
-            .btn-secondary {
-                background-color: #6c757d;
-                color: white;
-                border: none;
-                padding: 0.6rem 1.2rem;
-                border-radius: 0.25rem;
-                cursor: pointer;
-                font-weight: 600;
-                transition: background-color 0.2s;
-                font-size: 15px;
-                width: 35%;
-                height: 40px;
-                margin-top: 10px;
-                width: 170px;
-            }
-            
-            .btn-secondary:hover {
-                background-color: #5c636a;
-            }
-            /* --- BỔ SUNG CSS CHO MODAL THÊM/SỬA SẢN PHẨM & CÀI ĐẶT LỢI NHUẬN --- */
-
-/* 1. Form Group (Đảm bảo khoảng cách giữa các trường) */
-.modal-content .form-group {
-    margin-bottom: 15px;
-}
-
-/* 2. Tiêu đề Modal Sản phẩm (Để đảm bảo nó nhất quán với các Modal khác) */
-#productModalTitle, #profitSettingsModal h2 {
-    color: #333;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    font-size: 1.5em;
-    font-weight: 600;
-}
-
-/* 3. Input & Select Styles (Sử dụng lại các styles đã có trong modal-content) */
-#productForm input[type="text"],
-#productForm input[type="number"],
-#productForm select, /* Thêm select */
-#profitSettingsForm input[type="number"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 5px; /* Giảm margin dưới để dùng form-group */
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1em;
-    transition: border-color 0.3s, box-shadow 0.3s;
-    box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng */
-}
-
-/* 4. Hiệu ứng focus */
-#productForm input:focus,
-#productForm select:focus, /* Thêm select */
-#profitSettingsForm input:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    outline: none;
-}
-
-/* 5. Nhóm nút (Button Group) ở cuối Form Sản phẩm */
-.btn-group {
-    display: flex;
-    justify-content: space-between;
-    gap: 15px; /* Khoảng cách giữa các nút */
-    margin-top: 30px;
-}
-
-/* Điều chỉnh lại style nút trong nhóm */
-.btn-group .btn-secondary,
-.btn-group .btn-primary,
-.btn-group .btn-delete {
-    /* Đảm bảo style này ghi đè các style button chung */
-    width: 50%;
-    padding: 12px 20px;
-    border-radius: 6px;
-    font-size: 1.1em;
-    margin-top: 0; /* Ghi đè margin-top cũ */
-}
-
-/* 6. Style cho nút Xóa trong Modal xác nhận xóa */
-.btn-delete {
-    background-color: var(--danger-color); /* Sử dụng biến CSS đã định nghĩa */
-    color: white;
-    transition: background-color 0.3s;
-}
-
-.btn-delete:hover {
-    background-color: #c82333; /* Darker red */
-}
-/* --- BỔ SUNG: Định dạng tiêu đề và Nút đóng cho các Modal SẢN PHẨM (Mới) --- */
-
-/* --- CSS CƠ BẢN (TIÊU ĐỀ & NÚT ĐÓNG) --- */
-
-/* 1. Tiêu đề Modal (Áp dụng cho Add/Edit Sản phẩm, Cài đặt Lợi nhuận, Xác nhận Xóa) */
-#productModalTitle, 
-#profitSettingsModal h2, 
-#deleteConfirmationModal h2 {
-    color: #333;
-    border-bottom: 2px solid #eee;
-    padding-bottom: 10px;
-    margin-bottom: 20px;
-    font-size: 1.5em;
-    font-weight: 600;
-}
-
-/* QUAN TRỌNG: Đảm bảo Modal Content có position: relative */
-.modal-content {
-    position: relative; 
-    /* Thuộc tính này là cần thiết để position: absolute của nút đóng hoạt động */
-}
-
-/* 2. Nút đóng (CLOSE BUTTON) - ĐỊNH VỊ GÓC PHẢI */
-
-/* Nút đóng của các Modal Sản phẩm */
-#productModal .modal-close,
-#deleteConfirmationModal .modal-close,
-#profitSettingsModal .modal-close {
-    color: #aaa;
-    position: absolute;
-    top: 10px;
-    right: 20px;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: color 0.2s;
-}
-
-/* 3. Hiệu ứng Hover/Focus */
-#productModal .modal-close:hover, 
-#profitSettingsModal .modal-close:hover,
-#deleteConfirmationModal .modal-close:hover {
-    color: #000;
-    text-decoration: none;
-}
-
-/* ----------------------------------------------------- */
-
-/* --- CSS BỔ SUNG CHO FORM CẬP NHẬT TỈ LỆ LỢI NHUẬN (BÊN TRONG MODAL) --- */
-
-/* 4. Form Group (Đảm bảo khoảng cách giữa các trường) */
-#profitSettingsModal .form-group {
-    margin-bottom: 15px;
-}
-
-/* 5. Style cho Input & Select */
-#profitSettingsModal input[type="number"],
-#profitSettingsModal select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 6px;
-    font-size: 1em;
-    box-sizing: border-box; /* Đảm bảo padding không làm tăng chiều rộng */
-    transition: border-color 0.3s, box-shadow 0.3s;
-}
-
-/* 6. Hiệu ứng focus */
-#profitSettingsModal input:focus,
-#profitSettingsModal select:focus {
-    border-color: #007bff;
-    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    outline: none;
-}
-
-/* 7. Style cho các nút (Áp dụng lại style btn-group) */
-#profitSettingsModal .btn-group {
-    display: flex;
-    justify-content: flex-end; /* Căn nút sang phải (hoặc space-between nếu muốn 2 nút đều) */
-    gap: 15px;
-    margin-top: 30px;
-}
-
-/* Đảm bảo nút trong modal có kích thước phù hợp */
-#profitSettingsModal .btn-group button {
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 1em;
-}
-
-</style>
-
+    .tab-btn.active{ background:#111827; color:#fff; }
+    .tab-content{ margin-top:16px; }
+    .user-table{ width:100%; border-collapse: collapse; background:#fff; border-radius:14px; overflow:hidden; }
+    .user-table th, .user-table td{ border-bottom:1px solid #e5e7eb; padding:10px 12px; text-align:left; }
+    .user-table thead th{ background:#f3f4f6; font-weight:600; }
+    .btn{ border:1px solid #e5e7eb; background:#fff; padding:8px 12px; border-radius:10px; cursor:pointer; }
+    .btn.primary{ background:#111827; color:#fff; border-color:#111827; }
+    .management-header, .control-panel{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin:12px 0; }
+    .search-box{ display:flex; gap:6px; align-items:center; }
+    .search-box input{ height:36px; padding:0 10px; border:1px solid #e5e7eb; border-radius:10px; min-width:260px; }
+    .hello{ margin: 8px 0 16px; font-size: 16px; color: #111827; }
+    /* Bảo đảm vùng nội dung không bị dính sát cạnh */
+    .main-content { padding: 16px; }
+  </style>
 </head>
+
 <body>
-
-    <header>
+    <div class="admin-container">
+    <!-- ========== SIDEBAR (copy từ admin) ========== -->
+        <aside class="sidebar">
         <div class="logo">
-            <img src="/view/image/logo2.png" alt="logoshop">
+            <!-- ⚠️ sửa đường dẫn ảnh logo nếu khác -->
+            <img src="/view/image/logo2.png" alt="Logo" />
         </div>
+        <h2 class="hello">Quản trị viên</h2>
 
-        <div class="header_menu">
-            <div class="name"> Quản lý sản phẩm
-                <ul>
-                    <li>Đồng hồ Cơ Tự động</li>
-                    <li>Đồng hồ Quartz (Pin)</li>
-                    <li>Đồng hồ Năng lượng ánh sáng</li>
-                    <li>Đồng hồ Thông minh (Smartwatch)</li>
-                    <li>Đồng hồ Chronograph</li>
-                    <li>Phụ kiện</li>
-                    <li>Hộp đựng</li>
-                </ul>
-            </div>
-            <div class="name"> Xử lý đơn hàng
-            </div>
-            <div class="name"> <a href="/view/warranty.html">Thông tin bảo hành</a>
-            </div>
-            <div class="name"> Khuyến mãi
-            </div>
-            <div class="tab-buttons">
-            <button class="tab-btn active" data-target="qluser" id="tabUserBtn">
-                Quản lý Người Dùng
-            </button>
-            <button class="tab-btn" data-target="qlgiabanloinhuan" id="tabPriceProfitBtn">
-                Quản lý Giá Bán & Lợi Nhuận
-            </button>
-        </div>
-        </div>
+        <ul class="menu">
+            <li class="menu-title"><a href="admin.html">Sản phẩm</a></li>
+            <ul class="submenu" id="leftMenu">
+            <li data-entity="watch" class="is-active">Đồng hồ</li>
+            <li data-entity="strap">Dây đeo</li>
+            <li data-entity="box">Hộp đựng</li>
+            <li data-entity="glass">Kính cường lực</li>
+            </ul>
 
-        <div class="header_other">
-            <div class="search">
-                <input type="text" placeholder="Tìm kiếm...">
-                <i class="fa-solid fa-magnifying-glass"></i>
-            </div>
-            <div class="account">
+            <li class="menu-title">Đơn hàng</li>
+            <li class="menu-title"><a href="../admin/ad_user.html">Khách hàng</a></li>
+            <li class="menu-title"><a href="../admin/nhaphang.html">Nhập hàng</a></li>
+
+            <li>
+            <div class="actions">
+                <div class="account">
                 <i class="fa-regular fa-user"></i>
                 <span>Admin</span>
+                </div>
+                <div class="logout" id="logoutBtn" title="Đăng xuất">
+                <i class="fa-solid fa-right-from-bracket"></i>
+                </div>
             </div>
-            <div class="cart">
-                <i class="fa-solid fa-cart-shopping"></i>
-            </div>
-            <div class="logout">
-                <a href="#" id="logoutBtn" class="fa-solid fa-right-from-bracket"></a>
-            </div>
-        </div>
-    </header>
+            </li>
+        </ul>
+        </aside>
 
-    <div class="tab-container">
-        
+    <!-- ========== MAIN CONTENT ========== -->
+    <main class="main-content">
+      <div class="tab-container">
+        <!-- Tabs -->
+        <div class="tab-buttons">
+          <button class="tab-btn active" data-target="qluser" id="tabUserBtn">Quản lý Người Dùng</button>
+          <button class="tab-btn" data-target="qlgiabanloinhuan" id="tabPriceProfitBtn">Quản lý Giá Bán &amp; Lợi Nhuận</button>
+        </div>
 
         <div class="tab-content">
+          <!-- ==== TAB: Quản lý Người Dùng ==== -->
+          <div id="qluser" class="tab-pane" style="">
+            <h2>Quản lý Danh sách Người Dùng</h2>
 
-            <div id="qluser" class="tab-pane">
-                <h2>Quản lý Danh sách Người Dùng</h2>
-                
-                <div class="management-header">
-                    <h3>Tổng số người dùng: <span id="userCount">0</span></h3>
-                    <button class="btn btn-add" id="openAddModal">➕ Thêm Người Dùng Mới</button>
-                </div>
-
-                <table class="user-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Username</th>
-                            <th>Email</th>
-                            <th>Mật khẩu</th>
-                            <th>Vai trò</th>
-                            <th>Trạng thái</th>
-                            <th>Hành động</th>
-                        </tr>
-                    </thead>
-                    <tbody id="userTableBody">
-                    </tbody>
-                </table>
+            <div class="management-header">
+              <h3>Tổng số người dùng: <span id="userCount">0</span></h3>
+              <button class="btn btn-add" id="openAddModal" style="background-color: #5db9e4;;">+ Thêm Người Dùng Mới</button>
             </div>
-            
-            <div id="qlgiabanloinhuan" class="tab-pane" style="display: none;">
-                 <h2>Quản lý Giá Bán và Lợi Nhuận</h2>
-                
-               <div class="control-panel">
-                <div class="search-box">
-                    <input type="text" id="searchInput" placeholder="Tìm kiếm theo Tên SP, Mã SP...">
-                    <button onclick="searchProducts()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
-                    <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z"/>
-                    </svg></button>
-                </div>
-                <div style="display: flex;">
-                    <button class="btn-primary" onclick="openProductModal(null)">
-                        + Thêm Sản Phẩm Mới
-                    </button>
-                    <button class="btn-secondary" onclick="openProfitSettingsModal()" style="margin-left: 1rem;">
-                        Cập Nhật Tỉ Lệ
-                    </button>
-                </div>
-                 </div>
-                
-              
-                      <table class="user-table">
-                       <thead>
-                          <tr>
-                               <th>ID</th>
-                                <th style="display: none;">Hình ảnh</th>
-                                <th>Tên sản phẩm</th>
-                                <th>Thương hiệu / Chi tiết PK</th> 
-                                <th>Size</th> 
-                                <th style="margin-left: 20px;">Giá vốn (VNĐ)</th>
-                                <th>Tỉ lệ lợi nhuận</th>
-                                <th>Giá bán (VNĐ)</th>
-                                <th>Hành động</th>
-                            </tr>
-                        </thead>
-                        <tbody id="productTableBody">
-                        </tbody>
-                        </table>
-                  </div>
+
+            <table class="user-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Username</th>
+                  <th>Email</th>
+                  <th>Mật khẩu</th>
+                  <th>Vai trò</th>
+                  <th>Trạng thái</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="userTableBody">
+                <!-- JS sẽ render danh sách người dùng vào đây -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- ==== TAB: Quản lý Giá Bán & Lợi Nhuận ==== -->
+          <div id="qlgiabanloinhuan" class="tab-pane" style="display:none;">
+            <h2>Quản lý Giá Bán và Lợi Nhuận</h2>
+
+            <div class="control-panel">
+              <div class="search-box">
+                <input type="text" id="searchInput" placeholder="Tìm kiếm theo Tên SP, Mã SP..." />
+                <button class="btn" id="btnSearch" title="Tìm kiếm">
+                  <i class="fa-solid fa-magnifying-glass"></i>
+                </button>
               </div>
-            </div> 
-        </div> 
+
+              <div style="display:flex; gap:10px;">
+                <button class="btn primary" id="btnAddProduct">+ Thêm Sản Phẩm Mới</button>
+                <button class="btn" id="btnProfitSetting">Cập Nhật Tỉ Lệ</button>
+              </div>
+            </div>
+
+            <table class="user-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Tên sản phẩm</th>
+                  <th>Thương hiệu / Chi tiết PK</th>
+                  <th>Size</th>
+                  <th>Giá vốn (VNĐ)</th>
+                  <th>Tỉ lệ lợi nhuận</th>
+                  <th>Giá bán (VNĐ)</th>
+                  <th>Hành động</th>
+                </tr>
+              </thead>
+              <tbody id="productTableBody">
+                <!-- JS sẽ render danh sách sản phẩm vào đây -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      </div> 
             <div id="addModal" class="modal">
             <div class="modal-content">
                 <span class="close-btn add-close-btn">&times;</span>
@@ -1035,14 +236,14 @@
                         <div class="form-group">
                             <label for="productType">Thương hiệu</label>
                            <select id="productType" required>
-    <option value="" disabled selected>Chọn Loại Sản Phẩm</option>
-    <option value="Rolex">Rolex</option>
-    <option value="Citizen">Citizen</option>
-    <option value="Casio">Casio</option>
-    <option value="Seiko">Seiko</option>
-    <option value="Rado">Rado</option>
-    <option value="Phụ kiện">Phụ kiện</option>
-    <option value="Hộp đựng">Hộp đựng</option>
+                                    <option value="" disabled selected>Chọn Loại Sản Phẩm</option>
+                                    <option value="Rolex">Rolex</option>
+                                    <option value="Citizen">Citizen</option>
+                                    <option value="Casio">Casio</option>
+                                    <option value="Seiko">Seiko</option>
+                                    <option value="Rado">Rado</option>
+                                    <option value="Phụ kiện">Phụ kiện</option>
+                                    <option value="Hộp đựng">Hộp đựng</option>
                             </select>
                         </div>
                         
@@ -1075,20 +276,21 @@
                 </div>
             </div>
 
-           <div id="deleteConfirmationModal" class="modal">
-    <div class="modal-content" style="width: 400px;">
-        <span class="close-btn" onclick="closeDeleteConfirmation()">&times;</span>
-        <h2>Xác nhận Xóa Sản Phẩm</h2>
-        <p>Bạn có chắc chắn muốn xóa sản phẩm: "<span id="productToDeleteName" style="font-weight: bold; color: #dc3545;"></span>" không?</p>
-        
-        <input type="hidden" id="productToDeleteId" value=""> 
+    <div id="deleteConfirmationModal" class="modal">
+        <div class="modal-content" style="width: 400px;">
+            <span class="close-btn" onclick="closeDeleteConfirmation()">&times;</span>
+            <h2>Xác nhận Xóa Sản Phẩm</h2>
+            <p>Bạn có chắc chắn muốn xóa sản phẩm: "<span id="productToDeleteName" style="font-weight: bold; color: #dc3545;"></span>" không?</p>
+            
+            <input type="hidden" id="productToDeleteId" value=""> 
 
-        <div class="btn-group">
-            <button class="btn-secondary" onclick="closeDeleteConfirmation()" style="margin-top: 17px;">Hủy</button>
-            <button class="btn btn-danger" onclick="confirmDelete()">Xác nhận Xóa</button>
+            <div class="btn-group">
+                <button class="btn-secondary" onclick="closeDeleteConfirmation()" style="margin-top: 17px;">Hủy</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">Xác nhận Xóa</button>
+            </div>
         </div>
     </div>
-</div>
+
     <div id="profitSettingsModal" class="modal">
             <div class="modal-content">
             <span class="modal-close" onclick="closeProfitSettingsModal()">&times;</span>
@@ -1119,13 +321,14 @@
             >
         </div>
     </template>
+    </main>    
     </div>
 
     <!-- Sản phẩm -->
-    <script src="./data.js"></script>
+    <script src="ad_js/data.js"></script>
  <script>
 
-    const SUPERADMIN_ID = 999999;
+    const SUPERADMIN_ID = 99999;
     
     // --- KHỞI TẠO VÀ KIỂM TRA QUYỀN TRUY CẬP ---
     const currentUser = JSON.parse(localStorage.getItem('currentUser'));
@@ -1209,7 +412,7 @@
     
     // --- 1. CHỨC NĂNG TẢI & HIỂN THỊ DỮ LIỆU USER (READ) ---
     function loadUsers() {
-        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let users = JSON.parse(localStorage.getItem('accounts')) || [];
         
         userTableBody.innerHTML = '';
         userCountElement.textContent = users.length;
@@ -1286,7 +489,7 @@
         }
 
         editUserForm.reset();
-        const users = JSON.parse(localStorage.getItem('users'));
+        const users = JSON.parse(localStorage.getItem('accounts'));
         const user = users.find(u => u.id === userId);
         
         if (user) {
@@ -1312,7 +515,7 @@
         const password = document.getElementById('addPassword').value.trim();
         const role = document.getElementById('addRole').value;
         
-        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let users = JSON.parse(localStorage.getItem('accounts')) || [];
         
         // Chế độ Thêm (Create)
         const newUser = { 
@@ -1325,7 +528,7 @@
         };
         users.push(newUser);
 
-        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('accounts', JSON.stringify(users));
         addModal.style.display = 'none';
         loadUsers(); 
     });
@@ -1343,7 +546,7 @@
             return;
         }
         
-        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let users = JSON.parse(localStorage.getItem('acounts')) || [];
         
         const index = users.findIndex(u => u.id === id);
         
@@ -1363,14 +566,14 @@
             if (currentUser && currentUser.id === id) {
                 localStorage.setItem('currentUser', JSON.stringify(updatedUser));
                 
-                if (newrole === 'user') {
+                if (newrole === 'acounts') {
                     alert('Vai trò của bạn đã bị thay đổi thành User. Bạn sẽ được chuyển hướng về trang chủ/đăng nhập.');
                     window.location.href = 'login.html'; 
                 }
             }
         }
 
-        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('accounts', JSON.stringify(users));
         editModal.style.display = 'none';
         loadUsers(); 
     });
@@ -1384,11 +587,11 @@
         } 	
 
         if (confirm(`Bạn có chắc chắn muốn xóa người dùng ID ${userId} không?`)) {
-            let users = JSON.parse(localStorage.getItem('users')) || [];
+            let users = JSON.parse(localStorage.getItem('accounts')) || [];
             
             users = users.filter(u => u.id !== userId);
             
-            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('accounts', JSON.stringify(users));
             loadUsers(); 
         }
     }
@@ -1405,7 +608,7 @@
             return; 
         }
 
-        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let users = JSON.parse(localStorage.getItem('accounts')) || [];
         const index = users.findIndex(u => u.id === userId);
 
         if (index !== -1) {
@@ -1415,7 +618,7 @@
             };
             users[index] = updatedUser;
 
-            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('accounts', JSON.stringify(users));
 
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (currentUser && currentUser.id === userId) {
@@ -1460,7 +663,7 @@
             return;
         }
 
-        let users = JSON.parse(localStorage.getItem('users')) || [];
+        let users = JSON.parse(localStorage.getItem('accounts')) || [];
         const index = users.findIndex(u => u.id === userId);
         
         const action = newStatus === 'disabled' ? 'vô hiệu hóa' : 'mở hoạt động';
@@ -1476,7 +679,7 @@
             };
             users[index] = updatedUser;
 
-            localStorage.setItem('users', JSON.stringify(users));
+            localStorage.setItem('accounts', JSON.stringify(users));
 
             const currentUser = JSON.parse(localStorage.getItem('currentUser'));
             if (currentUser && currentUser.id === userId) {
