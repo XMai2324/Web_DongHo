@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TickTock Shop - Sản phẩm</title>
 
-  <!-- CSS -->
-  <!-- <title>TickTock Shop</title> -->
+
+  <link rel="stylesheet" href="css/profile.css">
   <link rel="icon" type="image/png" href="image/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../view/css/client.css">
@@ -33,40 +33,40 @@
           <li><a href="client.html?brand=citizen">Citizen</a></li>
           <li><a href="client.html?brand=rado">Rado</a></li>
           <li><a href="client.html?brand=seiko">Seiko</a></li>
+        </ul>
+      </div>
+
+      <div class="name"><a href="client.html?category=nam">Nam</a>
+        <ul>
+          <li><a href="client.html?category=nam&brand=casio">Casio</a></li>
+          <li><a href="client.html?category=nam&brand=rolex">Rolex</a></li>
+          <li><a href="client.html?category=nam&brand=citizen">Citizen</a></li>
+          <li><a href="client.html?category=nam&brand=rado">Rado</a></li>
+          <li><a href="client.html?category=nam&brand=seiko">Seiko</a></li>
+        </ul>
+      </div>
+
+      <div class="name"><a href="client.html?category=nu">Nữ</a>
+        <ul>
+          <li><a href="client.html?category=nu&brand=casio">Casio</a></li>
+          <li><a href="client.html?category=nu&brand=rolex">Rolex</a></li>
+          <li><a href="client.html?category=nu&brand=citizen">Citizen</a></li>
+          <li><a href="client.html?category=nu&brand=rado">Rado</a></li>
+          <li><a href="client.html?category=nu&brand=seiko">Seiko</a></li>
           </ul>
-          </div>
+      </div>
 
-          <div class="name"><a href="client.html?category=nam">Nam</a>
-            <ul>
-              <li><a href="client.html?category=nam&brand=casio">Casio</a></li>
-              <li><a href="client.html?category=nam&brand=rolex">Rolex</a></li>
-              <li><a href="client.html?category=nam&brand=citizen">Citizen</a></li>
-              <li><a href="client.html?category=nam&brand=rado">Rado</a></li>
-              <li><a href="client.html?category=nam&brand=seiko">Seiko</a></li>
-            </ul>
-          </div>
+      <div class="name"><a href="client.html?category=capdoi">Cặp đôi</a>
+        <ul>
+          <li><a href="client.html?category=capdoi&brand=casio">Casio</a></li>
+          <li><a href="client.html?category=capdoi&brand=rolex">Rolex</a></li>
+          <li><a href="client.html?category=capdoi&brand=citizen">Citizen</a></li>
+          <li><a href="client.html?category=capdoi&brand=rado">Rado</a></li>
+          <li><a href="client.html?category=capdoi&brand=seiko">Seiko</a></li>
+        </ul>
+      </div>
 
-          <div class="name"><a href="client.html?category=nu">Nữ</a>
-            <ul>
-              <li><a href="client.html?category=nu&brand=casio">Casio</a></li>
-              <li><a href="client.html?category=nu&brand=rolex">Rolex</a></li>
-              <li><a href="client.html?category=nu&brand=citizen">Citizen</a></li>
-              <li><a href="client.html?category=nu&brand=rado">Rado</a></li>
-              <li><a href="client.html?category=nu&brand=seiko">Seiko</a></li>
-            </ul>
-          </div>
-
-          <div class="name"><a href="client.html?category=capdoi">Cặp đôi</a>
-            <ul>
-              <li><a href="client.html?category=capdoi&brand=casio">Casio</a></li>
-              <li><a href="client.html?category=capdoi&brand=rolex">Rolex</a></li>
-              <li><a href="client.html?category=capdoi&brand=citizen">Citizen</a></li>
-              <li><a href="client.html?category=capdoi&brand=rado">Rado</a></li>
-              <li><a href="client.html?category=capdoi&brand=seiko">Seiko</a></li>
-            </ul>
-          </div>
-
-          <div class="name"> Phụ kiện
+         <div class="name"> Phụ kiện
             <ul>
               <li><a href="client.html?category=phukien&accessory=glass">Kính cường lực</a></li>
               <li><a href="client.html?category=phukien&accessory=box">Hộp đựng</a></li>
@@ -78,8 +78,8 @@
 
     <div class="header_other">
       <div class="search">
-        <input type="text" placeholder="Tìm kiếm...">
-        <i class="fa-solid fa-magnifying-glass"></i>
+        <input id="searchInput" type="text" placeholder="Tìm kiếm...">
+        <i id="searchBtn" class="fa-solid fa-magnifying-glass"></i>
       </div>
       
       <div class="account" id="accountBtn">
@@ -243,11 +243,6 @@
         <!-- LEFT -->
         <div class="delivery-content-left">
           <p>Vui lòng điền thông tin giao hàng</p>
-
-          <!-- <div class="delivery-content-left-dangnhap">
-            <i class="fa-regular fa-user"></i> Đã có tài khoản? <a href="#login" style="margin-left:6px;">Đăng nhập</a>
-          </div> -->
-
           <div class="delivery-content-left-input-top">
             <div class="delivery-content-left-input-top-item">
               <label for="co-fullname">Họ và tên</label>
@@ -358,16 +353,6 @@
               <tr class="grand-total"><td><strong>Tổng thanh toán</strong></td><td id="co-grand"><strong>0 đ</strong></td></tr>
             </tbody>
           </table>
-
-          <!-- <div class="coupon-wrap">
-            <input type="text" id="coupon-input" placeholder="Nhập mã giảm giá">
-            <button id="apply-coupon">Áp dụng</button>
-          </div>
-
-          <select id="coupon-select" class="coupon-select" style="margin-bottom:12px; display:none;">
-            <option value="">Chọn mã khuyến mãi</option>
-          </select> -->
-
           <div class="payment-method">
             <p>Phương thức thanh toán</p>
             <label><input type="radio" name="payment" value="cod" checked> Thanh toán khi nhận hàng (COD)</label><br>
@@ -385,7 +370,7 @@
       </div>
     </div>
 
-    <!-- Modal kết quả đơn: ĐẶT BÊN TRONG #delivery -->
+    <!-- Modal kết quả đơn: -->
     <div id="order-result" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="order-result-title">
       <div class="modal-content">
         <h2 id="order-result-title">Đặt hàng thành công 🎉</h2>
@@ -400,13 +385,13 @@
   <!-- ===== payment ===== -->
   <div class="payment" hidden>
     <div class="order-wrap" id="order-summary">
-      <h3 class="order-title">Đơn hàng của bạn</h3>
+        <h3 class="order-title">Đơn hàng của bạn</h3>
 
-    <div class="delivery-top-wrap">
-      <div class="delivery-top-item"><i class="fa-solid fa-cart-shopping"></i></div>
-      <div class="delivery-top-item"><i class="fa-solid fa-location-dot"></i></div>
-      <div class="delivery-top-item active"><i class="fa-solid fa-money-check-dollar"></i></div>
-    </div>
+      <div class="delivery-top-wrap">
+        <div class="delivery-top-item"><i class="fa-solid fa-cart-shopping"></i></div>
+        <div class="delivery-top-item"><i class="fa-solid fa-location-dot"></i></div>
+        <div class="delivery-top-item active"><i class="fa-solid fa-money-check-dollar"></i></div>
+      </div>
 
       <div class="order-row">
         <div class="order-label">Date :</div>
@@ -448,7 +433,35 @@
         </div>
       </div>
 
-      <div class="order-footer" id="ord-note"></div>
+      <div class="order-footer" id="ord-note">
+        Cảm ơn bạn đã mua hàng tại TickTock. Chúng tôi sẽ liên hệ để xác nhận đơn.
+      </div>
+
+      <!-- ====== LỊCH SỬ MUA HÀNG ====== -->
+      <section class="order-history">
+        <button id="btn-history" class="history-btn">Lịch sử mua hàng</button>
+
+        <div id="history-panel" class="history-panel" hidden>
+          <div class="history-table-wrap">
+            <table id="history-table" class="history-table">
+              <thead>
+                <tr>
+                  <th>Sản phẩm</th>
+                  <th>Số lượng</th>
+                  <th>Ngày mua</th>
+                  <th>Trạng thái</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Hàng dữ liệu sẽ được render bằng JS -->
+              </tbody>
+            </table>
+          </div>
+          <p class="history-note">
+            * Lịch sử được lấy từ các đơn hàng đã đặt trên thiết bị này.
+          </p>
+        </div>
+      </section>
     </div>
   </div>
 
@@ -521,6 +534,13 @@
       </div>
     </div>
   </div>
+
+  <!-- ===== JS ===== -->
+  <script src="js/data.js"></script>
+  <script src="js/product.js"></script>
+  <script src="js/slider.js"></script>
+  <script src="js/auth.js"></script>
+  <script src="js/search.js"></script>
 
 
 <!-- ===== login ===== -->  
@@ -621,7 +641,7 @@
               </div>
 
               <div class="actions">
-                <button id="saveProfile" class="btn primary">💾 Lưu thay đổi</button>
+                <button id="saveProfile" class="btn primary"> Lưu thay đổi</button>
                 <span id="profileMsg" class="toast"></span>
               </div>
             </div>
@@ -646,13 +666,13 @@
               </div>
 
               <div class="actions">
-                <button id="changePass" class="btn">🔑 Đổi mật khẩu</button>
+                <button id="changePass" class="btn"> Đổi mật khẩu</button>
                 <span id="passMsg" class="toast"></span>
               </div>
             </div>
 
             <div class="actions">
-              <button id="logoutProfile" class="btn danger">🚪 Đăng xuất</button>
+              <button id="logoutProfile" class="btn danger">Đăng xuất</button>
             </div>
           </div>
         </div>
@@ -661,8 +681,7 @@
   
     <!-- ===== JS ===== -->
   <script src="../view/js/data.js"></script>
-  <script src="../view/js/product.js"></script>
-  <!-- <script src="../view/js/product1.js"></script> -->
+  <script src="../view/js/product1.js"></script>
   <script src="../view/js/slider.js"></script>
   <script src="../view/js/auth.js"></script>
   <script src="../view/js/profile.js"></script>

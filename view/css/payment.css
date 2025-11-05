@@ -1,6 +1,7 @@
 /* ================== Base tokens ================== */
 :root{
   --container-w: 1200px;
+  --header-h: 100px;        
   --brand: #0db7ea;
 }
 
@@ -206,4 +207,64 @@ body.order-confirmed footer{
   display:block !important;
   visibility:visible !important;
   opacity:1 !important;
+}
+
+
+/* lịch sử đơn hàng */
+.order-history {
+  margin-top: 24px;
+  text-align: center;
+}
+
+.history-btn {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  background: #000;
+  color: #fff;
+  font-weight: 700;
+  cursor: pointer;
+  transition: 0.25s;
+  width: fit-content;
+}
+.history-btn:hover {
+  background: #fff;
+  color: #000;
+}
+
+.history-panel {
+  max-width: 960px;
+  margin: 20px auto 0;
+  text-align: left;
+}
+
+.history-table-wrap {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  overflow: auto;
+}
+
+.history-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.history-table th,
+.history-table td {
+  padding: 10px 12px;
+  border-top: 1px solid #f1f1f1;
+  text-align: left;
+}
+
+.history-table thead th {
+  background: #fafafa;
+  font-weight: 600;
+}
+
+.history-note {
+  color: #777;
+  font-size: 12px;
+  margin-top: 8px;
+  text-align: center;
 }
