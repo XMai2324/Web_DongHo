@@ -221,4 +221,98 @@
   }
 
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
+
+   /* ======== LỊCH SỬ MUA HÀNG (không đè hàm cũ) ======== */
+    function ensureHistoryTbody() {
+    var table = document.getElementById('history-table');
+    if (!table) return null;
+    var tbody = table.querySelector('tbody');
+    if (!tbody) {
+      tbody = document.createElement('tbody');
+      table.appendChild(tbody);
+    }
+    return tbody;
+  }
+
+  /** Render bảng: Tên sp | Số lượng | Ngày đặt | Trạng thái */
+  function renderOrderHistory() {
+    var tbody = ensureHistoryTbody();
+    if (!tbody) return;
+
+    var orders = readAdminOrders();
+
+    // Lọc theo tên khách (nếu có hiển thị trên trang)
+    var customerEl = document.getElementById('ord-customer');
+    var customer = (customerEl ? (customerEl.textContent || '') : '').trim();
+    if (customer) {
+      orders = orders.filter(function (o) {
+        return ((o.customer || '').trim() === customer);
+      });
+    }
+
+    // Sắp xếp mới nhất lên đầu
+    orders.sort(function (a, b) {
+      var da = Date.parse((a && a.date) || 0) || 0;
+      var db = Date.parse((b && b.date) || 0) || 0;
+      return db - da;
+    });
+
+    // Xoá nội dung cũ
+    tbody.innerHTML = '';
+
+    if (!orders.length) {
+      var trEmpty = document.createElement('tr');
+      trEmpty.innerHTML = '<td colspan="4" style="padding:14px 12px;color:#666;">Chưa có đơn nào.</td>';
+      tbody.appendChild(trEmpty);
+      return;
+    }
+
+    // Duyệt từng đơn và từng item
+    orders.forEach(function (o) {
+      var when = '';
+      try {
+        var d = new Date(o.date);
+        if (!isNaN(d)) when = d.toLocaleString('vi-VN');
+      } catch {}
+
+      (o.items || []).forEach(function (it) {
+        var name = it.name || ('Sản phẩm #' + (it.id || ''));
+        var qty = Number(it.qty) || 1;
+
+        var tr = document.createElement('tr');
+        tr.innerHTML =
+          '<td style="padding:10px 12px;border-top:1px solid #f1f1f1;">' + name + '</td>' +
+          '<td style="padding:10px 12px;border-top:1px solid #f1f1f1;text-align:center;">' + qty + '</td>' +
+          '<td style="padding:10px 12px;border-top:1px solid #f1f1f1;white-space:nowrap;">' + when + '</td>' +
+          '<td style="padding:10px 12px;border-top:1px solid #f1f1f1;white-space:nowrap;">' + statusLabel(o.status) + '</td>';
+        tbody.appendChild(tr);
+      });
+    });
+  }
+
+  /** Mở/đóng panel lịch sử (đảm bảo hiển thị đúng) */
+  function toggleHistoryPanel() {
+    var panel = document.getElementById('history-panel');
+    if (!panel) return;
+
+    var willOpen = panel.hasAttribute('hidden');
+    if (willOpen) {
+      renderOrderHistory();
+      panel.removeAttribute('hidden');
+      panel.style.display = 'block';
+    } else {
+      panel.setAttribute('hidden', '');
+      panel.style.display = 'none';
+    }
+  }
+
+  /** Gắn event theo kiểu uỷ quyền — tránh miss khi DOM thay đổi */
+  (function bindHistoryDelegation() {
+    document.addEventListener('click', function (e) {
+      var btn = e.target.closest('#btn-history');
+      if (!btn) return;
+      e.preventDefault();
+      toggleHistoryPanel();
+    });
+  })();
 })();
