@@ -38,11 +38,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 
-document.addEventListener('DOMContentLoaded', () => {
-  // ===== CART BADGE (chạy ở mọi trang) =====
-  const CART_KEY = 'tt_cart';
-  const loadCart = () => { try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; } catch { return []; } };
-  const saveCart = (cart) => localStorage.setItem(CART_KEY, JSON.stringify(cart));
+  document.addEventListener('DOMContentLoaded', () => {
+    // ===== CART BADGE (chạy ở mọi trang) =====
+    function p1_getUser(){ return JSON.parse(localStorage.getItem('current_user')||'null') }
+  function p1_cartKey(){ const u=p1_getUser(); return (u&&u.id)?`cart:${u.id}`:'cart:guest' }
+
+  const loadCart = () => {
+    try {
+      const t = localStorage.getItem('tt_cart');
+      if (t) return JSON.parse(t); // 1. Ưu tiên 'tt_cart'
+    } catch {}
+    try {
+      // 2. Nếu không có, đọc key riêng (ví dụ 'cart:mai' hoặc 'cart:guest')
+      return JSON.parse(localStorage.getItem(p1_cartKey()) || '[]');
+    } catch { return []; }
+  };
+
+  // Hàm saveCart cũng cần cập nhật để ghi vào cả 2 key
+  const saveCart = (cart) => {
+      const cartStr = JSON.stringify(cart);
+      localStorage.setItem('tt_cart', cartStr);
+      localStorage.setItem(p1_cartKey(), cartStr);
+  };
   const cartCount = (cart) => cart.reduce((s, i) => s + Number(i.qty || 1), 0);
 
   // Tìm phần tử badge theo nhiều cách để hợp nhất header giữa các trang
