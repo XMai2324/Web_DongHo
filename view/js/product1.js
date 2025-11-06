@@ -53,14 +53,31 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.header-cart .count, .cart__count, .count-badge');
 
   const updateCartBadge = () => {
-    const el = findCartCountEl();
-    if (!el) return;
-    const n = cartCount(loadCart());
-    el.textContent = n > 99 ? '99+' : String(n);
-    el.style.display = n ? 'inline-block' : 'none';
-    el.classList.toggle('is-empty', !n);
-    el.setAttribute('aria-label', `Giỏ hàng: ${n} sản phẩm`);
-  };
+      const el = findCartCountEl();
+      const n = cartCount(loadCart());
+
+      if (el) {
+        el.textContent = n > 99 ? '99+' : String(n);
+        el.style.display = n ? 'inline-block' : 'none';
+        el.classList.toggle('is-empty', !n);
+        el.setAttribute('aria-label', `Giỏ hàng: ${n} sản phẩm`);
+      }
+
+      const checkoutBtn = document.getElementById('checkout-btn');
+      const emptyMsg = document.getElementById('cart-empty-msg'); 
+
+      if (checkoutBtn && emptyMsg) {
+        if (n === 0) {
+          checkoutBtn.disabled = true; 
+          checkoutBtn.title = "Giỏ hàng của bạn đang trống";
+          emptyMsg.style.display = 'block';
+        } else {
+          checkoutBtn.disabled = false;
+          checkoutBtn.title = "";
+          emptyMsg.style.display = 'none';
+        }
+      }
+    };
 
   // cập nhật khi load / đổi tab / tab khác sửa localStorage
   updateCartBadge();
@@ -98,15 +115,15 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // Thêm vào giỏ
-  const addToCart = (p, qty) => {
-    const cart = loadCart();
-    const idx = cart.findIndex(x => x.id === p._id);
-    if (idx > -1) cart[idx].qty += qty;
-    else cart.push({ id:p._id, name:p.name, price:Number(p.price), image:p.image,
-      brand:p.brand||'', category:p.category||'', qty });
-    saveCart(cart);
-    updateCartBadge();
-  };
+  // const addToCart = (p, qty) => {
+  //   const cart = loadCart();
+  //   const idx = cart.findIndex(x => x.id === p._id);
+  //   if (idx > -1) cart[idx].qty += qty;
+  //   else cart.push({ id:p._id, name:p.name, price:Number(p.price), image:p.image,
+  //     brand:p.brand||'', category:p.category||'', qty });
+  //   saveCart(cart);
+  //   updateCartBadge();
+  // };
 
   // ===== CONFIG =====
   const PER_PAGE = 8;
@@ -315,13 +332,33 @@ document.addEventListener('DOMContentLoaded', () => {
   qvEl && qvEl.addEventListener('click', (e) => { if (e.target === qvEl) closeQuickView(); });
   document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeQuickView(); });
 
-  qvAdd && qvAdd.addEventListener('click', () => {
-    const p = window.products.find(x => x._id === currentProductId);
-    if (!p) return;
-    const qty = Math.max(1, parseInt(qvQty.value, 10) || 1);
-    addToCart(p, qty);
-    closeQuickView();
-  });
+    qvAdd && qvAdd.addEventListener('click', () => {
+        const p = window.products.find(x => x._id === currentProductId);
+        if (!p) return;
+        const qty = Math.max(1, parseInt(qvQty.value, 10) || 1);
+
+        // === SỬA TẠI ĐÂY ===
+        // Gọi hàm "xịn" từ cart.js
+        if (window.Cart && typeof window.Cart.addToCart === 'function') {
+          
+          // cart.js dùng 'id', nhưng product.js dùng '_id'
+          // Chúng ta cần "dịch" lại cho đúng
+          const productForCart = {
+            id: p._id, // Quan trọng: đổi _id thành id
+            name: p.name,
+            price: p.price,
+            image: p.image
+            // cart.js chỉ cần nhiêu đây
+          };
+          
+          window.Cart.addToCart(productForCart, qty);
+        } else {
+          console.error('Lỗi: window.Cart.addToCart không tồn tại.');
+        }
+        // === HẾT SỬA ===
+
+        closeQuickView();
+    });
 
   // ===== RENDER =====
   function render(list){

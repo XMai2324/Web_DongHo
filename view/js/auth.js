@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm: document.getElementById('registerForm'),
     loginIdentifier: document.getElementById('loginIdentifier'),
     loginPassword: document.getElementById('loginPassword'),
-    logoutBtn: document.getElementById('logoutBtn'),
+    logoutBtn: document.getElementById('logout-btn'),
     messageDiv: document.querySelector('#messageLogin') || document.querySelector('.message'),
     accountLinkText: document.getElementById('accountLinkText'),
     profileSection: document.getElementById('profileSection'),
@@ -82,26 +82,26 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   function displayUserName() {
-    const el = DOM.accountLinkText;
-    const container = el?.closest('.account');
-    if (!el) return;
-
-    const userJSON = localStorage.getItem(LS_CURRENT);
-    if (userJSON) {
-      try {
-        const user = JSON.parse(userJSON);
-        el.textContent = user.name || user.username || 'Tài khoản';
-        container?.classList.add('logged-in');
-      } catch {
-        localStorage.removeItem(LS_CURRENT);
-        el.textContent = 'Tài khoản';
-        container?.classList.remove('logged-in');
-      }
-    } else {
-      el.textContent = 'Tài khoản';
-      container?.classList.remove('logged-in');
+    const accountLink = DOM.accountLinkText; // Đã sửa ở Bước 2
+    const logoutBtn = DOM.logoutBtn;
+    if (!accountLink || !logoutBtn) return;
+    let user = null;
+    try {
+        user = JSON.parse(localStorage.getItem(LS_CURRENT));
+    } catch {
+        user = null;
     }
-  }
+
+    if (user && user.username) {
+        accountLink.textContent = user.name || user.username;
+        accountLink.href = '#profile';
+        logoutBtn.style.display = 'flex'; 
+    } else {
+        accountLink.textContent = 'Tài khoản';
+        accountLink.href = '#login'; // Hoặc href="#" tùy ý
+        logoutBtn.style.display = 'none';
+    }
+}
 
   displayUserName();
   // Helper toàn cục cho file khác dùng (checkout.js, cart.js, ...)
@@ -319,7 +319,6 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
-
 // ========== KIỂM TRA QUYỀN TRUY CẬP TRANG ADMIN ==========
 document.addEventListener("DOMContentLoaded", () => {
   // ĐỌC ĐÚNG KEY PHIÊN
@@ -337,7 +336,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const m = document.getElementById("login_modal");
       if (m) m.classList.add("show");
     }
-    console.warn("⚠️ Chưa đăng nhập → bật form login");
+    console.warn(" Chưa đăng nhập → bật form login");
     return;
   }
 
@@ -347,6 +346,5 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  console.log("✅ Admin đăng nhập, vào trang quản trị");
+  console.log(" Admin đăng nhập, vào trang quản trị");
 });
-

@@ -33,10 +33,10 @@
     DELIVERED:       'delivered'
   };
   function statusLabel(s){
-    if (s===ST.PENDING_CONFIRM) return 'Chờ xác nhận';
-    if (s===ST.PENDING_SHIP)    return 'Chờ vận chuyển';
-    if (s===ST.SHIPPING)        return 'Đang vận chuyển';
-    if (s===ST.DELIVERED)       return 'Đã giao';
+    if (s===ST.PENDING_CONFIRM) return 'Chờ vận chuyển';
+    if (s===ST.PENDING_SHIP)    return 'Đang vận chuyển';
+    if (s===ST.SHIPPING)        return 'Vui lòng Xác nhận đơn hàng';
+    if (s===ST.DELIVERED)       return 'Đơn hàng của bạn đã giao thành công, cảm ơn bạn đã mua hàng';
     return s || '';
   }
 
@@ -259,6 +259,7 @@
 
   /* ========= Nút “Xác nhận thanh toán” ========= */
 
+<<<<<<< HEAD
     function attachConfirm(){
       const selectors=['#place-order-btn','#checkout-btn','button[name="checkout-confirm"]','.btn-checkout-confirm','#confirm-payment'];
       const btn=selectors.map(s=>document.querySelector(s)).find(Boolean);
@@ -272,6 +273,23 @@
         window.scrollTo({top:0,behavior:'smooth'});
       });
     }
+=======
+  function attachConfirm(){
+    const selectors=['#place-order-btn','#checkout-btn','button[name="checkout-confirm"]','.btn-checkout-confirm','#confirm-payment'];
+    const btn=selectors.map(s=>document.querySelector(s)).find(Boolean);
+    if(!btn)return;
+    btn.addEventListener('click',function(e){
+      e.preventDefault();
+      // 1) Tạo & lưu đơn (đồng bộ Admin)
+      renderOrderSummary();
+      // 2) Mở giao diện payment tại chỗ (KHÔNG redirect)
+      window.location.hash='#payment';
+      onlyShowPayment();
+      renderStatus();
+      window.scrollTo({top:0,behavior:'smooth'});
+    });
+  }
+>>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
 
     /* ========= Router theo hash ========= */
   function route() {
