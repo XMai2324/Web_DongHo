@@ -1,6 +1,6 @@
 /* ========= Utils ========= */
 function currency(v){try{return Number(v).toLocaleString('vi-VN')}catch{return v}}
-function getUser(){return JSON.parse(localStorage.getItem('auth:user')||'null')}
+function getUser(){return JSON.parse(localStorage.getItem('current_user')||'null')}
 function cartKey(){const u=getUser();return(u&&u.id)?`cart:${u.id}`:'cart:guest'}
 
 function updateBadge(cart = readCart()) {
@@ -45,12 +45,15 @@ function readCart(){
     return JSON.parse(localStorage.getItem(cartKey())||'[]');
   }catch{ return []; }
 }
-function writeCart(cart){
-  localStorage.setItem('tt_cart', JSON.stringify(cart));
-  localStorage.setItem(cartKey(), JSON.stringify(cart));
-  updateBadge(cart);
-}
+  function writeCart(cart){
+    localStorage.setItem('tt_cart', JSON.stringify(cart));
+    localStorage.setItem(cartKey(), JSON.stringify(cart));
 
+    // Sửa: gọi hàm global từ product1.js
+    if (window.ttUpdateCartBadge) {
+      window.ttUpdateCartBadge();
+    }
+  }
 /* ========= Render ========= */
   function renderCart() {
     const cart = readCart();
