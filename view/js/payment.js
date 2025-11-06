@@ -15,7 +15,7 @@
 
   /* ========= Helpers dữ liệu ========= */
   function currency(v){ try { return Number(v).toLocaleString('vi-VN'); } catch { return v; } }
-  function getUser(){ try { return JSON.parse(localStorage.getItem('auth:user')||'null'); } catch { return null; } }
+  function getUser(){ try { return JSON.parse(localStorage.getItem('current_user')||'null'); } catch { return null; } }
   function cartKey(){ const u=getUser(); return (u&&u.id)?`cart:${u.id}`:'cart:guest'; }
   function readCart(){
     try{ const t=localStorage.getItem('tt_cart'); if(t) return JSON.parse(t); }catch{}
@@ -259,21 +259,6 @@
 
   /* ========= Nút “Xác nhận thanh toán” ========= */
 
-<<<<<<< HEAD
-    function attachConfirm(){
-      const selectors=['#place-order-btn','#checkout-btn','button[name="checkout-confirm"]','.btn-checkout-confirm','#confirm-payment'];
-      const btn=selectors.map(s=>document.querySelector(s)).find(Boolean);
-      if(!btn)return;
-      btn.addEventListener('click',function(e){
-        e.preventDefault();
-        renderOrderSummary();
-        window.location.hash='#payment';
-        onlyShowPayment();
-        renderStatus();
-        window.scrollTo({top:0,behavior:'smooth'});
-      });
-    }
-=======
   function attachConfirm(){
     const selectors=['#place-order-btn','#checkout-btn','button[name="checkout-confirm"]','.btn-checkout-confirm','#confirm-payment'];
     const btn=selectors.map(s=>document.querySelector(s)).find(Boolean);
@@ -289,7 +274,6 @@
       window.scrollTo({top:0,behavior:'smooth'});
     });
   }
->>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
 
     /* ========= Router theo hash ========= */
   function route() {
