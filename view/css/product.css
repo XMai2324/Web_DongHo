@@ -136,14 +136,25 @@
 
 /* ================== QUICK VIEW MODAL (compact) ================== */
 .modal{
-  position:fixed; inset:0; background:rgba(0,0,0,.5);
-  z-index:9999; display:none; justify-content:center; align-items:center; padding:20px;
+  position:fixed; 
+  inset:0; 
+  background:rgba(0,0,0,.5);
+  z-index:9999; 
+  display:none; 
+  justify-content:center; 
+  align-items:center; 
+  padding:20px;
 }
 .modal-content{
-  position:relative; background:#fff; border-radius: var(--radius);
-  max-width:720px; width:100%;
-  padding:20px 22px; box-shadow:0 10px 40px rgba(0,0,0,.2);
-  display:grid; grid-template-columns:260px 1fr; gap:20px;
+  position:relative; 
+  background:#fff; 
+  border-radius: var(--radius);
+  max-width:720px; 
+  width:100%;
+  padding:20px 22px; 
+  box-shadow:0 10px 40px rgba(0,0,0,.2);
+  display:grid; 
+  grid-template-columns:260px 1fr; gap:20px;
   animation:modalIn .18s ease;
 }
 @keyframes modalIn{ from{transform:scale(.98); opacity:0} to{transform:scale(1); opacity:1} }
@@ -156,18 +167,31 @@
 .modal-left img{ max-height:100%; max-width:100%; object-fit:contain; }
 
 .modal-right{ flex:1; display:flex; flex-direction:column; }
-.modal-right h2{ font-size:24px; font-weight:800; margin-bottom:12px; color:#111; }
-.modal-right .price{ font-size:20px; font-weight:800; color:#e60000; margin-bottom:12px; }
+.modal-right h2{ font-size:22px; font-weight:800; margin-bottom:12px; color:#111; margin-right: 60px }
+.modal-right .price{ font-size:20px; font-weight:800; color:#e60000; margin-bottom:12px;}
 .modal-right .price sup{ font-size:60%; position:relative; top:-0.5em; }
 .modal-right p{ margin:6px 0; font-size:15px; color:#333; }
 .modal-right p strong{ font-weight:700; color:#222; }
 .modal-right .description{ margin-top:12px; line-height:1.7; font-size:14px; color:#444; }
 
 .close-modal{
-  position:absolute; top:14px; right:16px;
-  width:32px; height:32px; line-height:32px;
-  border:0; background:transparent; color:#777;
-  border-radius:50%; font-size:22px; cursor:pointer;
+  position: absolute;
+  top: 12px;          
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  display: grid;     
+  place-items: center;
+  padding: 0;
+  line-height: 1;     
+  font-size: 22px;
+  font-weight: 400;    
+  background: transparent;
+  color: #777;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+  z-index: 2;
 }
 .close-modal:hover{ background:#f1f3f4; color:#444; }
 

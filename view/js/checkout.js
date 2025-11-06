@@ -26,10 +26,26 @@
       else alert('Bạn chưa đăng nhập. Vui lòng đăng nhập để đặt hàng.');
     } catch (e) {}
   }
-  
+
+  // === NEW: Chuẩn hoá lấy tên khách hàng để đưa vào đơn hàng / admin ===
+  function getCustomerName() {
+    const user = getUserSafe();
+    if (user) {
+      return (
+        user.displayName ||
+        user.name ||
+        user.username ||
+        user.email ||
+        'Khách lẻ'
+      );
+    }
+    const input = document.getElementById('co-fullname');
+    const nameFromForm = input && input.value ? input.value.trim() : '';
+    return nameFromForm || 'Khách lẻ';
+  }
+
   function setFieldError(el, msg) {
     if (!el) return;
-    // tìm <small class="field-error"> ngay sau input; nếu chưa có thì tạo
     var err = el.nextElementSibling;
     if (!err || !err.classList || !err.classList.contains('field-error')) {
       err = document.createElement('small');
@@ -54,7 +70,6 @@
 
         var val = (el.value || '').trim();
         if (!val && id !== 'co-email') {
-          // Lấy thông điệp từ RULES để hiển thị giống SĐT
           var rule = FIELD_RULES[id];
           var msg = rule ? rule('') : 'Vui lòng nhập thông tin.';
           if (msg === true) msg = 'Vui lòng nhập thông tin.';
@@ -66,21 +81,18 @@
         el.classList.remove('invalid');
         el.removeAttribute('required');
         el.removeAttribute('title');
-        // nếu bạn có setFieldError thì ẩn luôn:
         if (typeof setFieldError === 'function') setFieldError(el, '');
       }
     });
   }
+
   /* ---------- RULES & LIVE VALIDATION ---------- */
   var FIELD_RULES = {
-    // Họ tên
     'co-fullname': function (v) {
       return v.trim()
         ? true
         : 'Vui lòng nhập Họ và tên. Ví dụ: Nguyễn Văn A';
     },
-
-    // Số điện thoại
     'co-phone': function (vRaw) {
       var v = String(vRaw || '').replace(/\D/g, '');
       if (!v) return 'Vui lòng nhập Số điện thoại.';
@@ -88,38 +100,28 @@
         return 'Số điện thoại không hợp lệ. Ví dụ: 0XXX XXX XXX (10 số, bắt đầu bằng 0).';
       return true;
     },
-
-    // Email (tùy chọn): có nhập thì phải đúng
     'co-email': function (v) {
       var s = String(v || '').trim();
-      if (!s) return true;
+      if (!s) return true; // tùy chọn
       if (s.indexOf('@') === -1)
         return 'Email không đúng định dạng. Ví dụ: abc@gmail.com';
       return true;
     },
-
-    // Địa chỉ
     'co-address': function (v) {
       return v.trim()
         ? true
         : 'Vui lòng nhập Địa chỉ. Ví dụ: 12 Nguyễn Huệ, P. Bến Nghé';
     },
-
-    // Tỉnh/Thành (input combo)
     'co-city': function (v) {
       return v.trim()
         ? true
         : 'Vui lòng chọn Tỉnh/Thành. Ví dụ: Hà Nội';
     },
-
-    // Quận/Huyện (input combo)
     'co-district': function (v) {
       return v.trim()
         ? true
         : 'Vui lòng chọn Quận/Huyện. Ví dụ: Quận 1';
     },
-
-    // Phường/Xã (input text hoặc combo)
     'co-ward': function (v) {
       return v.trim()
         ? true
@@ -141,18 +143,16 @@
     el.classList.remove('invalid');
     el.removeAttribute('aria-invalid');
     el.removeAttribute('title');
-    setFieldError(el, ''); // ẩn inline error
+    setFieldError(el, '');
   }
 
   function allValid() {
-    // chú ý: validateOne có tác dụng phụ (gỡ/đặt viền đỏ) — ở đây là điều ta muốn
     for (var i = 0; i < REQUIRED_IDS.length; i++) {
       var r = validateOne(REQUIRED_IDS[i]);
       if (!r.ok) return false;
     }
     return true;
   }
-  // validate 1 field theo rule & trả về {ok, msg}
   function validateOne(id){
     var el = getEl(id);
     if (!el) return { ok:true };
@@ -160,7 +160,7 @@
     var rule = FIELD_RULES[id];
     var res = rule ? rule(val) : (val.trim() ? true : 'Vui lòng nhập thông tin.');
     if (res === true){
-      clearInvalid(el);                 // => nhập đúng là mất viền đỏ ngay
+      clearInvalid(el);
       return { ok:true };
     } else {
       markInvalid(el, res);
@@ -173,7 +173,6 @@
   function recomputePlaceButtonState() {
     if (!placeBtn) return;
     var user = getUserSafe();
-    // kiểm tra nhanh: tất cả trường đều ok?
     var allOk = true;
     for (var i=0; i<REQUIRED_IDS.length; i++){
       var r = validateOne(REQUIRED_IDS[i]);
@@ -182,7 +181,7 @@
     placeBtn.disabled = !(user && allOk);
   }
 
-  // Gắn live-validation: nhập xong là tự mất viền đỏ + cập nhật trạng thái nút
+  // Gắn live-validation
   function attachLiveValidation(){
     REQUIRED_IDS.forEach(function(id){
       var el = getEl(id);
@@ -190,13 +189,11 @@
 
       function run() {
         var r = validateOne(id);
-        // nếu đang blur hoặc người dùng dừng gõ, hiển thị banner đầu form cho lỗi đầu tiên
         if (!r.ok) {
           showFormErrorAlert(r.msg || 'Vui lòng kiểm tra lại thông tin.');
         } else if (allValid()) {
           removeAlert('form-error-alert');
         }
-        // (nếu bạn có cơ chế disable nút, gọi lại tính toán)
         if (typeof recomputePlaceButtonState === 'function') recomputePlaceButtonState();
       }
 
@@ -212,7 +209,9 @@
     if (!user) return;
     var nameEl  = document.getElementById('co-fullname');
     var mailEl  = document.getElementById('co-email');
-    if (nameEl && !nameEl.value)  nameEl.value  = user.name || user.username || '';
+    // Ưu tiên displayName > name > username > email
+    var guessedName = user.displayName || user.name || user.username || user.email || '';
+    if (nameEl && !nameEl.value)  nameEl.value  = guessedName;
     if (mailEl && !mailEl.value)  mailEl.value  = user.email || '';
   }
 
@@ -251,22 +250,17 @@
   }
 
   // Áp dụng UI theo trạng thái đăng nhập
- function applyAuthUI() {
+  function applyAuthUI() {
     var user = getUserSafe();
 
     if (user) {
       clearAlerts();
       prefillFromUser();
-      // BẬT yêu cầu nhập để ô trống hiển thị lỗi ngay
       setRequiredState(true);
     } else {
       showNotLoggedInAlert();
       setRequiredState(true);
     }
-
-    // Sau khi áp UI, kiểm tra lại để:
-    // - xóa đỏ các ô đã hợp lệ
-    // - bật/tắt nút "Xác nhận thanh toán"
     recomputePlaceButtonState();
   }
 
@@ -302,7 +296,6 @@
 
   /* ---------- VALIDATION trước khi “Xác nhận thanh toán” ---------- */
   function validateCheckoutForm() {
-    // reset trạng thái
     REQUIRED_IDS.forEach(function(id){ clearInvalid(getEl(id)); });
 
     var firstBad = null, firstMsg = '';
@@ -327,14 +320,13 @@
   function initRouter() {
     var cartEl = document.getElementById('cart');
     var deliveryEl = document.getElementById('delivery');
-    var btnCheckout = document.getElementById('checkout-btn');   // nút “Đặt Hàng” trong giỏ
-    var btnBack = document.getElementById('delivery-back');      // nút quay lại giỏ
+    var btnCheckout = document.getElementById('checkout-btn');
+    var btnBack = document.getElementById('delivery-back');
 
     function route() {
       var h = window.location.hash;
 
       if (h === '#delivery') {
-        // Luôn cho vào trang thanh toán, điều kiện sẽ chặn ở nút “Xác nhận thanh toán”
         document.body.classList.remove('show-cart');
         document.body.classList.add('route-delivery');
         hardHide(cartEl);
@@ -455,11 +447,11 @@
   /* ---------- Boot ---------- */
   function init() {
     initRouter();
-    initAllCombos();                // kích hoạt city + district
-    attachLiveValidation();         // bật validate theo thời gian thực
+    initAllCombos();
+    attachLiveValidation();
 
     // Chặn “Xác nhận thanh toán”: kiểm tra đăng nhập + validate form
-    placeBtn = (document.getElementById('place-order-btn') || document.querySelector('.place-order-btn')); // hỗ trợ id & class
+    placeBtn = (document.getElementById('place-order-btn') || document.querySelector('.place-order-btn'));
     if (placeBtn) {
       placeBtn.addEventListener('click', function(e){
         var user = getUserSafe();
@@ -469,16 +461,14 @@
           openLoginModalSafe();
           return false;
         }
-        // Đã đăng nhập → kiểm tra các trường theo rule
         if (!validateCheckoutForm()) {
           e.preventDefault(); e.stopPropagation();
           return false;
         }
-        // Hợp lệ → cho phép tiếp tục (submit/đi trang kết quả)
+        // Hợp lệ → tiếp tục (submit/ghi đơn ở file khác)
       });
     }
 
-    // Nếu có form bao quanh, chặn submit mặc định khi chưa hợp lệ
     var deliveryForm = document.querySelector('#delivery form');
     if (deliveryForm){
       deliveryForm.addEventListener('submit', function(e){
@@ -491,10 +481,7 @@
       });
     }
 
-    // Lần đầu vào trang: tính trạng thái nút theo dữ liệu hiện có
     recomputePlaceButtonState();
-
-    // Cập nhật giao diện tức thì theo trạng thái hiện tại
     applyAuthUI();
   }
 
@@ -503,4 +490,10 @@
   } else {
     init();
   }
+
+  // === NEW: Export cho file khác dùng khi tạo/hiển thị đơn ===
+  window.Checkout = Object.assign(window.Checkout || {}, {
+    getCustomerName,
+    getUserSafe
+  });
 })();

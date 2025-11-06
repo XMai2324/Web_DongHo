@@ -15,7 +15,7 @@
 
   /* ========= Helpers dữ liệu ========= */
   function currency(v){ try { return Number(v).toLocaleString('vi-VN'); } catch { return v; } }
-  function getUser(){ try { return JSON.parse(localStorage.getItem('auth:user')||'null'); } catch { return null; } }
+  function getUser(){ try { return JSON.parse(localStorage.getItem('current_user')||'null'); } catch { return null; } }
   function cartKey(){ const u=getUser(); return (u&&u.id)?`cart:${u.id}`:'cart:guest'; }
   function readCart(){
     try{ const t=localStorage.getItem('tt_cart'); if(t) return JSON.parse(t); }catch{}
@@ -33,8 +33,8 @@
     DELIVERED:       'delivered'
   };
   function statusLabel(s){
-    if (s===ST.PENDING_CONFIRM) return 'Chờ vận chuyển';
-    if (s===ST.PENDING_SHIP)    return 'Đang vận chuyển';
+    if (s===ST.PENDING_CONFIRM) return 'Chờ xác nhận';
+    if (s===ST.PENDING_SHIP)    return 'Chờ vận chuyển';
     if (s===ST.SHIPPING)        return 'Vui lòng Xác nhận đơn hàng';
     if (s===ST.DELIVERED)       return 'Đơn hàng của bạn đã giao thành công, cảm ơn bạn đã mua hàng';
     return s || '';
@@ -80,7 +80,7 @@
     return true;
   }
 
-  /* ========= (Tuỳ nơi khác dùng) Inbox cũ 'admin:orders' – giữ nguyên nếu cần ========= */
+  /* ========= (Tuỳ nơi khác dùng) Inbox cũ 'admin:orders' ========= */
   function readAdminOrdersLegacy(){
     try { return JSON.parse(localStorage.getItem('admin:orders')||'[]'); } catch { return []; }
   }
@@ -95,7 +95,7 @@
     }
   }
 
-  /* ========= Render “Đơn hàng của bạn” + Ghi vào Admin (KHÔNG redirect) ========= */
+  /* ========= Render “Đơn hàng của bạn” + Ghi vào Admin ========= */
   function renderOrderSummary(){
     var elDate  = document.getElementById('ord-date');
     var elCode  = document.getElementById('ord-code');
@@ -122,28 +122,41 @@
       });
     }
 
-    var name = info.fullname || info.name || info.customer || 'Khách lẻ';
+    // tên khách ưu tiên từ tài khoản đăng nhập
+    var user = getUser();
+    var name =
+      (user && (user.displayName || user.name || user.username || user.email)) ||
+      info.fullname || info.name || info.customer || 'Khách lẻ';
+    var customerId = user && user.id ? user.id : null;
 
     // (A) Lưu bản cho UI payment (front)
-    var orderFront = { code, date: now.toISOString(), customer: name, items: cart, total, status: ST.PENDING_CONFIRM };
+    var orderFront = {
+      code,
+      date: now.toISOString(),
+      customer: name,
+      customerId: customerId,
+      items: cart,
+      total,
+      status: ST.PENDING_CONFIRM
+    };
     localStorage.setItem('last_order', JSON.stringify(orderFront));
 
     // (B) Lưu bản cho Admin (schema khớp orders.js: key 'orders')
     const adminOrder = {
-      id: code,                           // orders.js dùng 'id'
+      id: code,
       customer: name,
+      customerId: customerId,
       date: now.toISOString(),
-      status: 'cho-xac-nhan',             // trạng thái khởi tạo ở Admin
+      status: 'cho-xac-nhan',
       items: (cart || []).map(it => ({
         productName: it.name || it.title || ('Sản phẩm #' + (it.id || '')),
         qty: Number(it.qty) || 1,
-        // price optional; nếu không có, orders.js sẽ tra từ window.products
         price: (typeof it.price === 'number' ? it.price : Number(it.price) || 0)
       }))
     };
     pushOrderForAdmin(adminOrder);
 
-    // (tuỳ) vẫn ghi vào 'admin:orders' nếu chỗ khác của bạn đang đọc key này
+    // (tuỳ) vẫn ghi vào 'admin:orders' nếu nơi khác đang đọc key này
     sendOrderToAdminLegacy(orderFront);
 
     // Cập nhật UI tóm tắt ở payment
@@ -168,7 +181,7 @@
     if (elTotal) elTotal.textContent = currency(total) + ' đ';
     if (elNote)  elNote.textContent  = 'Cảm ơn bạn đã mua hàng tại TickTock. Chúng tôi sẽ liên hệ để xác nhận đơn.';
 
-    return code; // trả về mã đơn nếu cần dùng tiếp
+    return code;
   }
 
   /* ========= Header offset ========= */
@@ -208,7 +221,6 @@
   }
   function saveOrder(order){
     localStorage.setItem('last_order', JSON.stringify(order));
-    // Đồng bộ legacy nếu cần
     const list = readAdminOrdersLegacy();
     const idx = list.findIndex(o => o.code === order.code);
     if (idx >= 0) { list[idx] = order; writeAdminOrdersLegacy(list); }
@@ -240,14 +252,10 @@
       btn.addEventListener('click',function(e){
         e.preventDefault();
         const ord=loadOrder(); if(!ord)return;
-
-        // Khách chỉ có thể xác nhận khi đang "Đang vận chuyển"
         if(ord.status===ST.SHIPPING){
-          ord.status=ST.DELIVERED;          // FRONT
-          saveOrder(ord);                   // lưu last_order (+ legacy)
-          updateAdminStatusFromFront(ord.code, ord.status); // đồng bộ sang ADMIN
-
-          // dọn giỏ
+          ord.status=ST.DELIVERED;
+          saveOrder(ord);
+          updateAdminStatusFromFront(ord.code, ord.status);
           localStorage.removeItem('tt_cart');
           localStorage.removeItem(cartKey());
           renderStatus();
@@ -258,40 +266,45 @@
   }
 
   /* ========= Nút “Xác nhận thanh toán” ========= */
-
-<<<<<<< HEAD
-    function attachConfirm(){
-      const selectors=['#place-order-btn','#checkout-btn','button[name="checkout-confirm"]','.btn-checkout-confirm','#confirm-payment'];
-      const btn=selectors.map(s=>document.querySelector(s)).find(Boolean);
-      if(!btn)return;
-      btn.addEventListener('click',function(e){
-        e.preventDefault();
-        renderOrderSummary();
-        window.location.hash='#payment';
-        onlyShowPayment();
-        renderStatus();
-        window.scrollTo({top:0,behavior:'smooth'});
-      });
-    }
-=======
   function attachConfirm(){
     const selectors=['#place-order-btn','#checkout-btn','button[name="checkout-confirm"]','.btn-checkout-confirm','#confirm-payment'];
     const btn=selectors.map(s=>document.querySelector(s)).find(Boolean);
     if(!btn)return;
     btn.addEventListener('click',function(e){
       e.preventDefault();
-      // 1) Tạo & lưu đơn (đồng bộ Admin)
       renderOrderSummary();
-      // 2) Mở giao diện payment tại chỗ (KHÔNG redirect)
       window.location.hash='#payment';
       onlyShowPayment();
       renderStatus();
       window.scrollTo({top:0,behavior:'smooth'});
     });
   }
->>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
 
-    /* ========= Router theo hash ========= */
+  /* ========= NHẢY VỀ GIỎ HÀNG ========= */
+  function goToCart() {
+    exitPaymentMode();
+    window.location.hash = '#cart';
+    const cartEl = document.getElementById('cart');
+    cartEl && cartEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+  // 1) Icon giỏ hàng ở header
+  function attachGoCartFromHeader() {
+    const candidates = ['.cart', '.cart-link', '.header-cart', '.cart-icon', '[data-go-cart]'];
+    const headerCart = candidates.map(q=>document.querySelector(q)).find(Boolean);
+    if (!headerCart) return;
+    headerCart.style.cursor = 'pointer';
+    headerCart.addEventListener('click', (e) => { e.preventDefault(); goToCart(); });
+  }
+  // 2) Icon/step giỏ hàng trong stepper tiến trình
+  function attachGoCartFromStepper() {
+    const candidates = ['#step-cart', '.payment-steps .step.cart', '.progress .step.cart'];
+    const stepCart = candidates.map(q=>document.querySelector(q)).find(Boolean);
+    if (!stepCart) return;
+    stepCart.style.cursor = 'pointer';
+    stepCart.addEventListener('click', (e) => { e.preventDefault(); goToCart(); });
+  }
+
+  /* ========= Router theo hash ========= */
   function route() {
     const last = loadOrder();
     if (window.location.hash === '#payment' && last) {
@@ -305,25 +318,24 @@
   /* ========= Boot ========= */
   function init() {
     const p = document.querySelector('.payment');
-    if (p) {
-      p.setAttribute('hidden', '');
-      p.style.display = 'none';
-    }
+    if (p) { p.setAttribute('hidden', ''); p.style.display = 'none'; }
 
     attachConfirm();
+    attachGoCartFromHeader();
+    attachGoCartFromStepper();
+
     window.addEventListener('hashchange', route);
     route();
 
     // Đồng bộ ngược: Admin đổi trạng thái → trang khách tự cập nhật
     window.addEventListener('storage', function(e){
-      if (e.key !== 'orders') return;
+      if (e.key !== ADMIN_ORDERS_KEY) return;
       try {
         const orders = JSON.parse(e.newValue || '[]');
         const front = loadOrder();
         if (!front) return;
         const matched = orders.find(o => o.id === front.code);
         if (!matched) return;
-
         const newFrontStatus = adminToFrontStatus(matched.status);
         if (newFrontStatus !== front.status) {
           front.status = newFrontStatus;
@@ -336,15 +348,12 @@
 
   if(document.readyState==='loading'){document.addEventListener('DOMContentLoaded',init);}else{init();}
 
-  /* ======== LỊCH SỬ MUA HÀNG (không đè hàm cũ) ======== */
+  /* ======== LỊCH SỬ MUA HÀNG ======== */
   function ensureHistoryTbody() {
     var table = document.getElementById('history-table');
     if (!table) return null;
     var tbody = table.querySelector('tbody');
-    if (!tbody) {
-      tbody = document.createElement('tbody');
-      table.appendChild(tbody);
-    }
+    if (!tbody) { tbody = document.createElement('tbody'); table.appendChild(tbody); }
     return tbody;
   }
 
@@ -353,15 +362,13 @@
     var tbody = ensureHistoryTbody();
     if (!tbody) return;
 
-    var orders = readOrdersForAdmin(); // đọc từ key 'orders'
+    var orders = readOrdersForAdmin();
 
     // Lọc theo tên khách (nếu có hiển thị trên trang)
     var customerEl = document.getElementById('ord-customer');
     var customer = (customerEl ? (customerEl.textContent || '') : '').trim();
     if (customer) {
-      orders = orders.filter(function (o) {
-        return ((o.customer || '').trim() === customer);
-      });
+      orders = orders.filter(function (o) { return ((o.customer || '').trim() === customer); });
     }
 
     // Sắp xếp mới nhất lên đầu
@@ -384,10 +391,7 @@
     // Duyệt từng đơn và từng item
     orders.forEach(function (o) {
       var when = '';
-      try {
-        var d = new Date(o.date);
-        if (!isNaN(d)) when = d.toLocaleString('vi-VN');
-      } catch {}
+      try { var d = new Date(o.date); if (!isNaN(d)) when = d.toLocaleString('vi-VN'); } catch {}
 
       (o.items || []).forEach(function (it) {
         var name = it.productName || it.name || ('Sản phẩm #' + (it.id || ''));

@@ -147,6 +147,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       alert(`Chào mừng ${user.name || user.username}!`);
       setSession({
+        id: user.username,
         username: user.username,
         name: user.name || user.username,
         role: user.role,
@@ -199,13 +200,29 @@ document.addEventListener('DOMContentLoaded', () => {
   // ĐĂNG XUẤT
   // ===============================
   function handleLogout() {
-    localStorage.removeItem(LS_CURRENT);
+    // 1. Xóa phiên đăng nhập (code cũ)
+    localStorage.removeItem(LS_CURRENT); // LS_CURRENT là 'current_user'
+
+    // === PHẦN THÊM MỚI THEO YÊU CẦU ===
+    
+    // 2. Xóa giỏ hàng khỏi localStorage
+    localStorage.removeItem('tt_cart'); 
+    localStorage.removeItem('cart:guest'); 
+    
+    // 3. Cập nhật lại icon giỏ hàng (về 0)
+    if (window.ttUpdateCartBadge) {
+        window.ttUpdateCartBadge();
+    }
+    // === HẾT PHẦN THÊM MỚI ===
+
+    // 4. Cập nhật giao diện (code cũ)
     displayUserName();
     DOM.profileSection?.classList.remove('open');
     document.documentElement.style.overflow = '';
+    
+    // 5. Thông báo và chuyển trang (code cũ)
     alert('Bạn đã đăng xuất!');
     window.location.href = '/view/client.html';
-
   }
 
   // ===============================
