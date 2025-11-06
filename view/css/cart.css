@@ -1,6 +1,6 @@
 
 /* ====== Cart Page ====== */
-.cart{padding:120px 0 40px}
+/* .cart{padding:120px 0 40px} */
 
 /* Steps */
 .cart-top-wrap{
@@ -109,19 +109,9 @@ body.show-cart #login_modal{display:none!important}
 body.show-cart #cart{display:block!important;flex:1;padding-top:120px}
 body.show-cart footer{margin-top:auto}
 
-footer{
-  margin-top:40px; background:#f2f2f2; border-top:1px solid var(--line);
-  display:grid; grid-template-columns:1.2fr 1fr; gap:24px; padding:24px 20px; color:#444;
-}
-footer .footer-logo{width:140px;margin-bottom:10px}
-footer p{line-height:1.6}
-.right_footer h4{margin:10px 0 6px}
-.social-links{display:flex;gap:10px;margin-top:8px}
-.social-links a{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:50%}
-.social-links a:hover{background:#fff}
 
 /* ====== Responsive ====== */
-@media (max-width:992px){
+/* @media (max-width:992px){
   .header_menu{gap:18px}
   .cart-content{grid-template-columns:1fr}
   footer{grid-template-columns:1fr}
@@ -133,7 +123,7 @@ footer p{line-height:1.6}
   .cart{padding-top:100px}
   .cart-top-wrap{gap:28px}
   .cart-content-left td img{width:64px;height:64px}
-}
+} */
 
 
 /* Ẩn giỏ hàng mặc định */

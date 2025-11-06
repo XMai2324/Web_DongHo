@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TickTock Shop - Sản phẩm</title>
 
-  <!-- CSS -->
-  <!-- <title>TickTock Shop</title> -->
-
-  <link rel="stylesheet" href="css/profile.css">
   <link rel="icon" type="image/png" href="image/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../view/css/client.css">
+  <link rel="stylesheet" href="../view/css/profile.css">
   <link rel="stylesheet" href="../view/css/product.css">
   <link rel="stylesheet" href="../view/css/login.css">
   <link rel="stylesheet" href="../view/css/cart.css">
@@ -23,7 +20,7 @@
   <!-- ===== HEADER ===== -->
   <header>
     <div class="logo">
-      <img src="../view/image/logo2.png" alt="logo shop">
+      <img src="image/logo2.png" alt="logo shop">
     </div>
 
     <div class="header_menu">
@@ -73,8 +70,6 @@
               <li><a href="client.html?category=phukien&accessory=box">Hộp đựng</a></li>
               <li><a href="client.html?category=phukien&accessory=strap">Dây đeo</a></li>
             </ul>
-
-
       </div>
     </div>
 
@@ -83,22 +78,24 @@
         <input id="searchInput" type="text" placeholder="Tìm kiếm...">
         <i id="searchBtn" class="fa-solid fa-magnifying-glass"></i>
       </div>
-      <div class="account">
+      
+      <div class="account" id="accountBtn">
         <i class="fa-regular fa-user"></i>
-        <a href="#">Tài khoản</a>
-      </div>
-      <div class="cart-link">
-        <a href="#cart" id="cart-btn" aria-label="Giỏ hàng">
-          <i class="fa-solid fa-cart-shopping"></i>
+        <a href="#" id="accountLink">
+            <span id="accountLinkText">Tài khoản</span>
         </a>
+      </div>
+
+      <div class="cart">
+        <i class="fa-solid fa-cart-shopping"></i>
         <span id="cart-count" class="cart-badge">0</span>
       </div>
-      <div class="logout">
+      <div class="logout" id="logout-btn" style="display: none;">
         <i class="fa-solid fa-right-from-bracket"></i>
       </div>
     </div>
   </header>
-
+<!-- <div id="header-spacer" style="height:100px;background:pink;"></div> -->
   <div class="slider">
         <div class="slide"><img src="../view/image/slide1.jpg" alt="slider1"></div>
         <div class="slide"><img src="../view/image/slide2.jpg" alt="slider2"></div>
@@ -219,8 +216,12 @@
 
           <div class="cart-content-right-text">
             <p id="shipping-msg">Bạn sẽ được miễn phí ship nếu như mua thêm…</p>
-            <p>Hãy <a href="#login">Đăng nhập</a> để nhận được nhiều khuyến mãi nhé</p>
+            <!-- <p>Hãy <a href="#login">Đăng nhập</a> để nhận được nhiều khuyến mãi nhé</p> -->
           </div>
+
+          <p id="cart-empty-msg" style="color: red; text-align: center; display: none; margin: 10px 0;">
+            Giỏ hàng của bạn đang trống.
+          </p>
 
           <button id="checkout-btn" class="checkout" type="button">Đặt Hàng</button>
           <a id="cart-close" href="#" class="go-shopping">← Tiếp tục mua sắm</a>
@@ -259,7 +260,7 @@
               <label for="co-address">Địa chỉ</label>
               <input type="text" id="co-address" placeholder="Số nhà, đường" required>
             </div>
-          </div>
+         </div>
 
           <div class="delivery-content-left-input-bottom">
           <label for="co-city">Tỉnh/Thành</label>
@@ -468,7 +469,7 @@
   <!-- ===== FOOTER ===== -->
   <footer>
         <div class="left_footer">
-            <img src="../view/image/logo2.png" alt="logo" class="footer-logo">
+            <img src="image/logo2.png" alt="logo" class="footer-logo">
             <p><strong>TickTock Shop</strong> là hệ thống cửa hàng đồng hồ chính hãng tại Việt Nam, 
                 chuyên cung cấp các thương hiệu nổi tiếng thế giới như Casio, Seiko, Citizen, 
                 Rolex, Rado cùng nhiều phụ kiện đi kèm (dây đeo, hộp đựng, kính cường lực).
@@ -498,6 +499,7 @@
             </div>
         </div>
     </footer>  
+  
 
   <!-- Quick View Modal -->
   <div id="quickview" class="modal" role="dialog" aria-modal="true" aria-labelledby="qv-name">
@@ -532,14 +534,6 @@
       </div>
     </div>
   </div>
-
-  <!-- ===== JS ===== -->
-  <script src="js/data.js"></script>
-  <script src="js/product.js"></script>
-  <script src="js/slider.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/search.js"></script>
-
 
 <!-- ===== login ===== -->  
   <div id="login_modal">
@@ -594,8 +588,6 @@
       </div>
     </form>
     
-    
-    
   </div>
   
    <!-- ===== PROFILE OVERLAY (NO AVATAR) ===== -->
@@ -634,7 +626,7 @@
                 </div>
                 <div class="form-group">
                   <label for="profileRole">Vai trò</label>
-                  <input id="profileRole" readonly>
+                  <input id="profileRole" readonly> 
                 </div>
               </div>
 
@@ -679,9 +671,9 @@
   
     <!-- ===== JS ===== -->
   <script src="../view/js/data.js"></script>
+  <script src="../view/js/auth.js"></script>
   <script src="../view/js/product1.js"></script>
   <script src="../view/js/slider.js"></script>
-  <script src="../view/js/auth.js"></script>
   <script src="../view/js/profile.js"></script>
    <script src="../view/js/cart.js"></script>
   <script src="../view/js/checkout.js"></script>

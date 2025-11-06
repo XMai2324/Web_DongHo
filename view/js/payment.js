@@ -33,10 +33,10 @@
     DELIVERED:       'delivered'
   };
   function statusLabel(s){
-    if (s===ST.PENDING_CONFIRM) return 'Chờ xác nhận';
-    if (s===ST.PENDING_SHIP)    return 'Chờ vận chuyển';
-    if (s===ST.SHIPPING)        return 'Đang vận chuyển';
-    if (s===ST.DELIVERED)       return 'Đã giao';
+    if (s===ST.PENDING_CONFIRM) return 'Chờ vận chuyển';
+    if (s===ST.PENDING_SHIP)    return 'Đang vận chuyển';
+    if (s===ST.SHIPPING)        return 'Vui lòng Xác nhận đơn hàng';
+    if (s===ST.DELIVERED)       return 'Đơn hàng của bạn đã giao thành công, cảm ơn bạn đã mua hàng';
     return s || '';
   }
 
@@ -188,8 +188,8 @@
     var header  = document.querySelector('header');
     var footer  = document.querySelector('footer');
     document.body.classList.add('order-confirmed');
-    if (header) hardShow(header, 'block');
-    if (footer) hardShow(footer, 'block');
+    if (header) hardShow(header, 'grid');
+    if (footer) hardShow(footer, 'flex');
     if (payment) {
       hardShow(payment, 'block');
       applyHeaderOffset();
@@ -258,6 +258,22 @@
   }
 
   /* ========= Nút “Xác nhận thanh toán” ========= */
+
+<<<<<<< HEAD
+    function attachConfirm(){
+      const selectors=['#place-order-btn','#checkout-btn','button[name="checkout-confirm"]','.btn-checkout-confirm','#confirm-payment'];
+      const btn=selectors.map(s=>document.querySelector(s)).find(Boolean);
+      if(!btn)return;
+      btn.addEventListener('click',function(e){
+        e.preventDefault();
+        renderOrderSummary();
+        window.location.hash='#payment';
+        onlyShowPayment();
+        renderStatus();
+        window.scrollTo({top:0,behavior:'smooth'});
+      });
+    }
+=======
   function attachConfirm(){
     const selectors=['#place-order-btn','#checkout-btn','button[name="checkout-confirm"]','.btn-checkout-confirm','#confirm-payment'];
     const btn=selectors.map(s=>document.querySelector(s)).find(Boolean);
@@ -273,11 +289,12 @@
       window.scrollTo({top:0,behavior:'smooth'});
     });
   }
+>>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
 
-  /* ========= Router theo hash ========= */
-  function route(){
-    const last=loadOrder();
-    if(window.location.hash==='#payment' && last){
+    /* ========= Router theo hash ========= */
+  function route() {
+    const last = loadOrder();
+    if (window.location.hash === '#payment' && last) {
       onlyShowPayment();
       renderStatus();
     } else {
@@ -286,11 +303,15 @@
   }
 
   /* ========= Boot ========= */
-  function init(){
-    const p=document.querySelector('.payment');
-    if(p){p.setAttribute('hidden','');p.style.display='none';}
+  function init() {
+    const p = document.querySelector('.payment');
+    if (p) {
+      p.setAttribute('hidden', '');
+      p.style.display = 'none';
+    }
+
     attachConfirm();
-    window.addEventListener('hashchange',route);
+    window.addEventListener('hashchange', route);
     route();
 
     // Đồng bộ ngược: Admin đổi trạng thái → trang khách tự cập nhật

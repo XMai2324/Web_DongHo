@@ -76,17 +76,17 @@
         </ul>
 
         <li class="menu-title" id="menuOrders">Đơn hàng</li>
-        <li class="menu-title">Khách hàng</li>
-        <li class="menu-title"><a href="../admin/ad_nhaphang.html">Nhập hàng</a></li>
-        <li class="menu-title">Kho hàng</li>
+        <li class="menu-title" class="is-active"><a href="../admin/ad_user.html">Khách hàng</a></li>
+        <li class="menu-title" class="is-active"><a href="../admin/nhaphang.html">Nhập hàng</a></li>
 
-        <li>
+
+        <li class="menu-title">
           <div class="actions">
             <div class="account">
-              <i class="fa-regular fa-user"></i>
-              <span>Admin</span>
+              <!-- <i class="fa-regular fa-user"></i>
+              <span>Admin</span> -->
             </div>
-            <div class="logout" id="logoutBtn" title="Đăng xuất">
+            <div class="logout" id="logout-btn" title="Đăng xuất">Đăng xuất
               <i class="fa-solid fa-right-from-bracket"></i>
             </div>
           </div>
@@ -117,7 +117,7 @@
               <option value="rado">Rado</option>
             </select>
 
-            <button id="btnAdd" class="btn primary">+ Thêm đồng hồ</button>
+            <button id="btnAdd" class="btn primary">+ Thêm sản phẩm</button>
           </div>
         </div>
 
@@ -362,6 +362,7 @@
     const menuProducts    = document.getElementById('menuProducts');
     const menuOrders      = document.getElementById('menuOrders');
 
+
     function setActive(menu) {
       document.querySelectorAll('.menu-title').forEach(m => m.classList.remove('active'));
       menu.classList.add('active');
@@ -376,6 +377,7 @@
       ordersSection.style.display   = 'block';
       setActive(menuOrders);
     }
+    
 
     menuProducts?.addEventListener('click', showProducts);
     menuOrders?.addEventListener('click', showOrders);
