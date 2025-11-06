@@ -53,14 +53,31 @@ document.addEventListener('DOMContentLoaded', () => {
     document.querySelector('.header-cart .count, .cart__count, .count-badge');
 
   const updateCartBadge = () => {
-    const el = findCartCountEl();
-    if (!el) return;
-    const n = cartCount(loadCart());
-    el.textContent = n > 99 ? '99+' : String(n);
-    el.style.display = n ? 'inline-block' : 'none';
-    el.classList.toggle('is-empty', !n);
-    el.setAttribute('aria-label', `Giỏ hàng: ${n} sản phẩm`);
-  };
+      const el = findCartCountEl();
+      const n = cartCount(loadCart());
+
+      if (el) {
+        el.textContent = n > 99 ? '99+' : String(n);
+        el.style.display = n ? 'inline-block' : 'none';
+        el.classList.toggle('is-empty', !n);
+        el.setAttribute('aria-label', `Giỏ hàng: ${n} sản phẩm`);
+      }
+
+      const checkoutBtn = document.getElementById('checkout-btn');
+      const emptyMsg = document.getElementById('cart-empty-msg'); 
+
+      if (checkoutBtn && emptyMsg) {
+        if (n === 0) {
+          checkoutBtn.disabled = true; 
+          checkoutBtn.title = "Giỏ hàng của bạn đang trống";
+          emptyMsg.style.display = 'block';
+        } else {
+          checkoutBtn.disabled = false;
+          checkoutBtn.title = "";
+          emptyMsg.style.display = 'none';
+        }
+      }
+    };
 
   // cập nhật khi load / đổi tab / tab khác sửa localStorage
   updateCartBadge();

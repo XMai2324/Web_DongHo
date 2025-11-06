@@ -75,10 +75,9 @@
           <li data-entity="glass">Kính cường lực</li>
         </ul>
 
-        <li class="menu-title" id="menuOrders">Đơn hàng</li>
-        <li class="menu-title">Khách hàng</li>
-        <li class="menu-title"><a href="../admin/ad_nhaphang.html">Nhập hàng</a></li>
-        <li class="menu-title">Kho hàng</li>
+        <li class="menu-title">Đơn hàng</li>
+        <li class="menu-title"><a href="../admin/ad_user.html">Khách hàng</a></li>
+        <li class="menu-title"><a href="../admin/nhaphang.html">Nhập hàng</a></li>
 
         <li>
           <div class="actions">
@@ -117,7 +116,7 @@
               <option value="rado">Rado</option>
             </select>
 
-            <button id="btnAdd" class="btn primary">+ Thêm đồng hồ</button>
+            <button id="btnAdd" class="btn primary">+ Thêm sản phẩm</button>
           </div>
         </div>
 
@@ -362,20 +361,21 @@
     const menuProducts    = document.getElementById('menuProducts');
     const menuOrders      = document.getElementById('menuOrders');
 
-    function setActive(menu) {
-      document.querySelectorAll('.menu-title').forEach(m => m.classList.remove('active'));
-      menu.classList.add('active');
-    }
-    function showProducts() {
-      productsSection.style.display = 'block';
-      ordersSection.style.display   = 'none';
-      setActive(menuProducts);
-    }
-    function showOrders() {
-      productsSection.style.display = 'none';
-      ordersSection.style.display   = 'block';
-      setActive(menuOrders);
-    }
+    // function setActive(menu) {
+    //   document.querySelectorAll('.menu-title').forEach(m => m.classList.remove('active'));
+    //   menu.classList.add('active');
+    // }
+    // function showProducts() {
+    //   productsSection.style.display = 'block';
+    //   ordersSection.style.display   = 'none';
+    //   setActive(menuProducts);
+    // }
+    // function showOrders() {
+    //   productsSection.style.display = 'none';
+    //   ordersSection.style.display   = 'block';
+    //   setActive(menuOrders);
+    // }
+    
 
     menuProducts?.addEventListener('click', showProducts);
     menuOrders?.addEventListener('click', showOrders);

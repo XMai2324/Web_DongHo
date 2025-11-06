@@ -1,10 +1,10 @@
 /* ==================== DELIVERY / CHECKOUT (scoped) — CLEAN ==================== */
 :root{
   --brand:#0db7ea;
-  --ctl-h:40px;            /* chiều cao control */
-  --ctl-fs:13px;
+  --ctl-h:30px;           
+  /* --ctl-fs:13px;
   --ctl-pad-x:12px;
-  --ctl-pad-y:8px;
+  --ctl-pad-y:8px; */
   --ctl-radius:6px;
   --ctl-border:#ccc;
 }
@@ -46,7 +46,7 @@
 }
 #delivery .delivery-top-item i{
   color:#ddd; 
-  font-size:16px; 
+  font-size:13px; 
   transition:color .2s
 }
 #delivery .delivery-top-item.active{
@@ -81,16 +81,27 @@
 #delivery .delivery-content-left-input-top-item input,
 #delivery .delivery-content-left-input-bottom input,
 #delivery .delivery-content-left-input-bottom select{
-  display:block; width:100%; height:var(--ctl-h);
+  display:block; 
+  width:100%; 
+  height:var(--ctl-h);
   padding:var(--ctl-pad-y) var(--ctl-pad-x);
-  border:1px solid var(--ctl-border); border-radius:var(--ctl-radius);
-  font-size:var(--ctl-fs); font-family:var(--main-text-font);
-  box-sizing:border-box; background:#fff; transition:border-color .15s, box-shadow .15s;
-  -webkit-appearance:none; appearance:none;
+  border:1px solid var(--ctl-border); 
+  border-radius:var(--ctl-radius);
+  font-size:var(--ctl-fs); 
+  font-family:var(--main-text-font);
+  box-sizing:border-box; 
+  background:#fff; 
+  transition:border-color .15s, box-shadow .15s;
+  -webkit-appearance:none; 
+  appearance:none;
+  padding-left: 10px;
 }
 #delivery .delivery-content-left-input-top-item label,
 #delivery .delivery-content-left-input-bottom label{
-  font-size:12px; font-family:var(--main-text-font); margin-bottom:6px; display:block; color:#333
+  font-size:13px; 
+  font-family:var(--main-text-font); 
+  margin-bottom:6px; display:block; 
+  color:#333;
 }
 
 /* Focus thống nhất */
@@ -120,6 +131,7 @@
   font-size: 13px; 
   font-family: var(--main-text-font, inherit);
   transition:border-color .15s, box-shadow .15s;
+  padding-left: 10px;
 }
 #delivery .combo>input.form-input:focus{
   outline:none; 

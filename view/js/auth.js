@@ -12,9 +12,9 @@ document.addEventListener('DOMContentLoaded', () => {
     registerForm: document.getElementById('registerForm'),
     loginIdentifier: document.getElementById('loginIdentifier'),
     loginPassword: document.getElementById('loginPassword'),
-    logoutBtn: document.getElementById('logoutBtn'),
+    logoutBtn: document.getElementById('logout-btn'),
     messageDiv: document.querySelector('#messageLogin') || document.querySelector('.message'),
-    accountLinkText: document.getElementById('account-link'),
+    accountLinkText: document.getElementById('accountLink'),
     profileSection: document.getElementById('profileSection'),
   };
 
@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 }
 
+  displayUserName();
   // Helper toàn cục cho file khác dùng (checkout.js, cart.js, ...)
   window.getCurrentUser = function () {
     try {
@@ -137,6 +138,13 @@ document.addEventListener('DOMContentLoaded', () => {
     );
 
     if (user) {
+
+      if (user.status === 'disabled') {
+            // Hiển thị lỗi và DỪNG quá trình đăng nhập
+            showMessage('Tài khoản của bạn đã bị vô hiệu hóa.', 'error');
+            return; // Quan trọng: Dừng hàm tại đây, không set session
+        }
+
       alert(`Chào mừng ${user.name || user.username}!`);
       setSession({
         username: user.username,
@@ -148,12 +156,39 @@ document.addEventListener('DOMContentLoaded', () => {
       setTimeout(() => {
         closeModal();
         displayUserName();
-        if (user.role === 'admin') {
-          window.location.href = '/admin/admin.html';
-        } else {
-          // Tải lại trang để đồng bộ UI (nếu cần)
-          window.location.reload();
+        if (user.status === 'disabled') {
+          showMessage(messageDiv, 'vô hiệu hóa', 'error');
+          return;
         }
+        // if (user.role === 'admin') {
+        //   window.location.href = '/admin/admin.html';
+        // } else {
+        //   // Tải lại trang để đồng bộ UI (nếu cần)
+        //   window.location.reload();
+        // }
+
+        const isAdminPage = location.pathname.includes("/admin/");
+
+        if (user.role === "admin") {
+          if (isAdminPage) {
+            // Nếu đang ở trang admin (dán link) → reload để ẩn form login
+            location.reload();
+          } else {
+            // Nếu login từ trang user → chuyển vào admin
+            location.href = "/admin/admin.html";
+          }
+        } else {
+          // Nếu user login mà đang ở trang admin → chặn
+          if (isAdminPage) {
+            alert("Bạn không có quyền vào trang quản trị!");
+            return;
+          } else {
+            // login bình thường
+            location.reload();
+          }
+        }
+
+
       }, 400);
     } else {
       showMessage('Email/Tên đăng nhập hoặc Mật khẩu không chính xác.', 'error');
@@ -169,8 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
     DOM.profileSection?.classList.remove('open');
     document.documentElement.style.overflow = '';
     alert('Bạn đã đăng xuất!');
-    // Điều hướng về trang client (tuỳ dự án: giữ nguyên hoặc chỉnh lại path)
-    window.location.href = 'client.html';
+    window.location.href = '/view/client.html';
+
   }
 
   // ===============================
@@ -282,4 +317,34 @@ document.addEventListener('DOMContentLoaded', () => {
   if (DOM.modal && !DOM.modal.classList.contains('show')) {
     if (DOM.registerForm) DOM.registerForm.style.display = 'none';
   }
+});
+
+// ========== KIỂM TRA QUYỀN TRUY CẬP TRANG ADMIN ==========
+document.addEventListener("DOMContentLoaded", () => {
+  // ĐỌC ĐÚNG KEY PHIÊN
+  const currentUser = JSON.parse(localStorage.getItem("current_user") || "null");
+  const isAdminPage = location.pathname.includes("/admin/");
+
+  if (!isAdminPage) return;
+
+  if (!currentUser) {
+    // Chưa đăng nhập → mở form login theo đúng cơ chế showModal
+    if (typeof showModal === "function") {
+      showModal("login");
+    } else {
+      // fallback nếu chưa có showModal
+      const m = document.getElementById("login_modal");
+      if (m) m.classList.add("show");
+    }
+    console.warn(" Chưa đăng nhập → bật form login");
+    return;
+  }
+
+  if (currentUser.role !== "admin") {
+    alert("Tài khoản của bạn không có quyền truy cập trang quản trị! Vui lòng đăng nhập bằng tài khoản Admin.");
+    window.location.href = "/view/client.html";
+    return;
+  }
+
+  console.log(" Admin đăng nhập, vào trang quản trị");
 });

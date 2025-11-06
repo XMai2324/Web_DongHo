@@ -52,73 +52,75 @@ function writeCart(cart){
 }
 
 /* ========= Render ========= */
-function renderCart() {
-  const cart = readCart();
+  function renderCart() {
+    const cart = readCart();
 
-  const tbody      = document.getElementById('cart-body');
-  const sumQty     = document.getElementById('sum-qty');
-  const subtotalEl = document.getElementById('subtotal');
-  const grandEl    = document.getElementById('grand-total');
-  const msg        = document.getElementById('shipping-msg');
-  if (!tbody) return;
+    const tbody      = document.getElementById('cart-body');
+    const sumQty     = document.getElementById('sum-qty');
+    const subtotalEl = document.getElementById('subtotal');
+    const grandEl    = document.getElementById('grand-total');
+    const msg        = document.getElementById('shipping-msg');
+    if (!tbody) return;
 
-  tbody.innerHTML = '';
-  let sum = 0, subtotal = 0;
+    tbody.innerHTML = '';
+    let sum = 0, subtotal = 0;
 
-  cart.forEach((it, idx) => {
-    const tr = document.createElement('tr');
-    const line = (it.price || 0) * (it.qty || 1);
+    cart.forEach((it, idx) => {
+      const tr = document.createElement('tr');
+      const line = (it.price || 0) * (it.qty || 1);
 
-    tr.innerHTML = `
-      <td><img src="${it.image || ''}" alt="${it.name || ''}"
-               onerror="this.src='https://via.placeholder.com/80?text=?'"></td>
-      <td><p>${it.name || ('Sản phẩm #'+it.id)}</p></td>
-      <td><input type="number" min="1" step="1" value="${it.qty || 1}"></td>
-      <td><p>${currency(line)} <sub>đ</sub></p></td>
-      <td class="delete-cell" title="Xóa">X</td>
-    `;
+      tr.innerHTML = `
+        <td><img src="${it.image || ''}" alt="${it.name || ''}"
+                onerror="this.src='https://via.placeholder.com/80?text=?'"></td>
+        <td><p>${it.name || ('Sản phẩm #'+it.id)}</p></td>
+        <td><input type="number" min="1" step="1" value="${it.qty || 1}"></td>
+        <td><p>${currency(line)} <sub>đ</sub></p></td>
+        <td class="delete-cell" title="Xóa">X</td>
+      `;
 
-    // tăng/giảm số lượng
-    const qtyInput = tr.querySelector('input[type="number"]');
-    ['input','change','blur'].forEach(evt => {
-      qtyInput.addEventListener(evt, () => {
-        let v = parseInt(qtyInput.value, 10);
-        if (!Number.isFinite(v) || v < 1) v = 1;
-        if (cart[idx].qty !== v) {
-          cart[idx].qty = v;
-          writeCart(cart);
-          renderCart();
-        }
+      // tăng/giảm số lượng
+      const qtyInput = tr.querySelector('input[type="number"]');
+      ['input','change','blur'].forEach(evt => {
+        qtyInput.addEventListener(evt, () => {
+          let v = parseInt(qtyInput.value, 10);
+          if (!Number.isFinite(v) || v < 1) v = 1;
+          if (cart[idx].qty !== v) {
+            cart[idx].qty = v;
+            writeCart(cart);
+            renderCart();
+          }
+        });
       });
+      qtyInput.addEventListener('wheel', e => e.preventDefault(), { passive: false });
+
+      // xoá sản phẩm
+      tr.querySelector('.delete-cell').addEventListener('click', () => {
+        cart.splice(idx, 1);
+        writeCart(cart);
+        renderCart();
+      });
+
+      tbody.appendChild(tr);
+
+      sum      += (it.qty || 1);
+      subtotal += (it.price || 0) * (it.qty || 1);
     });
-    qtyInput.addEventListener('wheel', e => e.preventDefault(), { passive: false });
 
-    // xoá sản phẩm
-    tr.querySelector('.delete-cell').addEventListener('click', () => {
-      cart.splice(idx, 1);
-      writeCart(cart);
-      renderCart();
-    });
+    if (sumQty)    sumQty.textContent = sum;
+    if (subtotalEl) subtotalEl.innerHTML = `${currency(subtotal)} <sub>đ</sub>`;
+    if (grandEl)    grandEl.innerHTML  = `${currency(subtotal)} <sub>đ</sub>`;
 
-    tbody.appendChild(tr);
+    if (msg) {
+      const need = Math.max(0, 2000000 - subtotal);
+      msg.textContent = need > 0
+        ? `Mua thêm ${currency(need)} đ để được miễn phí ship.`
+        : 'Bạn đã được miễn phí ship!';
+    }
 
-    sum      += (it.qty || 1);
-    subtotal += (it.price || 0) * (it.qty || 1);
-  });
-
-  if (sumQty)     sumQty.textContent = sum;
-  if (subtotalEl) subtotalEl.innerHTML = `${currency(subtotal)} <sub>đ</sub>`;
-  if (grandEl)    grandEl.innerHTML   = `${currency(subtotal)} <sub>đ</sub>`;
-
-  if (msg) {
-    const need = Math.max(0, 2000000 - subtotal);
-    msg.textContent = need > 0
-      ? `Mua thêm ${currency(need)} đ để được miễn phí ship.`
-      : 'Bạn đã được miễn phí ship!';
+    if (window.ttUpdateCartBadge) {
+        window.ttUpdateCartBadge();
+    }
   }
-
-  updateBadge(cart);
-}
 
 let __lastAdd = { id: null, t: 0 };
 /* ========= Cart API ========= */
