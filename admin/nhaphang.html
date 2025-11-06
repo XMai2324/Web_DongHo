@@ -10,6 +10,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="icon" type="image/png" href="../view/image/logo.png">
 
+  <style>
+     .sidebar .menu .menu-title.active { color:#00bcd4; }
+  </style>
 </head>
 
 <body>
@@ -35,16 +38,13 @@
         <li class="menu-title"><a href="../admin/ad_user.html">Khách hàng</a></li>
         <li class="menu-title"><a href="../admin/nhaphang.html">Nhập hàng</a></li>
 
-        <li><div class="actions">
-              <div class="account">
-                <i class="fa-regular fa-user"></i>
-                <span>Admin</span>
-              </div>
-              <div class="logout" id="logoutBtn" title="Đăng xuất">
-                <i class="fa-solid fa-right-from-bracket"></i>
-              </div>
+        <li class="menu-title">
+          <div class="actions">
+            <div class="logout" id="logoutBtn" title="Đăng xuất"> Đăng xuất 
+              <i class="fa-solid fa-right-from-bracket"></i>
             </div>
-          </li>
+          </div>
+        </li>
       </ul>
     </aside>
 

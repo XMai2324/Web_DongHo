@@ -5,14 +5,17 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TickTock Shop - Sản phẩm</title>
 
-
+  <!-- CSS -->
+  <!-- <title>TickTock Shop</title> -->
+  <link rel="stylesheet" href="css/client.css">
+  <link rel="stylesheet" href="css/product.css">
+  <link rel="stylesheet" href="css/login.css">
   <link rel="stylesheet" href="css/profile.css">
   <link rel="icon" type="image/png" href="image/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../view/css/client.css">
   <link rel="stylesheet" href="../view/css/product.css">
   <link rel="stylesheet" href="../view/css/login.css">
-  <link rel="stylesheet" href="css/profile.css">
   <link rel="stylesheet" href="../view/css/cart.css">
   <link rel="stylesheet" href="../view/css/checkout.css">
   <link rel="stylesheet" href="../view/css/payment.css">
@@ -22,7 +25,7 @@
   <!-- ===== HEADER ===== -->
   <header>
     <div class="logo">
-      <img src="image/logo2.png" alt="logo shop">
+      <img src="../view/image/logo2.png" alt="logo shop">
     </div>
 
     <div class="header_menu">
@@ -72,8 +75,11 @@
               <li><a href="client.html?category=phukien&accessory=box">Hộp đựng</a></li>
               <li><a href="client.html?category=phukien&accessory=strap">Dây đeo</a></li>
             </ul>
+
+
       </div>
 
+      <div class="name"><a href="warranty.html">Thông tin cá nhân</a></div>
     </div>
 
     <div class="header_other">
@@ -99,7 +105,8 @@
       </div>
     </div>
   </header>
-
+  </header>
+<div id="header-spacer" style="height:100px;background:pink;"></div>
   <div class="slider">
         <div class="slide"><img src="../view/image/slide1.jpg" alt="slider1"></div>
         <div class="slide"><img src="../view/image/slide2.jpg" alt="slider2"></div>
@@ -243,6 +250,11 @@
         <!-- LEFT -->
         <div class="delivery-content-left">
           <p>Vui lòng điền thông tin giao hàng</p>
+
+          <!-- <div class="delivery-content-left-dangnhap">
+            <i class="fa-regular fa-user"></i> Đã có tài khoản? <a href="#login" style="margin-left:6px;">Đăng nhập</a>
+          </div> -->
+
           <div class="delivery-content-left-input-top">
             <div class="delivery-content-left-input-top-item">
               <label for="co-fullname">Họ và tên</label>
@@ -353,6 +365,16 @@
               <tr class="grand-total"><td><strong>Tổng thanh toán</strong></td><td id="co-grand"><strong>0 đ</strong></td></tr>
             </tbody>
           </table>
+
+          <!-- <div class="coupon-wrap">
+            <input type="text" id="coupon-input" placeholder="Nhập mã giảm giá">
+            <button id="apply-coupon">Áp dụng</button>
+          </div>
+
+          <select id="coupon-select" class="coupon-select" style="margin-bottom:12px; display:none;">
+            <option value="">Chọn mã khuyến mãi</option>
+          </select> -->
+
           <div class="payment-method">
             <p>Phương thức thanh toán</p>
             <label><input type="radio" name="payment" value="cod" checked> Thanh toán khi nhận hàng (COD)</label><br>
@@ -370,7 +392,7 @@
       </div>
     </div>
 
-    <!-- Modal kết quả đơn: -->
+    <!-- Modal kết quả đơn: ĐẶT BÊN TRONG #delivery -->
     <div id="order-result" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="order-result-title">
       <div class="modal-content">
         <h2 id="order-result-title">Đặt hàng thành công 🎉</h2>
@@ -469,7 +491,7 @@
   <!-- ===== FOOTER ===== -->
   <footer>
         <div class="left_footer">
-            <img src="image/logo2.png" alt="logo" class="footer-logo">
+            <img src="../view/image/logo2.png" alt="logo" class="footer-logo">
             <p><strong>TickTock Shop</strong> là hệ thống cửa hàng đồng hồ chính hãng tại Việt Nam, 
                 chuyên cung cấp các thương hiệu nổi tiếng thế giới như Casio, Seiko, Citizen, 
                 Rolex, Rado cùng nhiều phụ kiện đi kèm (dây đeo, hộp đựng, kính cường lực).
@@ -499,7 +521,6 @@
             </div>
         </div>
     </footer>  
-  
 
   <!-- Quick View Modal -->
   <div id="quickview" class="modal" role="dialog" aria-modal="true" aria-labelledby="qv-name">
@@ -534,13 +555,6 @@
       </div>
     </div>
   </div>
-
-  <!-- ===== JS ===== -->
-  <script src="js/data.js"></script>
-  <script src="js/product.js"></script>
-  <script src="js/slider.js"></script>
-  <script src="js/auth.js"></script>
-  <script src="js/search.js"></script>
 
 
 <!-- ===== login ===== -->  
@@ -636,7 +650,7 @@
                 </div>
                 <div class="form-group">
                   <label for="profileRole">Vai trò</label>
-                  <input id="profileRole" readonly> 
+                  <input id="profileRole" readonly>
                 </div>
               </div>
 
@@ -681,6 +695,7 @@
   
     <!-- ===== JS ===== -->
   <script src="../view/js/data.js"></script>
+  <!-- <script src="../view/js/product.js"></script> -->
   <script src="../view/js/product1.js"></script>
   <script src="../view/js/slider.js"></script>
   <script src="../view/js/auth.js"></script>

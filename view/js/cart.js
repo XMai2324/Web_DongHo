@@ -98,23 +98,43 @@ function renderCart() {
   updateBadge(cart);
 }
 
+let __lastAdd = { id: null, t: 0 };
 /* ========= Cart API ========= */
-function addToCart(product, qty = 1) {
-  if (!product || !product.id) return;
-  const cart = readCart();
-  const i = cart.findIndex(p => p.id === product.id);
-  if (i >= 0) cart[i].qty += qty;
-  else cart.push({
-    id: product.id,
-    name: product.name,
-    price: Number(product.price) || 0,
-    image: product.image || '',
-    qty
-  });
-  writeCart(cart);
-  if (typeof renderCart === 'function') renderCart();
-}
+  function addToCart(product, qty = 1) {
+    if (!product || !product.id) return;
 
+    // ---- Chặn double-click / double-listener ----
+    const now = Date.now();
+    if (__lastAdd.id === product.id && (now - __lastAdd.t) < 400) {
+      return; // lần gọi thứ 2 đến quá nhanh -> bỏ
+    }
+    __lastAdd = { id: product.id, t: now };
+
+    // ---- Chuẩn hoá số lượng ----
+    let addQty = Number(qty);
+    if (!Number.isFinite(addQty) || addQty < 1) addQty = 1;
+
+    const cart = readCart();
+    const i = cart.findIndex(p => p.id === product.id);
+
+    if (i >= 0) {
+      // cộng thêm đúng số lượng yêu cầu
+      cart[i].qty = Number(cart[i].qty || 0) + addQty;
+    } else {
+      cart.push({
+        id: product.id,
+        name: product.name,
+        price: Number(product.price) || 0,
+        image: product.image || '',
+        qty: addQty
+      });
+    }
+
+    writeCart(cart);
+
+    // Render lại nếu có
+    if (typeof renderCart === 'function') renderCart();
+  }
 /* ========= Quick View (tránh double-bind với product.js) =========
    Ở trang sản phẩm, product.js đã gắn click cho #qv-add.
    Tại đây ta tạo hàm no-op để gọi cho an toàn nhưng KHÔNG bind thêm.
