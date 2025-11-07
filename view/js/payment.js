@@ -15,7 +15,7 @@
 
   /* ========= Helpers dữ liệu ========= */
   function currency(v){ try { return Number(v).toLocaleString('vi-VN'); } catch { return v; } }
-  function getUser(){ try { return JSON.parse(localStorage.getItem('auth:user')||'null'); } catch { return null; } }
+  function getUser(){ try { return JSON.parse(localStorage.getItem('current_user')||'null'); } catch { return null; } }
   function cartKey(){ const u=getUser(); return (u&&u.id)?`cart:${u.id}`:'cart:guest'; }
   function readCart(){
     try{ const t=localStorage.getItem('tt_cart'); if(t) return JSON.parse(t); }catch{}
@@ -106,6 +106,7 @@
 
     var cart = readCart();
     var info = getCheckoutInfo();
+    var user = getUser();
 
     var now = new Date();
     var code = 'TT-' + now.getFullYear().toString().slice(-2)
@@ -122,7 +123,7 @@
       });
     }
 
-    var name = info.fullname || info.name || info.customer || 'Khách lẻ';
+    var name = info.fullname || info.name || info.customer || (user ? user.name : 'Khách lẻ');
 
     // (A) Lưu bản cho UI payment (front)
     var orderFront = { code, date: now.toISOString(), customer: name, items: cart, total, status: ST.PENDING_CONFIRM };
@@ -133,7 +134,8 @@
       id: code,                           // orders.js dùng 'id'
       customer: name,
       date: now.toISOString(),
-      status: 'cho-xac-nhan',             // trạng thái khởi tạo ở Admin
+      status: 'cho-xac-nhan',  
+      userId: user ? user.id : null,   
       items: (cart || []).map(it => ({
         productName: it.name || it.title || ('Sản phẩm #' + (it.id || '')),
         qty: Number(it.qty) || 1,
@@ -228,9 +230,21 @@
     const order = loadOrder(); if (!order) return;
     const textEl = document.getElementById('ord-status-text');
     const btn = document.getElementById('ord-status-btn');
+    const historyBtn = document.getElementById('btn-history'); // Lấy nút lịch sử
+
     setStepActive(order.status);
     if (textEl) textEl.textContent = statusLabel(order.status);
     if (!btn) return;
+
+    // Logic ẨN/HIỆN nút lịch sử theo yêu cầu của bạn
+    if (historyBtn) {
+        if (order.status === ST.DELIVERED) {
+            historyBtn.style.display = 'block'; // HIỆN
+        } else {
+            historyBtn.style.display = 'none'; // ẨN
+        }
+    }
+
     if (order.status === ST.PENDING_CONFIRM){ btn.textContent='Chờ xác nhận'; btn.disabled=true; }
     else if (order.status === ST.PENDING_SHIP){ btn.textContent='Chờ vận chuyển'; btn.disabled=true; }
     else if (order.status === ST.SHIPPING){ btn.textContent='Xác nhận đã nhận hàng'; btn.disabled=false; }
@@ -241,16 +255,18 @@
         e.preventDefault();
         const ord=loadOrder(); if(!ord)return;
 
-        // Khách chỉ có thể xác nhận khi đang "Đang vận chuyển"
         if(ord.status===ST.SHIPPING){
-          ord.status=ST.DELIVERED;          // FRONT
-          saveOrder(ord);                   // lưu last_order (+ legacy)
-          updateAdminStatusFromFront(ord.code, ord.status); // đồng bộ sang ADMIN
+          ord.status=ST.DELIVERED;          
+          saveOrder(ord);                   
+          updateAdminStatusFromFront(ord.code, ord.status); 
 
-          // dọn giỏ
+          // Dọn giỏ hàng sau khi xác nhận (VÌ ĐƠN NÀY ĐÃ HOÀN TẤT)
+          // LƯU Ý: Nếu bạn muốn dọn giỏ ngay khi "Đặt hàng"
+          // thì chuyển 2 dòng này vào hàm renderOrderSummary()
           localStorage.removeItem('tt_cart');
           localStorage.removeItem(cartKey());
-          renderStatus();
+          
+          renderStatus(); // Gọi lại để cập nhật UI (hiện nút Lịch sử)
         }
       });
       btn._bound=true;
@@ -293,6 +309,9 @@
       p.setAttribute('hidden', '');
       p.style.display = 'none';
     }
+
+    const historyBtn = document.getElementById('btn-history');
+    if (historyBtn) historyBtn.style.display = 'none';
 
     attachConfirm();
     window.addEventListener('hashchange', route);
