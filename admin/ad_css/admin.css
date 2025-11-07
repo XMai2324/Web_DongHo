@@ -34,9 +34,21 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
 .sidebar .logo{text-align:center;margin-bottom:4px}
 .sidebar .hello{font-size:18px;font-weight:700}
 .sidebar .menu{list-style:none}
+.sidebar .menu .menu-title{
+  font-size:16px; font-weight:800; margin:16px 0 8px; padding-top:12px;
+  border-top:1px solid #080808; letter-spacing:.2px;
+
+}
 .submenu{list-style:none;margin-left:12px}
+.submenu li,.sidebar .menu>li{padding:8px 0;cursor:pointer;font-weight:600;color:#3f3f3f}
+.sidebar .menu>li:hover,.submenu li:hover{color:var(--primary)}
+.sidebar .menu .menu-title.active{color:var(--primary)}
 
-
+/* Main */
+.main-content{
+  margin-left:250px; flex:1; min-height:100vh; background:var(--bg);
+  display:flex; flex-direction:column; overflow-x:hidden;
+}
 .sidebar .menu .menu-title {
   font-size: 16px; 
   font-weight: 700;
@@ -50,16 +62,10 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
   text-decoration: none;
   color: #000;
 }
-.submenu li,.sidebar .menu>li{padding:8px 0;cursor:pointer;font-weight:600;color:#3f3f3f}
-.sidebar .menu>li:hover,.submenu li:hover{color:var(--primary)}
-.sidebar .menu .menu-title.active{color:var(--primary)}
-
-
-/* Main */
-.main-content{
-  margin-left:250px; flex:1; min-height:100vh; background:var(--bg);
-  display:flex; flex-direction:column; overflow-x:hidden;
-}
+.submenu { 
+  list-style: none;
+   margin-left: 12px; 
+  }
 
 /* =============== TOOLBAR =============== */
 .dashboard{padding:24px}
@@ -196,29 +202,8 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
     transform: translateY(0) scale(1);
   }
 }
-<<<<<<< HEAD
-=======
-.sidebar .menu { 
-  list-style: none; 
-}
-.sidebar .menu .menu-title {
-  font-size: 16px; 
-  font-weight: 700;
-  margin: 15px 0 10px; 
-  padding-top: 12px;
-  border-top: 1px solid #080808;
 
-}
 
-.menu-title a{
-  text-decoration: none;
-  color: #000;
-}
-.submenu { 
-  list-style: none;
-   margin-left: 12px; 
-  }
->>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
 
 /* Tiêu đề modal */
 .modal-title {
@@ -261,15 +246,11 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
   overflow-y: auto;
 }
 
-<<<<<<< HEAD
-
-=======
 /* Modal footer */
 .modal-actions {
   text-align: right;
   margin-top: 20px;
 }
->>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
 
 .toolbar input, .toolbar select {
 padding: 8px 10px; 
@@ -278,14 +259,6 @@ border-radius: 6px;
   /* Thêm độ linh hoạt cho các ô lọc */
   flex-grow: 1; /* Cho phép nó mở rộng */
   min-width: 150px; /* Ngăn nó quá nhỏ */
-<<<<<<< HEAD
-}
-/* Modal footer */
-.modal-actions {
-  text-align: right;
-  margin-top: 20px;
-=======
->>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
 }
 
 /* Nút Đóng */
@@ -302,42 +275,96 @@ border-radius: 6px;
   filter: brightness(0.95);
 }
 
-/* BUTTONS (shared) */
-.btn {
-  padding: 8px 12px; border: 1px solid #ddd; background: #fff; border-radius: 8px;
-  cursor: pointer; transition: background-color .15s ease;
-}
-.btn:hover { background: #f3f3f3; }
-.btn.primary {
-   background: #0ea5e9; 
-   border-color: #0ea5e9; 
-   color: #fff; }
-.btn.primary:hover { 
-  filter: brightness(.96); 
-}
-.btn.primary:active { 
-  transform: translateY(1px); 
-}
-/* --- FIX DOUBLE SCROLL --- */
-html, body {
-  height: 100%;
-  overflow: hidden; /* chặn cuộn toàn trang */
+
+
+
+/* =============================
+   CSS FORM ĐĂNG NHẬP ADMIN
+   ============================= */
+
+#login_modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
 }
 
-.admin-container {
-  height: 100vh;
+#login_modal.show {
   display: flex;
-  overflow: hidden; /* ngăn scroll trong container */
+  animation: fadeIn 0.3s ease;
 }
 
-.sidebar {
-  height: 100vh;
-  overflow-y: auto; /* chỉ sidebar tự cuộn khi menu dài */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
-.main-content {
-  flex: 1;
-  height: 100vh;
-  overflow-y: auto; /* chỉ phần nội dung chính cuộn */
-  background: #f5f5f5;
+#login_modal form {
+  background: #fff;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 14px;
+  padding: 30px 25px 25px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
 }
+
+#login_modal form h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+#login_modal form input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+#login_modal form input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+
+#login_modal form button {
+  width: 100%;
+  margin-top: 10px;
+  background: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+#login_modal form button:hover {
+  background: #0056b3;
+}
+
+/* Thông báo lỗi/thành công */
+#login_modal .message {
+  margin: 10px 0;
+  font-size: 14px;
+  text-align: center;
+  min-height: 20px;
+}
+#login_modal .message.error { color: #dc3545; }
+#login_modal .message.success { color: #28a745; }
+
+
+
+#login_modal .link a:hover { text-decoration: underline; }
+
+
