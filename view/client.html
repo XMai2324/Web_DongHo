@@ -5,13 +5,10 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>TickTock Shop - Sản phẩm</title>
 
-  <!-- CSS -->
-  <!-- <title>TickTock Shop</title> -->
-
-  <link rel="stylesheet" href="../view/css/profile.css">
   <link rel="icon" type="image/png" href="image/logo.png">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link rel="stylesheet" href="../view/css/client.css">
+  <link rel="stylesheet" href="../view/css/profile.css">
   <link rel="stylesheet" href="../view/css/product.css">
   <link rel="stylesheet" href="../view/css/login.css">
   <link rel="stylesheet" href="../view/css/cart.css">
@@ -88,14 +85,16 @@
             <span id="accountLinkText">Tài khoản</span>
         </a>
       </div>
-
       <div class="cart cart-link">
         <i class="fa-solid fa-cart-shopping"></i>
         <span id="cart-count" class="cart-badge">0</span>
       </div>
+      
       <div class="logout" id="logout-btn" style="display: none;">
-        <i class="fa-solid fa-right-from-bracket"></i>
+        <i class="fa-solid fa-right-from-bracket"></i >
       </div>
+
+      
     </div>
   </header>
 <!-- <div id="header-spacer" style="height:100px;background:pink;"></div> -->
@@ -362,6 +361,18 @@
             <label><input type="radio" name="payment" value="bank"> Chuyển khoản ngân hàng</label><br>
             <label><input type="radio" name="payment" value="ewallet"> Ví điện tử (MoMo/VNPay)</label>
           </div>
+          <!-- QR PAYMENT BLOCKS -->
+          <div id="bank-qr-block" class="qr-payment-block">
+            <h4>Vui lòng quét mã QR Ngân hàng</h4>
+            <img id="bank-qr-image" src="https://qr.sepay.vn/img?acc=SO_TAI_KHOAN&bank=NGAN_HANG&amount=SO_TIEN&des=NOI_DUNG" 
+            alt="Mã QR thanh toán"> 
+            <p>Nội dung: <strong id="bank-qr-content">NOI_DUNG</strong></p>
+          </div>
+
+          <div id="momo-qr-block" class="qr-payment-block">
+            <h4>Vui lòng quét mã MoMo</h4>
+            <img src="../view/image/momo_QR.png" alt="QR MoMo">
+          </div>
 
           <div class="delivery-content-left-button">
             <button id="place-order-btn">Xác nhận thanh toán</button>
@@ -431,6 +442,7 @@
           <!-- Nút sẽ đổi tên/enable theo trạng thái.
               id này để script bắt sự kiện dễ dàng -->
           <button id="ord-status-btn" class="order-status" disabled>Chờ xác nhận</button>
+          <button id="ord-cancel-btn" class="order-status danger" style="margin-left: 400px; display: none;">Hủy đơn</button>
           <!-- (tuỳ chọn) hiển thị chữ trạng thái riêng -->
           <span id="ord-status-text" class="order-status-text" style="margin-left:8px;"></span>
         </div>
@@ -449,7 +461,7 @@
             <table id="history-table" class="history-table">
               <thead>
                 <tr>
-                  <th>Sản phẩm</th>
+                  <th>Mã sản phẩm</th> <th>Sản phẩm</th>
                   <th>Số lượng</th>
                   <th>Ngày mua</th>
                   <th>Trạng thái</th>
@@ -674,13 +686,13 @@
   
     <!-- ===== JS ===== -->
   <script src="../view/js/data.js"></script>
-  <!-- <script src="../view/js/product.js"></script> -->
+  <script src="../view/js/auth.js"></script>
   <script src="../view/js/product1.js"></script>
   <script src="../view/js/slider.js"></script>
-  <script src="../view/js/auth.js"></script>
   <script src="../view/js/profile.js"></script>
-   <script src="../view/js/cart.js"></script>
+  <script src="../view/js/cart.js"></script>
   <script src="../view/js/checkout.js"></script>
   <script src="../view/js/payment.js"></script>
+  <script src="../view/js/search.js"></script>
 </body>
 </html>

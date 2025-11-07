@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loginPassword: document.getElementById('loginPassword'),
     logoutBtn: document.getElementById('logout-btn'),
     messageDiv: document.querySelector('#messageLogin') || document.querySelector('.message'),
-    accountLinkText: document.getElementById('accountLink'),
+    accountLinkText: document.getElementById('accountLinkText'),
     profileSection: document.getElementById('profileSection'),
   };
 
