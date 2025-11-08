@@ -71,6 +71,10 @@
               <li><a href="client.html?category=phukien&accessory=strap">Dây đeo</a></li>
             </ul>
       </div>
+
+      <div class="header-history-link" id="header-history-btn" style="display: none;">
+            <a href="#" id="historyLinkTrigger">Lịch sử</a>
+      </div>
     </div>
 
     <div class="header_other">
@@ -165,7 +169,35 @@
       </div>
     </section>
   </main>
-  
+<!-- ===== HEADER HISTORY MODAL ===== -->  
+<div id="header-history-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="header-history-title">
+  <div class="modal-content large">
+    <div class="modal-header">
+      <p class="history-modal-title">Lịch sử mua hàng</p>
+      <button class="close-modal" id="header-history-close" aria-label="Đóng">×</button>
+    </div>
+
+    <div class="history-table-wrap">
+      <table id="header-history-table" class="history-table">
+        <thead>
+          <tr>
+            <th>Mã sản phẩm</th>
+            <th>Tên sản phẩm</th>
+            <th>Số lượng</th>
+            <th>Ngày đặt</th>
+            <th>Trạng thái đơn hàng</th>
+          </tr>
+        </thead>
+        <tbody id="header-history-body"></tbody>
+      </table>
+    </div>
+
+    <p class="history-note">
+      * Đây là lịch sử các sản phẩm đã đặt trên tài khoản này.
+    </p>
+  </div>
+</div>
+
   <!-- ===== CART (embedded) ===== -->
   <div id="cart" class="cart hidden">
     <div class="container">

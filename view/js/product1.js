@@ -416,3 +416,194 @@ document.addEventListener('DOMContentLoaded', () => {
   // Render lần đầu
   update();
 });
+
+
+// ===================== - Header Order History Modal
+document.addEventListener('DOMContentLoaded', () => {
+  // 1. Lấy các phần tử
+  const historyBtn = document.getElementById('header-history-btn');
+  const historyModal = document.getElementById('header-history-modal');
+  const historyBody = document.getElementById('header-history-body');
+  const historyClose = document.getElementById('header-history-close');
+
+  // Thoát nếu không tìm thấy các thành phần
+  if (!historyBtn || !historyModal || !historyBody || !historyClose) {
+    return;
+  }
+
+  // 2. Giả định key lưu lịch sử đơn hàng trong localStorage
+  // (Đây là key mà payment.js hoặc checkout.js có thể đang dùng)
+  const ORDERS_KEY = 'orders';
+
+  function getHistoryCurrentUser() {
+    try {
+        return JSON.parse(localStorage.getItem('current_user') || 'null');
+    } catch {
+        return null;
+    }
+  }
+  // 3. Hàm dịch trạng thái đơn hàng
+  function getStatusText(status) {
+    const map = {
+      'cho-xac-nhan': 'Chờ xác nhận',
+      'cho-van-chuyen': 'Chờ vận chuyển', // (Hoặc 'Đã xác nhận' tùy ý bạn)
+      'dang-van-chuyen': 'Đang vận chuyển',
+      'hoan-tat': 'Hoàn tất',
+      'da-huy': 'Đã hủy',
+    };
+    const defaultText = (status || '').charAt(0).toLocaleUpperCase('vi-VN') + (status || '').slice(1);
+    return map[status] || defaultText;
+  }
+  function formatHistoryDate(isoString) {
+    if (!isoString) return 'N/A';
+    try {
+      const d = new Date(isoString);
+      // Format thành DD/MM/YYYY
+      const day = String(d.getDate()).padStart(2, '0');
+      const month = String(d.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+      const year = d.getFullYear();
+      return `${day}/${month}/${year}`;
+    } catch {
+      return 'N/A'; // Trả về N/A nếu ngày bị lỗi
+    }
+  }
+
+  // 4. Hàm đọc localStorage và render ra bảng
+  function renderHeaderHistory() {
+    const currentUser = getHistoryCurrentUser();
+    
+    // 1. Phải đăng nhập để xem
+    if (!currentUser || !currentUser.id) {
+      historyBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Vui lòng đăng nhập để xem lịch sử.</td></tr>';
+      return;
+    }
+    const currentUserId = currentUser.id;
+
+    let allOrders = [];
+    try {
+      allOrders = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]');
+    } catch (e) {
+      console.error('Lỗi đọc lịch sử đơn hàng:', e);
+      allOrders = [];
+    }
+    
+    // 2. Lọc đơn hàng CHỈ CỦA NGƯỜI DÙNG NÀY
+    const userOrders = allOrders.filter(order => 
+      (order.customerId === currentUserId) || (order.userId === currentUserId)
+    );
+
+    // 3. Render các đơn hàng đã lọc (userOrders)
+    if (!userOrders.length) {
+      historyBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Bạn chưa có đơn hàng nào.</td></tr>';
+      return;
+    }
+
+    let allItemsHtml = '';
+    
+    // Duyệt ngược qua các đơn hàng (để đơn mới nhất lên trên)
+    userOrders.slice().reverse().forEach(order => {
+        const formattedDate = formatHistoryDate(order.date);      
+        
+        if (order.items && Array.isArray(order.items)) {
+        order.items.forEach(item => {
+
+          allItemsHtml += `
+            <tr>
+              <td>${item.productId || item.id || 'N/A'}</td>
+              <td>${item.productName || item.name || 'Sản phẩm không tên'}</td>
+              <td>${item.qty || 1}</td>
+              <td>${formattedDate}</td>
+              <td>${getStatusText(order.status || 'cho-xac-nhan')}</td>
+            </tr>
+          `;
+        });
+      }
+    });
+    
+    if (!allItemsHtml) {
+       historyBody.innerHTML = '<tr><td colspan="5" style="text-align: center;">Không tìm thấy sản phẩm trong các đơn hàng.</td></tr>';
+       return;
+    }
+
+    historyBody.innerHTML = allItemsHtml;
+  }
+
+  // 5. Hàm ẩn/hiện modal
+  function showHistoryModal() {
+    renderHeaderHistory(); // Luôn tải lại dữ liệu mới khi mở
+    historyModal.style.display = 'flex';
+    historyModal.classList.remove('hidden');
+    document.body.style.overflow = 'hidden'; // Chống cuộn trang
+  }
+
+  function hideHistoryModal() {
+    historyModal.style.display = 'none';
+    historyModal.classList.add('hidden');
+    document.body.style.overflow = ''; // Cho phép cuộn lại
+  }
+
+  // 6. Hàm ẨN/HIỆN nút lịch sử (dựa vào đăng nhập)
+  function updateHeaderHistoryVisibility() {
+    const user = getHistoryCurrentUser(); // Dùng hàm helper mới
+    
+    if (user && user.id) {
+      historyBtn.style.display = 'flex'; // Hiện nút
+    } else {
+      historyBtn.style.display = 'none'; // Ẩn nút
+    }
+  }
+
+  // 7. Gán các sự kiện
+  
+  // Click nút trên header để mở modal
+  historyBtn.addEventListener('click', (e) => {
+    e.preventDefault(); 
+    e.stopPropagation();
+    showHistoryModal();
+  });
+
+  // Click nút 'x' để đóng modal
+  historyClose.addEventListener('click', hideHistoryModal);
+
+  // Click ra ngoài vùng modal để đóng
+  historyModal.addEventListener('click', (e) => {
+    if (e.target === historyModal) {
+      hideHistoryModal();
+    }
+  });
+  
+  // Ấn nút Escape (ESC) để đóng
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !historyModal.classList.contains('hidden')) {
+      hideHistoryModal();
+    }
+  });
+
+  // 8. Chạy lần đầu và lắng nghe các thay đổi
+  
+  // Chạy ngay khi tải trang
+  updateHeaderHistoryVisibility();
+  
+  // Lắng nghe sự kiện login/logout từ tab khác
+  window.addEventListener('storage', (e) => {
+    // Nếu key 'current_user' thay đổi (login/logout)
+    if (e.key === 'current_user') {
+      updateHeaderHistoryVisibility();
+    }
+    // Nếu có đơn hàng mới
+    if (e.key === ORDERS_KEY) {
+      // (Không cần làm gì, vì ta chỉ render khi mở modal)
+    }
+  });
+  
+  // Lắng nghe khi quay lại tab (giống logic cart badge)
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      updateHeaderHistoryVisibility();
+    }
+  });
+  
+  // (Nâng cao) Lắng nghe sự kiện tùy chỉnh nếu auth.js có dispatch
+  window.addEventListener('userLoggedIn', updateHeaderHistoryVisibility);
+  window.addEventListener('userLoggedOut', updateHeaderHistoryVisibility);
+});

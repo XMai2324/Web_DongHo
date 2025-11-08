@@ -191,23 +191,12 @@ header.scrolled {
 }
 
 /* Responsive nhẹ */
-@media (max-width: 1280px) {
-  .header_menu {
-    gap: 22px;
-    font-size: 16px;
-  }
-  .header_other .search input {
-    width: 170px;
-  }
+@media (max-width: 992px) {
+  .header_menu { gap: 14px; font-size: 14px; }
+  .header_other .search input { width: 120px; }
 }
-@media (max-width: 1100px) {
-  .header_menu {
-    gap: 18px;
-    font-size: 15px;
-  }
-  .header_other .search input {
-    width: 140px;
-  }
+@media (max-width: 840px) {
+  .header_menu { gap: 10px; font-size: 13px; }
 }
 
 /* ===== SLIDER ===== */
@@ -332,3 +321,111 @@ footer p {
 .header_other {
   min-width: max-content;
 }
+/* =================================== */
+/* ===== MODAL LỊCH SỬ HEADER ===== */
+/* =================================== */
+.header-history-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  font-weight: bold;
+  font-size: 18px; 
+  text-transform: uppercase;
+  color: #000;
+  line-height: 1;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+}
+
+.header-history-link:hover {
+  opacity: 0.7;
+}
+
+.modal-content.large {
+  max-height: 85vh; /* Giới hạn chiều cao tổng thể của modal */
+  display: flex;
+  flex-direction: column;
+  max-width: 1100px !important; /* Rộng hơn 900px */
+  width: 90% !important;
+}
+.modal-content.large .history-table-wrap {
+  flex-grow: 1; /* Cho phép co giãn để chiếm không gian */
+  overflow-y: auto; /* Tự động thêm thanh cuộn khi cần */
+  min-height: 100px; /* Chiều cao tối thiểu, tránh bị xẹp */
+  max-height: 60vh; 
+}
+
+.modal-content.large .modal-header,
+.modal-content.large .history-note {
+  flex-shrink: 0; /* Không cho phép co lại */
+}
+.history-modal-title {
+  font-size: 24px;
+  font-weight: bold;
+  text-align: left;
+  margin-bottom: 20px;
+  color: #333;
+  
+}
+.modal-header {
+  display: flex;
+  justify-content: center; /* căn giữa tiêu đề */
+  align-items: center;
+  position: relative;
+}
+
+.modal-header .close-modal {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+
+/* Đảm bảo modal ẩn khi có class .hidden */
+#header-history-modal.hidden {
+  display: none;
+}
+
+/* Căn giữa cột số lượng (nếu muốn) */
+#header-history-table td:nth-child(3),
+#header-history-table th:nth-child(3) {
+  text-align: center;
+}
+#header-history-modal .modal-content{
+  display: block !important;         /* thoát khỏi grid 2 cột của product.css */
+  grid-template-columns: none !important;
+  padding: 20px 22px;                 /* tùy ý, giữ như mặc định */
+}
+
+/* Căn giữa tiêu đề trong thanh header mới */
+#header-history-modal .modal-header{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  margin-bottom: 12px;
+  min-height: 36px;
+}
+
+/* Tiêu đề: canh giữa, bỏ margin thừa */
+#header-history-modal .history-modal-title{
+  text-align: center !important;
+  font-weight: 700;
+  font-size: 24px;
+  margin: 0;
+  color: #333;
+}
+
+/* Nút đóng ở mép phải, không ảnh hưởng căn giữa */
+#header-history-modal .close-modal{
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+body { padding-top: var(--header-h); }
+.hidden { display: none !important; }
+.slider { height: calc(100vh - var(--header-h)); }
