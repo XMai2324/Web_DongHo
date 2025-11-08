@@ -112,7 +112,15 @@ document.addEventListener('DOMContentLoaded', () => {
   const createUser = ({ username, email, password }) => {
     if (!username || !email || !password) throw new Error('Thiếu thông tin');
     if (findByIdentifier(email) || findByIdentifier(username)) throw new Error('Tài khoản đã tồn tại');
-    const u = { username, email, password, name: username, role: 'user' };
+    // const u = { username, email, password, name: username, role: 'user' };
+    const u = {
+      id: Date.now(),
+      username,
+      email,
+      password,
+      role: 'user',
+      name: username,
+    }
     ACCOUNTS.push(u);
     setAccounts(ACCOUNTS);
     return u;
@@ -200,6 +208,21 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 }
 
+window.getCurrentUser = function () {
+    try {
+      return JSON.parse(localStorage.getItem(LS_CURRENT) || 'null');
+    } catch {
+      return null;
+    }
+  };
+  window.openLoginModal = function () {
+    try { showModal('login'); } catch { /* no-op */ }
+  };
+
+  // gọi lại để đồng bộ (giữ nguyên như file gốc)
+  renderUserState();
+
+  
 
   // ===============================HIỂN THỊ TÊN (BẢN GIỮ LẠI) ===============================
   // (giữ nguyên hàm displayUserName như trong file gốc)
@@ -231,41 +254,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // ===============================  HELPER GLOBAL (BẢN GIỮ LẠI) ===============================
   // (giữ nguyên định nghĩa lại toàn cục như bản gốc)
-  window.getCurrentUser = function () {
-    try {
-      return JSON.parse(localStorage.getItem(LS_CURRENT) || 'null');
-    } catch {
-      return null;
-    }
-  };
-  window.openLoginModal = function () {
-    try { showModal('login'); } catch { /* no-op */ }
-  };
-
-  // gọi lại để đồng bộ (giữ nguyên như file gốc)
-  renderUserState();
-
   
-  // =============================== LOGOUT HANDLER ===============================
-  function handleLogout() {
-    // Xóa session
-    localStorage.removeItem(LS_CURRENT);
-    // Xóa giỏ hàng (nếu có logic dùng các key này)
-    localStorage.removeItem('tt_cart');
-    localStorage.removeItem('cart:guest');
-    if (window.ttUpdateCartBadge) window.ttUpdateCartBadge();
-
-    renderUserState();
-    DOM.profileSection?.classList.remove('open');
-    document.documentElement.style.overflow = '';
-
-    alert('Bạn đã đăng xuất!');
-    // Nếu đang ở admin thì về client để tránh auto hiện modal liên tục
-    if (isAdminPage()) window.location.href = '/view/client.html';
-    else window.location.reload();
-  }
-  window.ttLogout = handleLogout;
-
+ 
   // =============================== REGISTER HANDLER ===============================
   const handleRegister = (e) => {
     e.preventDefault();
@@ -301,6 +291,27 @@ document.addEventListener('DOMContentLoaded', () => {
       showMessage(DOM.registerMsg, err?.message || 'Không tạo được tài khoản.', 'error');
     }
   };
+
+
+   // =============================== LOGOUT HANDLER ===============================
+  function handleLogout() {
+    // Xóa session
+    localStorage.removeItem(LS_CURRENT);
+    // Xóa giỏ hàng (nếu có logic dùng các key này)
+    localStorage.removeItem('tt_cart');
+    localStorage.removeItem('cart:guest');
+    if (window.ttUpdateCartBadge) window.ttUpdateCartBadge();
+
+    renderUserState();
+    DOM.profileSection?.classList.remove('open');
+    document.documentElement.style.overflow = '';
+
+    alert('Bạn đã đăng xuất!');
+    // Nếu đang ở admin thì về client để tránh auto hiện modal liên tục
+    if (isAdminPage()) window.location.href = '/view/client.html';
+    else window.location.reload();
+  }
+  window.ttLogout = handleLogout;
 
   // =============================== GẮN SỰ KIỆN UI ===============================
   // Nút tài khoản: đã đăng nhập → mở profile; chưa → mở modal login

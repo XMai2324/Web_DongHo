@@ -200,10 +200,10 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
     .btn-add { 
         width: 170px;
         font-size: 10px;
-        background-color: lightskyblue; 
+        background-color: rgb(28, 98, 142); 
     }
     .btn-add:hover { 
-        background-color: lightsteelblue; 
+        background-color: rgb(19, 58, 109); 
     }
     
     /* Table Styles */
@@ -234,8 +234,11 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
         /* display: none; */
     }
     .btn-delete { 
-        background-color: #dc3545; 
+        background-color: #d52537; 
         color: white; 
+    }
+    .btn-delete:hover {
+    background-color: #6a0d17; /* Darker red */
     }
 
     /* Modal Styles */
@@ -409,7 +412,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
 }
 
 #addUserForm .btn-add:hover, #editUserForm .btn-edit:hover {
-    background-color: #0056b3;
+    background-color: #5e6001;
     transform: translateY(-1px);
 }
 #addUserForm .btn-add:active, #editUserForm .btn-edit:active {
@@ -597,15 +600,9 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
 }
 
 /* 6. Style cho nút Xóa trong Modal xác nhận xóa */
-.btn-delete {
-    background-color: var(--danger-color); /* Sử dụng biến CSS đã định nghĩa */
-    color: white;
-    transition: background-color 0.3s;
-}
 
-.btn-delete:hover {
-    background-color: #c82333; /* Darker red */
-}
+
+
 /* --- BỔ SUNG: Định dạng tiêu đề và Nút đóng cho các Modal SẢN PHẨM (Mới) --- */
 
 /* --- CSS CƠ BẢN (TIÊU ĐỀ & NÚT ĐÓNG) --- */
