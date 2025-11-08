@@ -14,6 +14,15 @@ accessories.forEach(a => {
   };
 });
 
+// ====== LOAD DỮ LIỆU TỪ LOCALSTORAGE ======
+let phieuNhap = [];
+let tonKho = [];
+
+const savedPhieu = localStorage.getItem('phieuNhap');
+const savedKho = localStorage.getItem('tonKho');
+if (savedPhieu) phieuNhap = JSON.parse(savedPhieu);
+if (savedKho) tonKho = JSON.parse(savedKho);
+
 // ======= SEEDED RANDOM =======
 function seededRandom(seed) {
   return function() {
@@ -33,46 +42,71 @@ const LOAI_DISPLAY = {
   strap: "Dây Treo"
 };
 
-// ======= SINH PHIẾU NHẬP NGẪU NHIÊN =======
-const randPhieu = seededRandom(123); 
-phieuNhap = [];
+// CHẶN GHI ĐÈ DỮ LIỆU MẪU
+if (!savedPhieu || !savedKho) {
+  // ======= SINH 10 PHIẾU NHẬP NGẪU NHIÊN =======
+  const randPhieu = seededRandom(123); 
+  const totalPhieu = 10;
+  phieuNhap = [];
+  const used = new Set();
 
-for(let i=0; i<11; i++) {
-  const danhMuc = getDanhMuc()[Math.floor(randPhieu() * getDanhMuc().length)];
-  const loaiList = getLoai(danhMuc);
-  const loai = loaiList[Math.floor(randPhieu() * loaiList.length)];
-  const tenList = getTen(danhMuc, loai);
-  const tensp = tenList[Math.floor(randPhieu() * tenList.length)];
-  const sl = Math.floor(randPhieu()*10) + 7; // 1-10
-  const gia = getGia(danhMuc, loai, tensp);
-  const ngay = `2025-${String(Math.floor(randPhieu()*12)+1).padStart(2,'0')}-${String(Math.floor(randPhieu()*28)+1).padStart(2,'0')}`;
-  
-  phieuNhap.push({tensp, danhmuc: danhMuc, loai, sl, gia, ngay, locked: false});
+  while(phieuNhap.length < totalPhieu) {
+    const danhMucList = getDanhMuc();
+    const danhMuc = danhMucList[Math.floor(randPhieu() * danhMucList.length)];
+    const loaiList = getLoai(danhMuc);
+    const loai = loaiList[Math.floor(randPhieu() * loaiList.length)];
+    const tenList = getTen(danhMuc, loai);
+    const tensp = tenList[Math.floor(randPhieu() * tenList.length)];
+
+    const key = `${danhMuc}|${tensp}`;
+    if (used.has(key)) continue;
+    used.add(key);
+
+    const sl = Math.floor(randPhieu() * 10) + 5;
+    const gia = getGia(danhMuc, loai, tensp);
+    const ngay = `2025-${String(Math.floor(randPhieu() * 12) + 1).padStart(2,'0')}-${String(Math.floor(randPhieu() * 28) + 1).padStart(2,'0')}`;
+
+    phieuNhap.push({tensp, danhmuc: danhMuc, loai, sl, gia, ngay, locked: false});
+  }
+
+  // ======= TỒN KHO MẪU =======
+  tonKho = phieuNhap.map(p => ({
+    ma: generateCode(p.tensp),
+    tensp: p.tensp,
+    danhmuc: p.danhmuc,
+    loai: p.loai,
+    sl: p.sl
+  }));
+
+  // Lưu dữ liệu mẫu vào localStorage lần đầu
+  localStorage.setItem('phieuNhap', JSON.stringify(phieuNhap));
+  localStorage.setItem('tonKho', JSON.stringify(tonKho));
 }
 
-// ======= SINH TỒN KHO NGẪU NHIÊN =======
-const randKho = seededRandom(789);
-tonKho = [];
+// =================== HÀM HỖ TRỢ BÁO CÁO ===================
+function getTonDau(tensp, danhmuc, loai, startDate) {
+  let ton = 0;
+  phieuNhap.forEach(p => {
+    if (p.danhmuc === danhmuc && p.tensp === tensp && p.loai === loai) {
+      if (p.ngay < startDate) ton += Number(p.sl);
+    }
+  });
+  return ton;
+}
 
-let totalSL = 0;
-const maxStock = 137; // tổng tồn kho mong muốn
+function getNhapTrongKhoang(tensp, danhmuc, loai, startDate, endDate) {
+  let sl = 0;
+  phieuNhap.forEach(p => {
+    if (p.danhmuc === danhmuc && p.tensp === tensp && p.loai === loai) {
+      if (p.ngay >= startDate && p.ngay <= endDate) sl += Number(p.sl);
+    }
+  });
+  return sl;
+}
 
-while(totalSL < maxStock) {
-  const danhMuc = getDanhMuc()[Math.floor(randKho() * getDanhMuc().length)];
-  const loaiList = getLoai(danhMuc);
-  const loai = loaiList[Math.floor(randKho() * loaiList.length)];
-  const tenList = getTen(danhMuc, loai);
-  const tensp = tenList[Math.floor(randKho() * tenList.length)];
-
-  // tránh trùng
-  if(tonKho.find(x=>x.tensp===tensp && x.danhmuc===danhMuc)) continue;
-
-  const sl = Math.min(Math.floor(randKho()*10)+13, maxStock - totalSL);
-  totalSL += sl;
-
-  tonKho.push({ ma: generateCode(tensp), tensp, danhmuc: danhMuc, loai, sl });
-
-  if(tonKho.length >= 25) break;
+function getXuatTrongKhoang(tensp, danhmuc, loai, startDate, endDate) {
+  // tạm thời = 0 nếu chưa có dữ liệu xuất
+  return 0;
 }
 
 // =================== HÀM HỖ TRỢ ===================
@@ -107,6 +141,18 @@ function capitalizeWords(str) {
 
 function formatNumber(n) {
   return new Intl.NumberFormat('vi-VN').format(n);
+}
+
+// ======= LỌC PHIẾU NHẬP =======
+function filterPhieu(keyword) {
+  keyword = keyword.trim().toLowerCase();
+  if (!keyword) return phieuNhap; // rỗng thì trả về tất cả
+
+  return phieuNhap.filter(p => 
+    p.tensp.toLowerCase().includes(keyword) || 
+    p.danhmuc.toLowerCase().startsWith(keyword) || 
+    (p.loai && p.loai.toLowerCase().startsWith(keyword))
+  );
 }
 
 // =================== HIỂN THỊ BẢNG ===================
@@ -145,6 +191,39 @@ function renderPhieu() {
   updateStats();
 }
 
+function renderPhieuFiltered(list) {
+  const tbl = document.querySelector('#tblPhieu tbody');
+  tbl.innerHTML = '';
+
+  list.forEach((p) => {
+    const idx = phieuNhap.indexOf(p);
+    const tr = document.createElement('tr');
+    tr.id = 'phieu-row-' + idx;
+
+    tr.innerHTML = `
+      <td>${idx + 1}</td>
+      <td>${p.tensp}</td>
+      <td>${capitalizeWords(p.danhmuc)}</td>
+      <td>${LOAI_DISPLAY[p.loai?.toLowerCase()] || capitalizeWords(p.loai)}</td>
+      <td>${p.sl}</td>
+      <td>${formatNumber(p.gia)}</td>
+      <td>${p.ngay}</td>
+      <td>
+        ${
+          p.locked
+            ? '<span style="color:green;font-weight:600;">Hoàn thành</span>'
+            : `
+              <button class="table-btn edit" data-idx="${idx}">Sửa</button>
+              <button class="table-btn complete" data-idx="${idx}">Hoàn thành</button>
+              <button class="table-btn delete" data-idx="${idx}">Xóa</button>
+            `
+        }
+      </td>
+    `;
+    tbl.appendChild(tr);
+  });
+}
+
 function renderKho() {
   const tbl = document.querySelector('#tblKho tbody');
   tbl.innerHTML = '';
@@ -165,7 +244,7 @@ function renderKho() {
 
 function updateStats() {
   document.getElementById("statProducts").textContent = tonKho.length;
-  document.getElementById("statPhieu").textContent = phieuNhap.length;
+  document.getElementById("totalPhieuNhap").textContent = phieuNhap.length;
 
   const tong = tonKho.reduce((a, b) => a + (Number(b.sl) || 0), 0);
   document.getElementById("statTotalStock").textContent = tong;
@@ -210,16 +289,61 @@ function getGia(danhmuc, loai, tensp) {
   }
 }
 
-// =================== FORM & SỰ KIỆN ===================
+// =================== FORM & EVEN ===================
 document.addEventListener('DOMContentLoaded', () => {
   rebuildStock();
   renderPhieu();
+
+  // ===== Tìm kiếm kho hàng =====
+  const searchKhoInput = document.getElementById('searchKho');
+  if(searchKhoInput){
+    searchKhoInput.addEventListener('input', e => {
+      const keyword = e.target.value.toLowerCase();
+      const filtered = tonKho.filter(sp => 
+        sp.tensp.toLowerCase().includes(keyword) ||
+        sp.danhmuc.toLowerCase().includes(keyword) ||
+        (sp.loai && sp.loai.toLowerCase().includes(keyword))
+      );
+      renderKhoFiltered(filtered);
+    });
+  }
+
+  // Hàm render kho đã lọc
+  function renderKhoFiltered(list) {
+    const tbl = document.querySelector('#tblKho tbody');
+    tbl.innerHTML = '';
+    list.forEach((sp, idx) => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td>${idx+1}</td>
+        <td>${sp.ma}</td>
+        <td>${sp.tensp}</td>
+        <td>${capitalizeWords(sp.danhmuc)}</td>
+        <td>${LOAI_DISPLAY[sp.loai?.toLowerCase()] || capitalizeWords(sp.loai)}</td>
+        <td class="${sp.sl<=3?'low':''}">${sp.sl}</td>
+      `;
+      tbl.appendChild(tr);
+    });
+  }
+
+  // ===== Tìm kiếm =====
+  const searchInput = document.getElementById('searchPhieu');
+  searchInput.addEventListener('input', () => {
+    const keyword = searchInput.value;
+    const filtered = filterPhieu(keyword);
+
+    // render lại bảng với dữ liệu đã lọc
+    renderPhieuFiltered(filtered);
+  });
 
   function setupDropdowns(prefix) {
     const dm = document.getElementById(prefix + '_danhmuc');
     const loai = document.getElementById(prefix + '_loai');
     const ten = document.getElementById(prefix + '_tensp');
     const gia = document.getElementById(prefix + '_gia');
+
+    loai.disabled = true;
+    ten.disabled = true;
 
     // load danh mục
     dm.innerHTML = '<option value="">-- Chọn danh mục --</option>';
@@ -230,14 +354,15 @@ document.addEventListener('DOMContentLoaded', () => {
       dm.appendChild(opt);
     });
 
+    //khi chọn danh mục
     dm.addEventListener('change', () => {
       loai.innerHTML = '<option value="">-- Chọn loại --</option>';
       ten.innerHTML = '<option value="">-- Chọn tên --</option>';
       gia.value = '';
+      ten.disabled = true;
 
       if (!dm.value) {
         loai.disabled = true;
-        ten.disabled = true;
         return;
       }
 
@@ -251,6 +376,7 @@ document.addEventListener('DOMContentLoaded', () => {
       loai.disabled = false;
     });
 
+    //khi chọn loại
     loai.addEventListener('change', () => {
       ten.innerHTML = '<option value="">-- Chọn tên --</option>';
       gia.value = '';
@@ -270,6 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
       ten.disabled = false;
     });
 
+    //khi chọn tên sản phẩm
     ten.addEventListener('change', () => {
       if (dm.value && loai.value && ten.value) {
         gia.value = getGia(dm.value, loai.value, ten.value);
@@ -280,6 +407,39 @@ document.addEventListener('DOMContentLoaded', () => {
 
   setupDropdowns('p');
   setupDropdowns('e');
+  setupDropdowns('r');
+
+  document.getElementById('reportForm').addEventListener('submit', e => {
+    e.preventDefault();
+
+    const danhmuc = document.getElementById('r_danhmuc').value;
+    const loai = document.getElementById('r_loai').value;
+    const tensp = document.getElementById('r_tensp').value;
+    const startDate = document.getElementById('r_dateStart').value;
+    const endDate = document.getElementById('r_dateEnd').value;
+
+    if (!danhmuc || !loai || !tensp || !startDate || !endDate) {
+      return alert('Chọn đầy đủ sản phẩm và khoảng thời gian');
+    }
+
+    const tonDau = getTonDau(tensp, danhmuc, loai, startDate);
+    const nhap = getNhapTrongKhoang(tensp, danhmuc, loai, startDate, endDate);
+    const xuat = getXuatTrongKhoang(tensp, danhmuc, loai, startDate, endDate);
+    const tonCuoi = tonDau + nhap - xuat;
+
+    const tbl = document.querySelector('#tblReport tbody');
+    tbl.innerHTML = `
+      <tr>
+        <td>${tensp}</td>
+        <td>${capitalizeWords(danhmuc)}</td>
+        <td>${LOAI_DISPLAY[loai?.toLowerCase()] || capitalizeWords(loai)}</td>
+        <td>${tonDau}</td>
+        <td>${nhap}</td>
+        <td>${xuat}</td>
+        <td>${tonCuoi}</td>
+      </tr>
+    `;
+  });
 
   // Thêm phiếu nhập
   document.getElementById('phieuForm').addEventListener('submit', e => {
@@ -299,6 +459,8 @@ document.addEventListener('DOMContentLoaded', () => {
     if (rec) rec.sl += sl;
     else tonKho.push({ ma: generateCode(t), tensp: t, danhmuc: h, loai, sl });
 
+    localStorage.setItem('phieuNhap', JSON.stringify(phieuNhap));
+    localStorage.setItem('tonKho', JSON.stringify(tonKho));
     renderPhieu();
     e.target.reset();
   });
@@ -308,7 +470,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const btn = e.target;
     const idx = Number(btn.dataset.idx);
     if (btn.classList.contains('edit')) openEditModal(idx);
-    else if (btn.classList.contains('complete')) completeReceipt(idx);
+    else if (btn.classList.contains('complete')) finishReceipt(idx);
     else if (btn.classList.contains('delete')) deleteReceipt(idx);
   });
 
@@ -342,6 +504,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     phieuNhap[idx] = { tensp: newTensp, danhmuc: newDanhmuc, loai: newLoai, sl: newSl, gia: newGia, ngay: newNgay, locked: old.locked };
     tonKho = tonKho.filter(x => x.sl > 0);
+
+    localStorage.setItem('phieuNhap', JSON.stringify(phieuNhap));
+    localStorage.setItem('tonKho', JSON.stringify(tonKho));
     renderPhieu();
     closeEditModal();
   });
@@ -391,6 +556,9 @@ function openEditModal(idx) {
   });
   ten.value = rec.tensp;
 
+  loai.disabled = false;
+  ten.disabled = false;
+
   // load các input còn lại
   sl.value = rec.sl;
   gia.value = rec.gia;
@@ -412,12 +580,89 @@ function completeReceipt(idx) {
   renderPhieu();
 }
 
+//-- Xác nhận xóa --//
+let pendingDeleteIndex = null;
+
 function deleteReceipt(idx) {
   const rec = phieuNhap[idx];
   if (!rec) return;
+
+  pendingDeleteIndex = idx;
+  document.getElementById('confirm-overlay').style.display = 'flex';
+}
+
+document.getElementById('btn-cancel-delete').addEventListener('click', () => {
+  pendingDeleteIndex = null;
+  document.getElementById('confirm-overlay').style.display = 'none';
+});
+
+document.getElementById('btn-confirm-delete').addEventListener('click', () => {
+  if (pendingDeleteIndex === null) return;
+  const rec = phieuNhap[pendingDeleteIndex];
+  if (!rec) return;
+
+  // cập nhật tồn kho
   const st = tonKho.find(x => x.tensp === rec.tensp && x.danhmuc === rec.danhmuc);
   if (st) st.sl -= rec.sl;
   tonKho = tonKho.filter(x => x.sl > 0);
-  phieuNhap.splice(idx, 1);
+
+  // xóa phiếu
+  phieuNhap.splice(pendingDeleteIndex, 1);
+  localStorage.setItem('phieuNhap', JSON.stringify(phieuNhap));
+  localStorage.setItem('tonKho', JSON.stringify(tonKho));
   renderPhieu();
+
+  // đóng popup
+  pendingDeleteIndex = null;
+  document.getElementById('confirm-overlay').style.display = 'none';
+});
+
+//-- Xác nhận hoàn thành phiếu --//
+let pendingFinishIndex = null;
+
+function finishReceipt(idx) {
+  const rec = phieuNhap[idx];
+  if (!rec) return;
+
+  pendingFinishIndex = idx;
+  document.getElementById('confirm-finish-overlay').style.display = 'flex';
 }
+
+document.getElementById('btn-cancel-finish').addEventListener('click', () => {
+  pendingFinishIndex = null;
+  document.getElementById('confirm-finish-overlay').style.display = 'none';
+});
+
+document.getElementById('btn-confirm-finish').addEventListener('click', () => {
+  if (pendingFinishIndex === null) return;
+  const rec = phieuNhap[pendingFinishIndex];
+  if (!rec) return;
+
+  // cập nhật trạng thái phiếu
+  rec.locked = true;
+
+  // cập nhật hiển thị và lưu
+  localStorage.setItem('phieuNhap', JSON.stringify(phieuNhap));
+  localStorage.setItem('tonKho', JSON.stringify(tonKho));
+  renderPhieu();
+
+  // đóng popup
+  pendingFinishIndex = null;
+  document.getElementById('confirm-finish-overlay').style.display = 'none';
+});
+
+document.getElementById("btnPhieuNhap").addEventListener("click", () => {
+  document.getElementById("phieuNhapSection").style.display = "block";
+  document.getElementById("tonKhoSection").style.display = "none";
+  document.getElementById("btnPhieuNhap").classList.add("active");
+  document.getElementById("btnTonKho").classList.remove("active");
+  document.querySelector(".header h1").textContent = "Quản lý nhập hàng";
+});
+
+document.getElementById("btnTonKho").addEventListener("click", () => {
+  document.getElementById("phieuNhapSection").style.display = "none";
+  document.getElementById("tonKhoSection").style.display = "block";
+  document.getElementById("btnTonKho").classList.add("active");
+  document.getElementById("btnPhieuNhap").classList.remove("active");
+  document.querySelector(".header h1").textContent = "Tổng quan kho hàng";
+});

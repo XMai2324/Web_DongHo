@@ -11,6 +11,34 @@
   --font-stack: "Inter", "Segoe UI", Roboto, Arial, sans-serif;
 }
 
+*{box-sizing:border-box;font-family:var(--font-stack)}
+html,body{height:100%;margin:0;background:var(--bg);color:#0b1220}
+.app{display:flex;min-height:100vh}
+
+/* Sidebar */
+.sidebar-placeholder{
+  width:240px;
+  background:#fff;
+  border-right:1px solid #e6eef6;
+  padding:20px;
+  display:flex;
+  flex-direction:column;
+  gap:18px;
+  
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.brand{display:flex;align-items:center;gap:12px}
+.brand-text .name{font-weight:700}
+.muted{color:var(--muted);font-size:13px}
+.placeholder-nav{display:flex;flex-direction:column;gap:6px;margin-top:10px}
+.placeholder-nav a{padding:10px;border-radius:8px;color:#0b1220;text-decoration:none}
+.placeholder-nav a.active{background:rgba(11,116,255,0.08);color:var(--primary)}
+
 /* Main content */
 .main{
   flex:1;
@@ -81,4 +109,22 @@
   color: #10b981;
   font-weight: 600;
 }
+.grid-2-3 {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  align-items: start;
+}
 
+.grid-2-3 .placeholder {
+  background: transparent;
+}
+
+.btn.danger {
+  background-color: #d63031;
+  color: #fff;
+  border: none;
+}
+.btn.danger:hover {
+  background-color: #b02424;
+}

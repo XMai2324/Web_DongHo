@@ -32,7 +32,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
   display:flex; flex-direction:column; gap:16px;
 }
 .sidebar .logo{text-align:center;margin-bottom:4px}
-.sidebar .hello{font-size:18px;font-weight:700}
+.sidebar .hello{font-size:18px;font-weight:700; margin-right: 100px; margin-bottom: 0;}
 .sidebar .menu{list-style:none}
 .submenu{list-style:none;margin-left:12px}
 
@@ -196,8 +196,6 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
     transform: translateY(0) scale(1);
   }
 }
-<<<<<<< HEAD
-=======
 .sidebar .menu { 
   list-style: none; 
 }
@@ -218,7 +216,6 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
   list-style: none;
    margin-left: 12px; 
   }
->>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
 
 /* Tiêu đề modal */
 .modal-title {
@@ -261,15 +258,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
   overflow-y: auto;
 }
 
-<<<<<<< HEAD
 
-=======
-/* Modal footer */
-.modal-actions {
-  text-align: right;
-  margin-top: 20px;
-}
->>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
 
 .toolbar input, .toolbar select {
 padding: 8px 10px; 
@@ -278,14 +267,12 @@ border-radius: 6px;
   /* Thêm độ linh hoạt cho các ô lọc */
   flex-grow: 1; /* Cho phép nó mở rộng */
   min-width: 150px; /* Ngăn nó quá nhỏ */
-<<<<<<< HEAD
 }
 /* Modal footer */
 .modal-actions {
   text-align: right;
   margin-top: 20px;
-=======
->>>>>>> e02cdc8ca49604854c1b250b142395ac72813adf
+
 }
 
 /* Nút Đóng */
@@ -341,3 +328,104 @@ html, body {
   overflow-y: auto; /* chỉ phần nội dung chính cuộn */
   background: #f5f5f5;
 }
+
+
+/* =============================
+   CSS FORM ĐĂNG NHẬP ADMIN
+   ============================= */
+
+#login_modal {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+#login_modal.show {
+  display: flex;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+#login_modal form {
+  background: #fff;
+  width: 100%;
+  max-width: 380px;
+  border-radius: 14px;
+  padding: 30px 25px 25px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+  position: relative;
+}
+
+#login_modal form h2 {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+  color: #333;
+}
+
+#login_modal form input {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  font-size: 15px;
+  outline: none;
+  transition: all 0.2s ease;
+  margin-bottom: 15px;
+}
+
+#login_modal form input:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.15);
+}
+/* CHỈ áp dụng cho nút là con trực tiếp của form (nếu có) */
+#login_modal form > button {
+  width: 100%;
+  margin-top: 10px;
+}
+
+/* Hai nút nằm ngang */
+#loginForm .button-row {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+#loginForm .button-row button {
+  flex: 1;
+  width: auto !important;   /* ghi đè width:100% cũ */
+  margin-top: 0;            /* bỏ margin-top để không bị lệch */
+}
+
+/* (tùy chọn) màu riêng cho nút Hủy */
+#loginForm .button-row #huyBtn { background: #6c757d; }
+
+
+/* Phụ đề nhỏ dưới tiêu đề */
+.login-subtitle {
+  text-align: center;
+  font-size: 14px;
+  color: #555;
+  margin-bottom: 12px;
+}
+
+/* Thông báo lỗi/thành công */
+#login_modal .message {
+  margin: 10px 0;
+  font-size: 14px;
+  text-align: center;
+  min-height: 20px;
+}
+#login_modal .message.error { color: #dc3545; }
+#login_modal .message.success { color: #28a745; }
+
+

@@ -9,6 +9,7 @@
   <!-- CSS -->
   <link rel="stylesheet" href="../admin/ad_css/admin.css" />
   <link rel="stylesheet" href="../admin/ad_css/product.css" />
+  <link rel="stylesheet" href="../view/css/login.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
   <link rel="icon" type="image/png" href="image/logo.png">
 
@@ -121,8 +122,9 @@
           </div>
         </div>
 
+
         <div class="table-wrap">
-          <table class="product-table" id="productTable">
+          <table class="admin-table product-table" id="productTable">
             <thead>
               <tr>
                 <th style="width:150px;">Ảnh</th>
@@ -353,6 +355,21 @@
         <button type="submit" form="addAccForm" class="btn primary" id="btnSaveAcc">Lưu</button>
       </div>
     </div>
+  </div>
+
+
+
+  <div id="login_modal" class="modal">
+    <form id="loginForm">
+      <h2>Đăng nhập Admin</h2>
+      <div class="message" id="messageLogin"></div>
+      <input id="loginIdentifier" type="text" placeholder="Email hoặc tên đăng nhập" required>
+      <input id="loginPassword" type="password" placeholder="Mật khẩu" required>
+      <div class="button-row">
+        <button type="submit">Đăng nhập</button>
+        <button type="button" id="huyBtn">Hủy</button>
+    </div>
+    </form>
   </div>
 
   <!-- JS nhỏ để chuyển tab -->

@@ -26,13 +26,15 @@
       <h2 class="hello">Quản trị viên</h2>
 
       <ul class="menu">
-        <li class="menu-title"><a href="../admin/admin.html">Sản phẩm</a></li>
-        <ul class="submenu" id="leftMenu">
-          <li data-entity="watch"  class="is-active">Đồng hồ</li>
-          <li data-entity="strap">Dây đeo</li>
-          <li data-entity="box">Hộp đựng</li>
-          <li data-entity="glass">Kính cường lực</li>
-        </ul>
+        <li class="menu-title">
+          <a href="../admin/admin.html">Sản phẩm</a>
+          <ul class="submenu" id="leftMenu">
+            <li data-entity="watch"  class="is-active">Đồng hồ</li>
+            <li data-entity="strap">Dây đeo</li>
+            <li data-entity="box">Hộp đựng</li>
+            <li data-entity="glass">Kính cường lực</li>
+          </ul>
+        </li>
 
         <li class="menu-title">Đơn hàng</li>
         <li class="menu-title"><a href="../admin/ad_user.html">Khách hàng</a></li>
@@ -41,8 +43,6 @@
         <li class="menu-title">
           <div class="actions">
             <div class="account">
-              <!-- <i class="fa-regular fa-user"></i>
-              <span>Admin</span> -->
             </div>
             <div class="logout" id="logout-btn" title="Đăng xuất">Đăng xuất
               <i class="fa-solid fa-right-from-bracket"></i>
@@ -52,13 +52,18 @@
       </ul>
     </aside>
 
-    <main class="main-content nhap-main">
+    <main class="main">
       <header class="header">
-        <h1>Quản lý phiếu nhập hàng</h1>
+  	<h1>Quản lý nhập hàng</h1>
+ 	<div class="toggle-btns" style="margin-top:10px;">
+    	  <button id="btnPhieuNhap" class="btn active">Nhập hàng</button>
+    	  <button id="btnTonKho" class="btn">Kho hàng</button>
+  	</div>
       </header>
-
       <section class="content">
-        <div class="grid">
+	<section id="phieuNhapSection">
+	  <div class="grid">
+
           <!-- Form nhập phiếu -->
           <div class="card form-card">
             <h2>Thêm phiếu nhập mới</h2>
@@ -72,9 +77,6 @@
                 <label for="p_loai">Loại</label>
                 <select id="p_loai" required disabled>
                   <option value="">-- Chọn loại --</option>
-                  <option value="Nam">Nam</option>
-                  <option value="Nữ">Nữ</option>
-                  <option value="Cặp đôi">Cặp đôi</option>
                 </select>
               </div>
 
@@ -108,65 +110,144 @@
             </form>
           </div>
 
-          <!-- Tổng quan kho -->
-          <div class="card stats-card">
-            <h2>Tổng quan kho</h2>
-            <div class="stats-grid">
-              <div class="stat">
-                <div class="stat-title">Số sản phẩm</div>
-                <div id="statProducts" class="stat-value">0</div>
-              </div>
-              <div class="stat">
-                <div class="stat-title">Tổng tồn kho</div>
-                <div id="statTotalStock" class="stat-value">0</div>
-              </div>
-              <div class="stat">
-                <div class="stat-title">Phiếu nhập</div>
-                <div id="statPhieu" class="stat-value">0</div>
-              </div>
-              <div class="stat">
-                <div class="stat-title">Sắp hết</div>
-                <div id="statLow" class="stat-value">0</div>
-              </div>
-            </div>
-          </div>
+	  <!-- Bảng phiếu nhập -->
+	  <div class="card stats-card small">
+  	    <h2>Tổng số phiếu nhập</h2>
+  	    <div class="stat">
+    	      <div id="totalPhieuNhap" class="stat-value">0</div>
+  	    </div>
+	  </div>
+
         </div>
 
-        <!-- Bảng phiếu nhập -->
+        <!-- Form kho -->
         <div class="card table-card">
           <h2>Danh sách phiếu nhập</h2>
-          <div class="table-wrap">
-            <table id="tblPhieu" class="nice-table">
-              <thead>
-                <tr>
-                  <th>STT</th>
-                  <th>Tên sản phẩm</th>
-                  <th>Danh Mục</th>
-                  <th>Loại</th>
-                  <th>Số lượng</th>
-                  <th>Giá</th>
-                  <th>Ngày nhập</th>
-                  <th>Hành động</th>
-                </tr>
-              </thead>
-              <tbody></tbody>
-            </table>
+	  <input type="text" id="searchPhieu" placeholder="Tìm kiếm sản phẩm, danh mục, loại..." 
+         	 style="margin-bottom:10px; padding:5px; width:300px;" />
+            <div class="table-wrap">
+              <table id="tblPhieu" class="nice-table">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh Mục</th>
+                    <th>Loại</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                    <th>Ngày nhập</th>
+                    <th>Hành động</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
           </div>
-        </div>
+	</section>
 
         <!-- Bảng kho hàng -->
+	<section id="tonKhoSection" style="display: none;">
+	  <div class="grid-2-3">
+            <div class="card stats-card">
+              <h2>Tổng quan kho</h2>
+              <div class="stats-grid">
+                <div class="stat">
+                  <div class="stat-title">Số sản phẩm</div>
+                  <div id="statProducts" class="stat-value">0</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-title">Tổng tồn kho</div>
+                  <div id="statTotalStock" class="stat-value">0</div>
+                </div>
+                <div class="stat">
+                  <div class="stat-title">Sắp hết</div>
+                  <div id="statLow" class="stat-value">0</div>
+                </div>
+              </div>
+            </div>
+	    <div class="placeholder">
+	    </div>
+	  </div>
+
+          <div class="card table-card">
+            <h2>Tồn kho hiện tại</h2>
+	    <input type="text" id="searchKho" placeholder="Tìm kiếm kho..." 
+       		   style="margin-bottom:10px; padding:5px; width:300px;" />
+            <div class="table-wrap">
+              <table id="tblKho" class="nice-table">
+                <thead>
+                  <tr>
+                    <th>STT</th>
+                    <th>Mã SP</th>
+                    <th>Tên sản phẩm</th>
+                    <th>Danh Mục</th>
+                    <th>Loại</th>
+                    <th>Số lượng tồn</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+      </section>
+
+      <!-- Báo cáo -->
+      <section id="baoCaoSection" style="display:none;">
+        <div class="card form-card">
+          <h2>Tra cứu tồn kho & báo cáo</h2>
+          <form id="reportForm">
+            <div class="form-row">
+              <label for="r_danhmuc">Danh Mục</label>
+              <select id="r_danhmuc">
+                <option value="">-- Chọn danh mục --</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="r_loai">Loại</label>
+              <select id="r_loai" disabled>
+                <option value="">-- Chọn loại --</option>
+              </select>
+            </div>
+
+            <div class="form-row">
+              <label for="r_tensp">Tên sản phẩm</label>
+              <select id="r_tensp" disabled>
+                <option value="">-- Chọn tên sản phẩm --</option>
+              </select>
+            </div>
+
+            <div class="row-2">
+              <div class="form-row">
+                <label for="r_dateStart">Từ ngày</label>
+                <input type="date" id="r_dateStart">
+              </div>
+              <div class="form-row">
+                <label for="r_dateEnd">Đến ngày</label>
+                <input type="date" id="r_dateEnd">
+              </div>
+            </div>
+
+            <div class="form-actions">
+              <button type="submit" class="btn primary">Xem báo cáo</button>
+            </div>
+          </form>
+        </div>
+
         <div class="card table-card">
-          <h2>Tồn kho hiện tại</h2>
+          <h2>Kết quả tra cứu</h2>
           <div class="table-wrap">
-            <table id="tblKho" class="nice-table">
+            <table id="tblReport" class="nice-table">
               <thead>
                 <tr>
-                  <th>STT</th>
-                  <th>Mã SP</th>
-                  <th>Tên sản phẩm</th>
-                  <th>Danh Mục</th>
+                  <th>Tên SP</th>
+                  <th>Danh mục</th>
                   <th>Loại</th>
-                  <th>Số lượng tồn</th>
+                  <th>Tồn đầu</th>
+                  <th>Nhập</th>
+                  <th>Xuất</th>
+                  <th>Tồn cuối</th>
                 </tr>
               </thead>
               <tbody></tbody>
@@ -175,7 +256,9 @@
         </div>
       </section>
 
-      
+      <footer class="footer">
+        <div class="muted">© Web_DongHo</div>
+      </footer>
     </main>
   </div>
 
@@ -194,9 +277,6 @@
           <label for="e_loai">Loại</label>
           <select id="e_loai" required disabled>
             <option value="">-- Chọn loại --</option>
-            <option value="Nam">Nam</option>
-            <option value="Nữ">Nữ</option>
-            <option value="Cặp đôi">Cặp đôi</option>
           </select>
         </div>
 
@@ -230,8 +310,34 @@
     </div>
   </div>
 
+  <div id="confirm-overlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div id="confirm-box" style="background:#fff; max-width:400px; width:90%; border-radius:8px; padding:20px; text-align:center; box-shadow:0 8px 24px rgba(0,0,0,0.15);">
+      <h3 style="margin-bottom:12px;">Xác nhận xóa phiếu nhập</h3>
+      <p style="margin-bottom:20px; color:#444;">Bạn có chắc chắn muốn xóa phiếu nhập này không?<br>Dữ liệu sẽ bị mất vĩnh viễn.</p>
+      <div style="display:flex; justify-content:center; gap:12px;">
+        <button id="btn-cancel-delete" class="btn">Hủy</button>
+        <button id="btn-confirm-delete" class="btn danger">Xóa</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirm-finish-overlay"
+    style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:9999; align-items:center; justify-content:center;">
+    <div
+      style="background:#fff; max-width:400px; width:90%; border-radius:8px; padding:20px; text-align:center; box-shadow:0 8px 24px rgba(0,0,0,0.15);">
+      <h3 style="margin-bottom:12px;">Xác nhận hoàn thành phiếu nhập</h3>
+      <p style="margin-bottom:20px; color:#444;">Bạn có chắc chắn muốn đánh dấu phiếu nhập này là
+        <b>Hoàn thành</b> không?</p>
+      <div style="display:flex; justify-content:center; gap:12px;">
+        <button id="btn-cancel-finish" class="btn">Hủy</button>
+        <button id="btn-confirm-finish" class="btn success"
+          style="background:#28a745; color:white; border:none;">Xác nhận</button>
+      </div>
+    </div>
+  </div>
+
   <!-- SCRIPT -->
-   <script src="../view/js/auth.js"></script>
+  <script src="../view/js/auth.js"></script>
   <script src="../admin/ad_js/data.js"></script>
   <script src="../admin/ad_js/nhaphang.js" defer></script>
 
