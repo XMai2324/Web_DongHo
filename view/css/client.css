@@ -18,7 +18,7 @@ header {
   width: 100%;
   height: 100px;
   padding: 10px 30px;
-  background-color: #fff; /* luôn có nền trắng để tránh slider che */
+  background-color: transparent; /* luôn có nền trắng để tránh slider che */
   transition: background-color 0.3s ease;
   z-index: 4000; /* nâng cao hơn slider và dropdown */
   display: grid;
@@ -26,7 +26,10 @@ header {
   align-items: center;
   column-gap: 24px;
 }
-
+header:hover {
+  background-color: white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
 header.scrolled {
   background-color: white;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -129,7 +132,7 @@ header.scrolled {
   padding: 8px 12px;
   position: relative;
   z-index: 3000; /* cao hơn dropdown menu */
-  background: #fff;
+  background: transparent
 }
 
 .header_other .search input {

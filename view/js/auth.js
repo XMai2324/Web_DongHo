@@ -1,5 +1,5 @@
 /* ==========================================================
-   auth.js (đã chỉnh sửa & hợp nhất)
+   auth.js (giữ nguyên logic, sắp xếp lại)
    - Quản lý đăng nhập/đăng ký/đăng xuất cho client & admin.
    - Nếu vào trang admin mà chưa đăng nhập admin → bật form login.
    - Nếu login user thường ngay tại trang admin → chặn & yêu cầu admin.
@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
   // =============================== CẤU HÌNH & DOM ===============================
   const LS_ACCOUNTS = 'accounts';
   const LS_CURRENT  = 'current_user';
-  const ADMIN_TARGET = '/admin/admin.html'; // sửa nếu admin của bạn là /admin.html
+  const ADMIN_TARGET = '/admin/admin.html'; // giữ nguyên biến cấu hình
 
   const DOM = {
     accountBtn:      document.querySelector('.account'),
@@ -36,7 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
   try {
     const saved = JSON.parse(localStorage.getItem(LS_ACCOUNTS));
     ACCOUNTS = Array.isArray(saved) && saved.length ? saved : DEFAULT_ACCOUNTS;
-  } catch { ACCOUNTS = DEFAULT_ACCOUNTS; }
+  } catch {
+    ACCOUNTS = DEFAULT_ACCOUNTS;
+  }
   if (!localStorage.getItem(LS_ACCOUNTS)) {
     localStorage.setItem(LS_ACCOUNTS, JSON.stringify(ACCOUNTS));
   }
@@ -49,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
     catch { return null; }
   };
 
-  // =============================== UI HELPERS ===============================
+  // ===============================  UI HELPERS ===============================
   const showMessage = (target, msg, type) => {
     if (!target) return;
     target.textContent = msg || '';
@@ -84,29 +86,13 @@ document.addEventListener('DOMContentLoaded', () => {
     DOM.loginForm?.reset();
   };
 
-  // expose cho file khác (checkout.js, cart.js, …) nếu có dùng
+  // ===============================  XUẤT HÀM TOÀN CỤC ===============================
+  // (giữ nguyên các hàm global như bản gốc)
   window.getCurrentUser   = getSession;
   window.openLoginModal   = () => showModal('login');
   window.ttShowLoginModal = showModal;
 
-  // =============================== RENDER TÊN & NÚT ĐĂNG XUẤT ===============================
-  function renderUserState() {
-    const link = DOM.accountLinkText;
-    const btn  = DOM.logoutBtn;
-    if (!link || !btn) return;
-
-    const u = getSession();
-    if (u && u.username) {
-      link.textContent = u.name || u.username;
-      link.href = '#profile';
-      btn.style.display = 'flex';
-    } else {
-      link.textContent = 'Tài khoản';
-      link.href = '#login';
-      btn.style.display = 'none';
-    }
-  }
-  renderUserState();
+  
 
   // =============================== AUTH CORE (FIND / VERIFY / CREATE) ===============================
   const findByIdentifier = (id) => {
@@ -164,15 +150,13 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Điều hướng theo quyền:
-   // Điều hướng theo quyền:
-// Điều hướng theo quyền:
     const onAdminPage = isAdminPage();
 
     if (user.role === 'admin') {
       if (onAdminPage) {
         // Đăng nhập admin ngay tại trang admin → cho vào
         closeModal();
-        renderUserState();
+        //renderUserState();
         location.reload();
       } else {
         // ⛔️ Đăng nhập admin tại trang client → KHÔNG cho phép
@@ -192,34 +176,61 @@ document.addEventListener('DOMContentLoaded', () => {
       renderUserState();
       location.reload();
     }
-
-
   };
 
-  function displayUserName() {
-    const accountLink = DOM.accountLinkText; // Đã sửa ở Bước 2
-    const logoutBtn = DOM.logoutBtn;
-    if (!accountLink || !logoutBtn) return;
-    let user = null;
-    try {
-        user = JSON.parse(localStorage.getItem(LS_CURRENT));
-    } catch {
-        user = null;
-    }
+  // ===============================  RENDER UI: TÊN & NÚT ĐĂNG XUẤT ===============================
+  function renderUserState() {
+  const accountLink = DOM.accountLinkText;
+  const logoutBtn = DOM.logoutBtn;
+  if (!accountLink || !logoutBtn) return;
 
-    if (user && user.username) {
-        accountLink.textContent = user.name || user.username;
-        accountLink.href = '#profile';
-        logoutBtn.style.display = 'flex'; 
-    } else {
-        accountLink.textContent = 'Tài khoản';
-        accountLink.href = '#login'; // Hoặc href="#" tùy ý
-        logoutBtn.style.display = 'none';
-    }
+  const user = (() => {
+    try { return JSON.parse(localStorage.getItem(LS_CURRENT) || 'null'); }
+    catch { return null; }
+  })();
+
+  if (user && user.username) {
+    accountLink.textContent = user.name || user.username;
+    accountLink.href = '#profile';
+    logoutBtn.style.display = 'flex';
+  } else {
+    accountLink.textContent = 'Tài khoản';
+    accountLink.href = '#login';
+    logoutBtn.style.display = 'none';
+  }
 }
 
-  displayUserName();
-  // Helper toàn cục cho file khác dùng (checkout.js, cart.js, ...)
+
+  // ===============================HIỂN THỊ TÊN (BẢN GIỮ LẠI) ===============================
+  // (giữ nguyên hàm displayUserName như trong file gốc)
+  // function displayUserName() {
+  //   const accountLink = DOM.accountLinkText;
+  //   const logoutBtn = DOM.logoutBtn;
+  //   if (!accountLink || !logoutBtn) return;
+
+  //   let user = null;
+  //   try {
+  //     user = JSON.parse(localStorage.getItem(LS_CURRENT));
+  //   } catch {
+  //     user = null;
+  //   }
+
+  //   if (user && user.username) {
+  //     accountLink.textContent = user.name || user.username;
+  //     accountLink.href = '#profile';
+  //     logoutBtn.style.display = 'flex';
+  //   } else {
+  //     accountLink.textContent = 'Tài khoản';
+  //     accountLink.href = '#login';
+  //     logoutBtn.style.display = 'none';
+  //   }
+  // }
+
+  // // gọi để đồng bộ (giữ nguyên như file gốc)
+  // displayUserName();
+
+  // ===============================  HELPER GLOBAL (BẢN GIỮ LẠI) ===============================
+  // (giữ nguyên định nghĩa lại toàn cục như bản gốc)
   window.getCurrentUser = function () {
     try {
       return JSON.parse(localStorage.getItem(LS_CURRENT) || 'null');
@@ -231,8 +242,10 @@ document.addEventListener('DOMContentLoaded', () => {
     try { showModal('login'); } catch { /* no-op */ }
   };
 
-  displayUserName();
+  // gọi lại để đồng bộ (giữ nguyên như file gốc)
+  renderUserState();
 
+  
   // =============================== LOGOUT HANDLER ===============================
   function handleLogout() {
     // Xóa session
@@ -333,8 +346,7 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModal();                              // ở client -> cho phép đóng
   });
 
-  // ESC để đóng modal
-  // ESC -> chỉ cho phép đóng ở client; TRANG ADMIN THÌ KHÔNG
+  // ESC để đóng modal (chỉ client)
   document.addEventListener('keydown', (e) => {
     if (e.key !== 'Escape') return;
     if (!DOM.modal?.classList.contains('show')) return;
@@ -346,13 +358,12 @@ document.addEventListener('DOMContentLoaded', () => {
     closeModal();         // client -> cho phép đóng
   });
 
-
   // Ẩn form đăng ký lúc khởi tạo (nếu có modal)
   if (DOM.modal && !DOM.modal.classList.contains('show')) {
     if (DOM.registerForm) DOM.registerForm.style.display = 'none';
   }
 
-  // =============================== GUARD TRANG ADMIN ===============================
+  // ===============================GUARD TRANG ADMIN ===============================
   ensureAdminGuard();
 
   function ensureAdminGuard() {
@@ -374,12 +385,12 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function isAdminPage() {
-    const p = location.pathname;
+    const p = location.pathname; 
     return p.includes('/admin/') || p.endsWith('/admin.html') || p.endsWith('admin.html');
   }
 });
 
-// Nút HỦY trong form login admin -> quay về trang client
+// =============================== NÚT HỦY Ở FORM LOGIN ADMIN ===============================
 document.addEventListener('DOMContentLoaded', () => {
   const cancelBtn = document.getElementById('huyBtn');
   const isAdminPage = location.pathname.includes('/admin/') || location.pathname.endsWith('admin.html');
@@ -391,9 +402,3 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 });
-
-
-
-
-
-
