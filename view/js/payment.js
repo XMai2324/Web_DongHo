@@ -370,16 +370,35 @@
         return;
       }
 
-      // 1. Xóa đơn hàng khỏi localStorage
-      removeOrder(order.code);
+      // 1. CẬP NHẬT TRẠNG THÁI (thay vì XÓA)
+      try {
+          let adminOrders = readOrdersForAdmin(); // Đọc từ 'orders'
+          const orderIndex = adminOrders.findIndex(o => o.id === order.code);
+          
+          if (orderIndex > -1) {
+              adminOrders[orderIndex].status = 'da-huy'; // Đặt trạng thái mới
+              writeOrdersForAdmin(adminOrders); // Ghi đè lại
+          } else {
+              // Nếu không tìm thấy, vẫn xóa đơn hàng 'last_order'
+              localStorage.removeItem('last_order');
+          }
+      } catch (e) { 
+          console.error("Lỗi cập nhật lịch sử admin:", e);
+      }
+      
+      // 2. Xóa 'last_order' (nếu vẫn còn) vì đơn hàng này không còn "active"
+      localStorage.removeItem('last_order');
+
+      // 3. Xóa giỏ hàng (nếu có)
       localStorage.removeItem('tt_cart');
       localStorage.removeItem(cartKey());
+      if (window.ttUpdateCartBadge) window.ttUpdateCartBadge(); // Cập nhật badge giỏ hàng
 
-      // 2. Thông báo thành công
-      alert("Bạn đã hủy thành công.");
+      // 4. Thông báo thành công
+      alert("Bạn đã hủy đơn hàng thành công.");
 
-      // 3. Chuyển hướng về trang chủ
-      window.location.href = 'client.html'; // Hoặc '/' tùy vào cấu hình của bạn
+      // 5. Chuyển hướng về trang chủ
+      window.location.href = 'client.html'; 
     });
   }
 
