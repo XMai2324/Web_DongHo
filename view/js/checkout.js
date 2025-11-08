@@ -497,3 +497,85 @@
     getUserSafe
   });
 })();
+
+// Đảm bảo mã chạy sau khi trang đã tải xong
+document.addEventListener("DOMContentLoaded", function() {
+
+    // 1. Lấy các phần tử (elements)
+    const paymentRadios = document.querySelectorAll('input[name="payment"]');
+    const bankQrBlock = document.getElementById('bank-qr-block');
+    const momoQrBlock = document.getElementById('momo-qr-block');
+    
+    // Các phần tử để cập nhật QR Ngân hàng động
+    const bankQrImage = document.getElementById('bank-qr-image');
+    const bankQrContent = document.getElementById('bank-qr-content');
+    const grandTotalEl = document.getElementById('co-grand'); // Phần tử chứa tổng tiền
+
+    // === THAY THÔNG TIN CỦA BẠN VÀO ĐÂY ===
+    const YOUR_BANK_ACCOUNT = '0123456789'; // THAY BẰNG SỐ TÀI KHOẢN THẬT
+    const YOUR_BANK_CODE = 'VCB'; // THAY BẰNG MÃ NGÂN HÀNG THẬT (VD: TCB, MBB, ACB...)
+    // ======================================
+
+    // 2. Hàm chính để cập nhật hiển thị QR
+    function updateQrCodeDisplay() {
+        // Lấy giá trị của radio đang được chọn
+        const selectedPayment = document.querySelector('input[name="payment"]:checked').value;
+
+        // Ẩn tất cả các khối QR trước (để reset)
+        bankQrBlock.style.display = 'none';
+        momoQrBlock.style.display = 'none';
+
+        if (selectedPayment === 'bank') {
+            // --- Hiển thị QR Ngân hàng ---
+            
+            // Lấy tổng tiền từ #co-grand (ví dụ: "1.234.567 đ")
+            let totalAmountText = grandTotalEl.textContent || '0';
+            // Làm sạch: xóa dấu chấm, phẩy, "đ" và khoảng trắng
+            let totalAmount = totalAmountText.replace(/[.,đ\s]/g, ''); 
+
+            // Tạo nội dung chuyển khoản (ví dụ: mã đơn giản)
+            let orderContent = 'TT' + new Date().getTime().toString().slice(-6); 
+
+            // Cập nhật nội dung hiển thị cho người dùng
+            bankQrContent.textContent = orderContent;
+
+            // Tạo URL mới cho ảnh QR
+            const qrUrl = `https://qr.sepay.vn/img?acc=${YOUR_BANK_ACCOUNT}&bank=${YOUR_BANK_CODE}&amount=${totalAmount}&des=${orderContent}`;
+            
+            // Cập nhật thuộc tính 'src' của ảnh
+            bankQrImage.src = qrUrl;
+
+            // Hiển thị khối
+            bankQrBlock.style.display = 'block';
+
+        } else if (selectedPayment === 'ewallet') {
+            // --- Hiển thị QR MoMo ---
+            momoQrBlock.style.display = 'block';
+        }
+        // Nếu là 'cod', không làm gì cả (vì đã ẩn hết ở trên)
+    }
+
+    // 3. Gắn sự kiện 'change' cho tất cả radio button
+    paymentRadios.forEach(radio => {
+        radio.addEventListener('change', updateQrCodeDisplay);
+    });
+
+    // 4. [QUAN TRỌNG] Tự động cập nhật QR khi tổng tiền thay đổi
+    // Chúng ta theo dõi ô tổng tiền. Nếu nó thay đổi (vd: thêm phí ship),
+    // mã QR ngân hàng sẽ tự động cập nhật theo số tiền mới.
+    const observer = new MutationObserver(function(mutations) {
+        // Khi #co-grand thay đổi, gọi lại hàm cập nhật
+        updateQrCodeDisplay();
+    });
+
+    if (grandTotalEl) {
+        observer.observe(grandTotalEl, { 
+            childList: true, // theo dõi các thay đổi nội dung bên trong
+            subtree: true,
+            characterData: true 
+        });
+    }
+
+    // Chạy 1 lần lúc tải trang để ẩn/hiện theo lựa chọn mặc định (thường là COD)
+    updateQrCodeDisplay();
+});

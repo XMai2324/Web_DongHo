@@ -25,6 +25,23 @@
     try{ return JSON.parse(localStorage.getItem('checkout:info')||'{}'); }catch{ return {}; }
   }
 
+  /* ========= HÀM MỚI: Cập nhật số lượng trên Header ========= */
+  function updateHeaderCartCount() {
+    const el = document.getElementById('cart-count');
+    if (!el) return;
+    
+    const cart = readCart(); // Dùng lại hàm readCart() đã có
+    let totalQty = 0;
+    
+    if (Array.isArray(cart) && cart.length > 0) {
+      // Tính tổng số lượng của tất cả sản phẩm
+      totalQty = cart.reduce((sum, item) => sum + (Number(item.qty) || 0), 0);
+    }
+    
+    el.textContent = totalQty; // Cập nhật con số trên badge
+  }
+  /* ========================================================== */
+
   /* ========= Trạng thái đơn hàng (UI phía khách) ========= */
   const ST = {
     PENDING_CONFIRM: 'pending_confirmation',
@@ -106,6 +123,7 @@
 
     var cart = readCart();
     var info = getCheckoutInfo();
+    var user = getUser();
 
     var now = new Date();
     var code = 'TT-' + now.getFullYear().toString().slice(-2)
@@ -146,9 +164,11 @@
       id: code,
       customer: name,
       customerId: customerId,
-      date: now.toISOString(),
+      date: now.toISOString(),      
       status: 'cho-xac-nhan',
+      userId: user ? user.id : null,   
       items: (cart || []).map(it => ({
+        productId: it.id || null,
         productName: it.name || it.title || ('Sản phẩm #' + (it.id || '')),
         qty: Number(it.qty) || 1,
         price: (typeof it.price === 'number' ? it.price : Number(it.price) || 0)
@@ -240,29 +260,127 @@
     const order = loadOrder(); if (!order) return;
     const textEl = document.getElementById('ord-status-text');
     const btn = document.getElementById('ord-status-btn');
+    const cancelBtn = document.getElementById('ord-cancel-btn');
+    const historyBtn = document.getElementById('btn-history'); // Lấy nút lịch sử
+
     setStepActive(order.status);
     if (textEl) textEl.textContent = statusLabel(order.status);
     if (!btn) return;
+
+    // Logic ẨN/HIỆN nút lịch sử theo yêu cầu của bạn
+    if (historyBtn) {
+        if (order.status === ST.DELIVERED) {
+            historyBtn.style.display = 'block'; // HIỆN
+        } else {
+            historyBtn.style.display = 'none'; // ẨN
+        }
+    }
+
     if (order.status === ST.PENDING_CONFIRM){ btn.textContent='Chờ xác nhận'; btn.disabled=true; }
     else if (order.status === ST.PENDING_SHIP){ btn.textContent='Chờ vận chuyển'; btn.disabled=true; }
     else if (order.status === ST.SHIPPING){ btn.textContent='Xác nhận đã nhận hàng'; btn.disabled=false; }
     else if (order.status === ST.DELIVERED){ btn.textContent='Đã giao'; btn.disabled=true; }
 
+    if (cancelBtn) {
+        if (order.status === ST.PENDING_CONFIRM) {
+            // Chỉ cho phép hủy khi đang "Chờ xác nhận"
+            cancelBtn.style.display = ''; // Hiện nút
+            cancelBtn.disabled = false; // Cho phép nhấn
+        } else {
+            // Ẩn và vô hiệu hóa nếu đã qua trạng thái chờ (đã xác nhận hoặc đang giao)
+            cancelBtn.style.display = 'none'; // Ẩn nút
+            cancelBtn.disabled = true; // Chặn nhấn
+        }
+    }
+
     if (!btn._bound){
       btn.addEventListener('click',function(e){
         e.preventDefault();
         const ord=loadOrder(); if(!ord)return;
+
+
+          // Dọn giỏ hàng sau khi xác nhận (VÌ ĐƠN NÀY ĐÃ HOÀN TẤT)
+          // LƯU Ý: Nếu bạn muốn dọn giỏ ngay khi "Đặt hàng"
+          // thì chuyển 2 dòng này vào hàm renderOrderSummary()
         if(ord.status===ST.SHIPPING){
           ord.status=ST.DELIVERED;
           saveOrder(ord);
           updateAdminStatusFromFront(ord.code, ord.status);
           localStorage.removeItem('tt_cart');
           localStorage.removeItem(cartKey());
+          
           renderStatus();
+          updateHeaderCartCount();
         }
       });
       btn._bound=true;
     }
+  }
+
+  /* ===================nút "Hủy "================= */
+  function removeOrder(orderCode) {
+    if (!orderCode) return;
+
+    // 1. Xóa khỏi 'last_order' (đơn hàng hiện tại của khách)
+    try {
+      const lastOrder = JSON.parse(localStorage.getItem('last_order') || 'null');
+      if (lastOrder && lastOrder.code === orderCode) {
+        localStorage.removeItem('last_order');
+      }
+    } catch {}
+
+    // 2. Xóa khỏi 'orders' (Danh sách của Admin - key mới)
+    try {
+      let adminOrders = readOrdersForAdmin();
+      adminOrders = adminOrders.filter(o => o.id !== orderCode);
+      writeOrdersForAdmin(adminOrders);
+    } catch {}
+
+    // 3. Xóa khỏi 'admin:orders' (Danh sách của Admin - key cũ)
+    try {
+      let legacyOrders = readAdminOrdersLegacy();
+      legacyOrders = legacyOrders.filter(o => o.code !== orderCode);
+      writeAdminOrdersLegacy(legacyOrders);
+    } catch {}
+  }
+
+
+  /**
+   * ===== HÀM MỚI 2: GẮN SỰ KIỆN HỦY =====
+   * (Cần cho chức năng Hủy đơn)
+   */
+  function attachCancelOrder() {
+    const btn = document.getElementById('ord-cancel-btn');
+    if (!btn) return;
+
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      if (btn.disabled) return; // Kiểm tra lại nếu bị vô hiệu hóa
+
+      const order = loadOrder();
+      // Điều kiện an toàn: Phải có đơn hàng và đơn hàng phải ĐANG CHỜ XÁC NHẬN
+      if (!order || order.status !== ST.PENDING_CONFIRM) {
+        alert("Không thể hủy đơn ở trạng thái này.");
+        renderStatus(); // Cập nhật lại UI lỡ bị lệch
+        return;
+      }
+
+      // Yêu cầu xác nhận trước khi hủy
+      if (!confirm("Bạn có chắc chắn muốn hủy đơn hàng này?")) {
+        return;
+      }
+
+      // 1. Xóa đơn hàng khỏi localStorage
+      removeOrder(order.code);
+      localStorage.removeItem('tt_cart');
+      localStorage.removeItem(cartKey());
+
+      // 2. Thông báo thành công
+      alert("Bạn đã hủy thành công.");
+
+      // 3. Chuyển hướng về trang chủ
+      window.location.href = 'client.html'; // Hoặc '/' tùy vào cấu hình của bạn
+    });
   }
 
   /* ========= Nút “Xác nhận thanh toán” ========= */
@@ -320,7 +438,11 @@
     const p = document.querySelector('.payment');
     if (p) { p.setAttribute('hidden', ''); p.style.display = 'none'; }
 
+    const historyBtn = document.getElementById('btn-history');
+    if (historyBtn) historyBtn.style.display = 'none';
+
     attachConfirm();
+    attachCancelOrder();
     attachGoCartFromHeader();
     attachGoCartFromStepper();
 
@@ -383,7 +505,7 @@
 
     if (!orders.length) {
       var trEmpty = document.createElement('tr');
-      trEmpty.innerHTML = '<td colspan="4" style="padding:14px 12px;color:#666;">Chưa có đơn nào.</td>';
+      trEmpty.innerHTML = '<td colspan="5" style="padding:14px 12px;color:#666;">Chưa có đơn nào.</td>';
       tbody.appendChild(trEmpty);
       return;
     }
@@ -394,11 +516,13 @@
       try { var d = new Date(o.date); if (!isNaN(d)) when = d.toLocaleString('vi-VN'); } catch {}
 
       (o.items || []).forEach(function (it) {
+        var id = it.productId || '—';
         var name = it.productName || it.name || ('Sản phẩm #' + (it.id || ''));
         var qty = Number(it.qty) || 1;
 
         var tr = document.createElement('tr');
         tr.innerHTML =
+          '<td style="padding:10px 12px;border-top:1px solid #f1f1f1;">' + (o.id || '—') + '</td>' +
           '<td style="padding:10px 12px;border-top:1px solid #f1f1f1;">' + name + '</td>' +
           '<td style="padding:10px 12px;border-top:1px solid #f1f1f1;text-align:center;">' + qty + '</td>' +
           '<td style="padding:10px 12px;border-top:1px solid #f1f1f1;white-space:nowrap;">' + when + '</td>' +

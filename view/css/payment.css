@@ -101,6 +101,8 @@
   flex:1;
   font-size:14px;
   color:#333;
+  display: flex;
+  align-items: center;
 }
 
 /* ================== Danh sách sản phẩm ================== */
@@ -272,4 +274,67 @@ body.order-confirmed header {
   margin-top: 8px;
   text-align: center;
 }
+/*=========buttun Huy===========*/
+.payment .order-status.danger {
+  background-color: #dc3545; 
+  color: white;
+  border-color: #dc3545;
+}
+.payment .order-status.danger:hover:not(:disabled) {
+  background-color: #c82333;
+  border-color: #bd2130;
+}
+.payment .order-status.danger:disabled {
+  background-color: #a0a0a0;
+  border-color: #a0a0a0;
+  color: #f0f0f0;
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+button:disabled {
+  cursor: not-allowed;
+}
+#ord-status-btn { 
+  order: 1; 
+}
+#ord-status-text { 
+  order: 2; 
+  margin-left: 8px;
+}
+#ord-cancel-btn { 
+  order: 3; 
+  margin-left: auto;
+}
+.payment .delivery-top-item.done{
+  border-color: var(--brand);
+}
+.payment .delivery-top-item.done i{
+  color: var(--brand);
+}
 
+/* Kiểu cho các khối QR thanh toán */
+.qr-payment-block {
+  display: none; /* QUAN TRỌNG: Ẩn ban đầu */
+  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 15px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  text-align: center;
+  background-color: #f9f9f9;
+}
+.qr-payment-block h4 {
+  margin-top: 0;
+  font-family: var(--main-text-font);
+  font-size: 14px;
+}
+.qr-payment-block img {
+  max-width: 220px; /* Điều chỉnh kích thước QR code */
+  height: auto;
+  margin-bottom: 10px;
+}
+.qr-payment-block p {
+  font-family: var(--main-text-font);
+  font-size: 13px;
+  margin: 0;
+}
