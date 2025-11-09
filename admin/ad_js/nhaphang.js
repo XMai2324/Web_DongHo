@@ -75,14 +75,33 @@ function formatNumber(n) {
 }
 
 function rebuildStock() {
-  tonKho = [];
-  phieuNhap.forEach(p => {
-    let exist = tonKho.find(t => t.tensp === p.tensp && t.danhmuc === p.danhmuc && t.loai === p.loai);
-    if (!exist) tonKho.push({ ma: generateCode(p.tensp), tensp: p.tensp, danhmuc: p.danhmuc, loai: p.loai, sl: Number(p.sl), gia: Number(p.gia) });
-    else exist.sl += Number(p.sl);
-  });
-}
+  const base = JSON.parse(localStorage.getItem('tonKhoInit') || '[]');
+  if (!base.length)
+    return;
 
+  tonKho = structuredClone(base);
+
+  phieuNhap
+    .filter(p => p.locked)
+    .forEach(p => {
+      const sp = tonKho.find(t =>
+        t.tensp === p.tensp &&
+        t.danhmuc === p.danhmuc &&
+        t.loai === p.loai
+      );
+      if (sp) sp.sl += Number(p.sl);
+      else tonKho.push({
+        ma: generateCode(p.tensp),
+        tensp: p.tensp,
+        danhmuc: p.danhmuc,
+        loai: p.loai,
+        sl: Number(p.sl),
+        gia: Number(p.gia)
+      });
+    });
+
+  localStorage.setItem('tonKho', JSON.stringify(tonKho));
+}
 
 function generateSampleReceipts(n = 10) {
   const sampleQuantities = [10, 15, 8, 12, 31, 27, 15, 9, 11, 24]; 
@@ -397,9 +416,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const ngay = document.getElementById('p_ngay').value || new Date().toISOString().slice(0,10);
     if(!h || !t) return alert('Chọn danh mục và sản phẩm');
     phieuNhap.push({ tensp: t, danhmuc: h, loai, sl, gia, ngay, locked:false });
-    rebuildStock();
     localStorage.setItem('phieuNhap', JSON.stringify(phieuNhap));
-    localStorage.setItem('tonKho', JSON.stringify(tonKho));
     renderPhieu();
     e.target.reset();
   });
@@ -474,10 +491,43 @@ document.addEventListener('DOMContentLoaded', () => {
   });
   document.getElementById('btn-cancel-finish')?.addEventListener('click',()=>{pendingFinishIndex=null;document.getElementById('confirm-finish-overlay').style.display='none';});
   document.getElementById('btn-confirm-finish')?.addEventListener('click',()=>{
-    if(pendingFinishIndex===null) return; phieuNhap[pendingFinishIndex].locked=true; rebuildStock();
-    localStorage.setItem('phieuNhap',JSON.stringify(phieuNhap)); localStorage.setItem('tonKho',JSON.stringify(tonKho));
-    renderPhieu(); pendingFinishIndex=null; document.getElementById('confirm-finish-overlay').style.display='none';
+    if (pendingFinishIndex === null) return;
+    const p = phieuNhap[pendingFinishIndex];
+    if (p.locked) return;
+
+    p.locked = true;
+
+    // Cộng thẳng vào kho (chỉ 1 lần)
+    const sp = tonKho.find(t =>
+      t.tensp === p.tensp &&
+      t.danhmuc === p.danhmuc &&
+      t.loai === p.loai
+    );
+
+    if (sp) {
+      sp.sl += Number(p.sl);
+    } else {
+      tonKho.push({
+        ma: generateCode(p.tensp),
+        tensp: p.tensp,
+        danhmuc: p.danhmuc,
+        loai: p.loai,
+        sl: Number(p.sl),
+        gia: Number(p.gia)
+      });
+    }
+
+    // Lưu & cập nhật hiển thị
+    localStorage.setItem('phieuNhap', JSON.stringify(phieuNhap));
+    localStorage.setItem('tonKho', JSON.stringify(tonKho));
+    renderPhieu();
+    updateStats();
+
+    pendingFinishIndex = null;
+    document.getElementById('confirm-finish-overlay').style.display = 'none';
   });
+
+
 
   //-- NAVIGATION --
   document.getElementById("btnPhieuNhap")?.addEventListener("click",()=>{
