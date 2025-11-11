@@ -5,7 +5,8 @@
     'cho-xac-nhan':     'Chờ xác nhận',
     'cho-van-chuyen':   'Chờ vận chuyển',
     'dang-van-chuyen':  'Đang vận chuyển',
-    'hoan-tat':         'Nhận hàng thành công'
+    'hoan-tat':         'Nhận hàng thành công',
+    'da-huy':           'Đã hủy'
   };
   const ORDERS_KEY = 'orders';
   const money = n => (Number(n) || 0).toLocaleString('vi-VN');

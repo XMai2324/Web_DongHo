@@ -166,3 +166,78 @@
     gap: 8px;
   }
 }
+/* ===== FIX bảng quản lý sản phẩm bị lệch trái ===== */
+
+/* Bù khoảng cho sidebar */
+.main-content {
+  margin-left: 250px;          /* Cùng kích thước với sidebar trong admin.css */
+  width: calc(100% - 250px);   /* Giúp bảng không tràn toàn màn hình */
+  overflow-x: hidden;          /* Ngăn cuộn ngang */
+  background: #f9fafb;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* Giữ bảng nằm gọn trong khung */
+.table-wrap {
+  max-width: 100%;
+  overflow-x: auto;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+  padding: 10px 15px;
+  box-sizing: border-box;
+}
+
+/* Giữ bảng không tràn */
+.product-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+}
+
+.product-table th, 
+.product-table td {
+  text-align: left;
+  white-space: normal;
+  word-wrap: break-word;
+}
+
+/* Responsive */
+@media (max-width: 992px) {
+  .main-content {
+    margin-left: 0;
+    width: 100%;
+  }
+}
+
+
+/* ===== CĂN CHỈNH 3 NÚT HÀNH ĐỘNG TRONG BẢNG ===== */
+.product-table td .btn.icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #333;
+  font-size: 13px;
+  margin: 0 5px;              /* khoảng cách giữa các nút */
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.product-table td .btn.icon:hover {
+  background: #f3f4f6;
+  color: #0ea5e9;
+}
+
+.product-table td {
+  white-space: nowrap;
+}
+
+.product-table td i {
+  pointer-events: none;       /* tránh click nhầm vào icon */
+}

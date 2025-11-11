@@ -608,7 +608,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
 /* --- CSS CƠ BẢN (TIÊU ĐỀ & NÚT ĐÓNG) --- */
 
 /* 1. Tiêu đề Modal (Áp dụng cho Add/Edit Sản phẩm, Cài đặt Lợi nhuận, Xác nhận Xóa) */
-#productModalTitle, 
+/* #productModalTitle, 
 #profitSettingsModal h2, 
 #deleteConfirmationModal h2 {
     color: #333;
@@ -617,13 +617,54 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
     margin-bottom: 20px;
     font-size: 1.5em;
     font-weight: 600;
-}
+} */
 
 /* QUAN TRỌNG: Đảm bảo Modal Content có position: relative */
-.modal-content {
+/* .modal-content {
     position: relative; 
     /* Thuộc tính này là cần thiết để position: absolute của nút đóng hoạt động */
+/* } */ 
+/* =======================
+   Căn giữa modal ở giữa màn hình
+   Áp dụng cho 2 modal: productModal & profitSettingsModal
+========================= */
+#productModal .modal-content,
+#profitSettingsModal .modal-content {
+  position: fixed; /* Cố định giữa màn hình */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Dịch tâm */
+  z-index: 1001; /* Đảm bảo nằm trên lớp nền mờ */
+  margin: 0; /* Xóa margin auto cũ */
+  padding: 30px;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
+  background-color: #fff;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
+
+/* Nền mờ modal (phần bao quanh form) */
+#productModal,
+#profitSettingsModal {
+  display: none; /* Ẩn mặc định */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.45); /* Mờ nền */
+  z-index: 1000;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Khi hiển thị (ví dụ bạn thêm class .show bằng JS) */
+#productModal.show,
+#profitSettingsModal.show {
+  display: flex; /* Dùng flex để căn giữa */
+}
+
 
 /* 2. Nút đóng (CLOSE BUTTON) - ĐỊNH VỊ GÓC PHẢI */
 
