@@ -148,6 +148,10 @@ document.addEventListener('DOMContentLoaded', () => {
       showMessage(DOM.messageLogin, 'Tài khoản của bạn đã bị vô hiệu hóa.', 'error');
       return;
     }
+    
+    //xóa giỏ hàng khi chưa đăng nhập
+    localStorage.removeItem('tt_cart');
+    localStorage.removeItem('cart:guest');
 
     setSession({
       id: user.username,
@@ -167,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
         //renderUserState();
         location.reload();
       } else {
-        // ⛔️ Đăng nhập admin tại trang client → KHÔNG cho phép
+        //  Đăng nhập admin tại trang client → KHÔNG cho phép
         showMessage(DOM.messageLogin, 'Vui lòng đăng nhập bằng tài khoản KHÁCH HÀNG trên trang này.', 'error');
         // Không set session admin ở client page
         setSession(null);
@@ -175,7 +179,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
       // user thường (khách hàng)
       if (onAdminPage) {
-        // ⛔️ User thường không có quyền vào admin
+        //  User thường không có quyền vào admin
         showMessage(DOM.messageLogin, 'Tài khoản này không có quyền Admin.', 'error');
         return;
       }
