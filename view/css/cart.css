@@ -140,3 +140,12 @@ body.show-cart #cart {
 #delivery.hidden {
   display: none !important;
 }
+
+.delivery-content-left-button
+{
+  margin-top: 20px;
+  
+}
+.delivery-content-left-button a{
+  margin-top: 20px;
+}

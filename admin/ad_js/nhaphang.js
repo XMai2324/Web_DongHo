@@ -45,7 +45,7 @@ const LOAI_DISPLAY = {
 
   glass: "Kính Cường Lực",
   box: "Hộp Đựng",
-  strap: "Dây Treo"
+  strap: "Dây đeo"
 };
 
 // =================== HÀM HỖ TRỢ BÁO CÁO ===================

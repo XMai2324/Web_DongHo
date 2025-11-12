@@ -755,7 +755,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
   border:none; outline:none; min-width:240px; font-size:14px;
 }
 .search-box button{
-  border:none; background:transparent; cursor:pointer; padding:4px;
+  border:none; background:pink; cursor:pointer; padding:4px;
 }
 
 /* ====== TABLES (giống order/product table) ====== */
@@ -1063,7 +1063,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
 
                         <div class="form-group">
                             <label for="productProfitPercent">Tỉ lệ Lợi Nhuận Riêng (%)</label>
-                            <input type="number" id="productProfitPercent" min="0" max="100" step="1" placeholder="Để trống để áp dụng tỉ lệ chung" >
+                            <input type="number" id="productProfitPercent" min="0" max="100" step="1" >
                         </div>
 
                         <div class="btn-group">
@@ -1122,7 +1122,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
     </div>
 
     <!-- Sản phẩm -->
-    <script src="./data.js"></script>
+    <script src="./ad_js/data.js"></script>
  <script>
 
     const SUPERADMIN_ID = 99999;
@@ -1543,7 +1543,7 @@ function renderProfitInputs(margins) {
     const categories = [
         { name: 'Đồng hồ', isEditable: true }, 
         { name: 'Phụ kiện', isEditable: true }, 
-        { name: 'Mặc định', isEditable: false } // 👈 Đánh dấu là KHÔNG được chỉnh sửa
+        // { name: 'Mặc định', isEditable: false } // 👈 Đánh dấu là KHÔNG được chỉnh sửa
     ];
 
     categories.forEach(item => {
@@ -2225,7 +2225,7 @@ return {
         });
     }
 
-    //⭐️ Chạy hàm chuyển đổi và lưu vào Local Storage
+    // ⭐️ Chạy hàm chuyển đổi và lưu vào Local Storage
     // const allTransformedProducts = transformProductsFromDataJS(products);
 
     // if (allTransformedProducts.length > 0) { 
@@ -2241,6 +2241,7 @@ return {
     // }
     // Đặt hàm này trong <script> của ad_user.html
 // Đặt hàm này trong <script> của ad_user.html
+    
 function renderProductTable() {
     // Đảm bảo bạn có 1 phần tử <tbody id="productTableBody"> trong HTML
     const tableBody = document.getElementById('productTableBody');

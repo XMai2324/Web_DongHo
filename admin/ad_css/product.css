@@ -5,7 +5,7 @@
 }
 .product-table { width: 100%; border-collapse: collapse; }
 .product-table th, .product-table td {
-  padding: 12px 14px; border-bottom: 1px solid #eee; text-align: left; white-space: nowrap;
+  padding: 15px 10px; border-bottom: 1px solid #eee; text-align: left; white-space: nowrap;
 }
 .product-table thead th { background: #fafafa; font-weight: 700; }
 .product-table td .thumb {

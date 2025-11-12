@@ -62,7 +62,7 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
 }
 
 /* =============== TOOLBAR =============== */
-.dashboard{padding:24px}
+.dashboard{padding:15px}
 .dashboard h1{margin-bottom:12px}
 .toolbar{
   display:flex; align-items:center; justify-content:space-between; gap:16px;
@@ -109,10 +109,10 @@ body{font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;color:
 /* ô icon đầu dòng */
 .icon-cell-btn{
   display:inline-flex; align-items:center; justify-content:center;
-  width:34px; height:34px; border:1px solid var(--line); background:#fff;
+  width:34px; height:34px; border:1px solid var(--line); background:#f7f1f1;
   border-radius:10px; cursor:pointer; transition:background .15s ease, transform .05s;
 }
-.icon-cell-btn:hover{background:#f3f4f6}
+.icon-cell-btn:hover{background:#4d4e50}
 .icon-cell-btn:active{transform:scale(.98)}
 
 /* =============== BADGES trạng thái =============== */

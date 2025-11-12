@@ -1,75 +1,90 @@
-// FILE: ../admin/ad_js/ad_product.js
+// FILE: ad_product.js (bản rút gọn-đủ chức năng, đã fix)
+
+// =================== BOOT & STORAGE ===================
 (() => {
   'use strict';
 
-  // ===== STORAGE KEYS =====
   const STORAGE_KEY_PRODUCTS = 'admin_products';
   const STORAGE_KEY_ACCESS   = 'admin_accessories';
 
-  // ===== Watches data =====
-  let productsData = [];
-  const fromProdLS = localStorage.getItem(STORAGE_KEY_PRODUCTS);
-  productsData = fromProdLS ? JSON.parse(fromProdLS) : (Array.isArray(window.products) ? window.products.slice() : []);
-  const saveProducts = () => localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(productsData));
-  window.saveData = saveProducts;
+  // Nguồn seed có thể đến từ window.products / window.accessories (nếu data.js đã gán)
+  const safeClone = (v) => Array.isArray(v) ? JSON.parse(JSON.stringify(v)) : [];
 
-  const getNextWatchId = () => {
-    if (!productsData.length) return 1;
-    const maxId = Math.max(...productsData.map(p => Number(p.id) || 0));
-    return (isFinite(maxId) ? maxId : 0) + 1;
-  };
+  const fromProdLS = (() => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY_PRODUCTS)); } catch { return null; }
+  })();
+  const fromAccLS = (() => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY_ACCESS)); } catch { return null; }
+  })();
 
-  // ===== Accessories data =====
-  let accessoriesData = [];
-  const fromAccLS = localStorage.getItem(STORAGE_KEY_ACCESS);
-  accessoriesData = fromAccLS ? JSON.parse(fromAccLS) : (Array.isArray(window.accessories) ? window.accessories.slice() : []);
-  const saveAccessories = () => localStorage.setItem(STORAGE_KEY_ACCESS, JSON.stringify(accessoriesData));
-  window.productsData    = productsData;
+  let productsData    = fromProdLS ?? safeClone(window.products);
+  let accessoriesData = fromAccLS ?? safeClone(window.accessories);
+
+  const saveProducts    = () => localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(productsData));
+  const saveAccessories = () => localStorage.setItem(STORAGE_KEY_ACCESS,   JSON.stringify(accessoriesData));
+
+  // Seed vào localStorage ngay lần đầu
+  if (fromProdLS == null) saveProducts();
+  if (fromAccLS  == null) saveAccessories();
+
+  // Expose để khối dưới dùng
+  window.productsData = productsData;
   window.accessoriesData = accessoriesData;
+  window.saveData = saveProducts;
   window.saveAccessories = saveAccessories;
 
-  // ===== Resolve image path =====
+  // =================== ẢNH & ID ===================
   const IMG_BASE = location.pathname.includes('/admin/') ? '/view/' : '';
   const resolveImgPath = (p) => {
     let raw = (p?.image || '').trim();
     if (!raw) return '';
     if (/^(https?:)?\/\//i.test(raw) || raw.startsWith('data:')) return raw;
+
     raw = raw
       .replace(/^image\/Accessory\//i, 'image/accessories/')
       .replace(/^image\/Accessories\//i, 'image/accessories/')
       .replace(/^image\/Watchs?\//i, 'image/Watch/')
       .replace(/strap13\.jpg_\.avif$/i, 'strap13.jpg');
+
     if (raw.startsWith('image/')) return `${IMG_BASE}${raw}`;
     if (/^(Watch|accessories)\//i.test(raw)) return `${IMG_BASE}image/${raw}`;
     return `${IMG_BASE}image/${raw.replace(/^(\.\/)+/, '')}`;
   };
   window.resolveImgPath = resolveImgPath;
 
-  // ===== Ensure IDs =====
-  (function ensureIds() {
-    let changed = false;
-    productsData.forEach(p => { if (!p.id) { p.id = getNextWatchId(); changed = true; } });
-    if (changed) saveProducts();
-  })();
+  // Cấp ID số tăng dần nếu thiếu (chỉ áp dụng cho item chưa có id)
+  const nextIdFactory = (arr) => {
+    const nums = arr.map(x => Number(x.id)).filter(n => Number.isFinite(n));
+    let current = nums.length ? Math.max(...nums) : 0;
+    return () => String(++current);
+  };
+  const nextProdId = nextIdFactory(productsData);
+  const nextAccId  = nextIdFactory(accessoriesData);
 
-  (function ensureAccIds() {
-    let maxId = 0;
-    accessoriesData.forEach(a => { maxId = Math.max(maxId, Number(a.id)||0, Number(a._id)||0); });
-    accessoriesData.forEach((a, idx) => {
-      if (!a.id) a.id = Number(a._id) || (maxId + idx + 1);
-      if (a.isHidden === undefined) a.isHidden = false;
-      if (!a.category) a.category = 'phukien';
-    });
-    saveAccessories();
-  })();
+  // Ensure IDs / flags
+  let touched = false;
+  productsData.forEach(p => { if (p.id == null || p.id === '') { p.id = nextProdId(); touched = true; } });
+  if (touched) saveProducts();
 
-  // ===== DOM refs (Watches) =====
+  touched = false;
+  accessoriesData.forEach((a, i) => {
+    if (a.id == null || a.id === '') { a.id = a._id ?? nextAccId(); touched = true; }
+    if (typeof a.isHidden === 'undefined') { a.isHidden = false; touched = true; }
+    if (!a.category) { a.category = 'phukien'; touched = true; }
+  });
+  if (touched) saveAccessories();
+})();
+
+// =================== UI & LOGIC: ĐỒNG HỒ ===================
+(() => {
+  'use strict';
+
   let modal, modalBox, modalBody, form, btnAdd, btnCancel, modalTitle;
   let inputId, inputName, inputPrice, inputCat, inputBrand, inputDesc, fileInput, imgPreview;
   let tbody, filterCategory, filterBrand;
 
   document.addEventListener('DOMContentLoaded', () => {
-    // Watches modal
+    // Grab DOM
     modal       = document.getElementById('watchModal');
     modalBox    = modal?.querySelector('.modal-content');
     modalBody   = modal?.querySelector('.modal-body');
@@ -87,30 +102,28 @@
     fileInput   = document.getElementById('watchImageFile');
     imgPreview  = document.getElementById('imagePreview');
 
-    // Table/filters
     tbody          = document.getElementById('productTbody');
-    filterCategory = document.getElementById('filterCategory'); // <select id="filterCategory">
-    filterBrand    = document.getElementById('filterBrand');    // <select id="filterBrand">
+    filterCategory = document.getElementById('filterCategory');
+    filterBrand    = document.getElementById('filterBrand');
 
-    // ===== UI helpers =====
+    // Helpers
+    const NOIMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="100%" height="100%" fill="#f3f3f3"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">No Image</text></svg>');
+    const money = v => Number(v || 0).toLocaleString('vi-VN');
+    const esc   = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
+
     const lockScroll = () => {
       const sbw = window.innerWidth - document.documentElement.clientWidth;
       document.body.style.paddingRight = sbw ? sbw + 'px' : '';
       document.body.style.overflow = 'hidden';
     };
-    const unlockScroll = () => {
-      document.body.style.overflow = '';
-      document.body.style.paddingRight = '';
-    };
+    const unlockScroll = () => { document.body.style.overflow = ''; document.body.style.paddingRight = ''; };
 
+    // Preview
     let previewURL = null;
     const clearPreview = () => {
       if (previewURL) URL.revokeObjectURL(previewURL);
       previewURL = null;
-      if (imgPreview) {
-        imgPreview.removeAttribute('src');
-        imgPreview.style.display = 'none';
-      }
+      if (imgPreview) { imgPreview.removeAttribute('src'); imgPreview.style.display = 'none'; }
       if (fileInput) fileInput.value = '';
     };
 
@@ -121,22 +134,16 @@
       modalBody?.scrollTo?.({ top: 0 });
     };
 
+    // Open/Close modal
     const openModal = (mode = 'add') => {
       if (!modal) return;
       resetForm();
       if (modalTitle) modalTitle.textContent = (mode === 'edit' ? 'Sửa Đồng Hồ' : 'Thêm Đồng Hồ');
-      modal.classList.add('show');
-      lockScroll();
+      modal.classList.add('show'); lockScroll();
       setTimeout(() => inputName?.focus(), 0);
     };
-    const closeModal = () => {
-      if (!modal) return;
-      modal.classList.remove('show');
-      unlockScroll();
-      clearPreview();
-    };
-    window.openModal = openModal;
-    window.closeModal = closeModal;
+    const closeModal = () => { if (!modal) return; modal.classList.remove('show'); unlockScroll(); clearPreview(); };
+    window.openModal = openModal; window.closeModal = closeModal;
 
     btnCancel?.addEventListener('click', (e) => { e.preventDefault?.(); closeModal(); });
     modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
@@ -148,16 +155,10 @@
       if (!f || !f.type?.startsWith('image/')) { clearPreview(); return; }
       if (previewURL) URL.revokeObjectURL(previewURL);
       previewURL = URL.createObjectURL(f);
-      imgPreview.src = previewURL;
-      imgPreview.style.display = 'block';
+      imgPreview.src = previewURL; imgPreview.style.display = 'block';
     });
 
-    // ===== table helpers =====
-    const NOIMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="100%" height="100%" fill="#f3f3f3"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">No Image</text></svg>');
-    const money = v => Number(v || 0).toLocaleString('vi-VN');
-    const esc = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
-
-    // Chỉ lọc theo category/brand cho Đồng hồ (đÃ bỏ tìm kiếm bằng nhập tên)
+    // FILTER + RENDER
     const applyWatchFilter = (list) => {
       const cat = (filterCategory?.value || '');
       const br  = (filterBrand?.value || '');
@@ -171,7 +172,7 @@
         return;
       }
       tbody.innerHTML = list.map(p => {
-        const img = esc(resolveImgPath(p));
+        const img = esc(window.resolveImgPath ? window.resolveImgPath(p) : (p.image || ''));
         return `
           <tr>
             <td><img class="thumb" src="${img}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='${NOIMG}'" /></td>
@@ -180,39 +181,43 @@
             <td>${esc(p.category)}</td>
             <td>${esc(p.brand)}</td>
             <td>
-              <button class="btn icon" type="button" data-action="edit" data-id="${p.id}" title="Sửa"><i class="fa-solid fa-pen"></i></button>
-              <button class="btn icon" type="button" data-action="toggle-hide" data-id="${p.id}" title="${p.isHidden ? 'Hiện lên client' : 'Ẩn khỏi client'}"><i class="fa-solid ${p.isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
-              <button class="btn icon" type="button" data-action="del" data-id="${p.id}" title="Xóa"><i class="fa-solid fa-trash"></i></button>
+              <button class="btn icon" type="button" data-action="edit" data-id="${esc(p.id)}" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+              <button class="btn icon" type="button" data-action="toggle-hide" data-id="${esc(p.id)}" title="${p.isHidden ? 'Hiện lên client' : 'Ẩn khỏi client'}"><i class="fa-solid ${p.isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+              <button class="btn icon" type="button" data-action="del" data-id="${esc(p.id)}" title="Xóa"><i class="fa-solid fa-trash"></i></button>
             </td>
           </tr>`;
       }).join('');
     };
 
-    const update = () => render(applyWatchFilter(productsData));
+    const update = () => render(applyWatchFilter(window.productsData || []));
     window.update = update;
 
+    // EDIT / DELETE / TOGGLE-HIDE
     const openEdit = (id) => {
-      const product = productsData.find(p => Number(p.id) === Number(id));
-      if (!product) return alert('Không tìm thấy sản phẩm!');
+      const list = window.productsData || [];
+      const product = list.find(p => String(p.id) === String(id));
+      if (!product) { alert('Không tìm thấy sản phẩm!'); return; }
+
       openModal('edit');
-      inputId.value    = product.id;
-      inputName.value  = product.name || '';
-      inputPrice.value = product.price || 0;
-      inputCat.value   = product.category || '';
-      inputBrand.value = product.brand || '';
-      inputDesc.value  = product.description || '';
-      const path = resolveImgPath(product) || NOIMG;
-      imgPreview.src = path;
-      imgPreview.style.display = 'block';
+      inputId.value    = product.id ?? '';
+      inputName.value  = product.name ?? '';
+      inputPrice.value = product.price ?? 0;
+      inputCat.value   = product.category ?? '';
+      inputBrand.value = product.brand ?? '';
+      inputDesc.value  = product.description ?? '';
+
+      const path = (window.resolveImgPath ? window.resolveImgPath(product) : (product.image || '')) || NOIMG;
+      imgPreview.src = path; imgPreview.style.display = 'block';
     };
     window.openEdit = openEdit;
 
     const doDelete = (id) => {
-      const idx = productsData.findIndex(p => Number(p.id) === Number(id));
+      const list = window.productsData || [];
+      const idx = list.findIndex(p => String(p.id) === String(id));
       if (idx === -1) return;
-      if (confirm(`Xóa "${productsData[idx].name}"?`)) {
-        productsData.splice(idx, 1);
-        saveProducts();
+      if (confirm(`Xóa "${list[idx].name}"?`)) {
+        list.splice(idx, 1);
+        window.saveData?.();
         update();
         alert('Đã xóa sản phẩm!');
       }
@@ -222,68 +227,84 @@
       const btn = e.target.closest('button[data-action]');
       if (!btn) return;
       const action = btn.getAttribute('data-action');
-      const id = Number(btn.getAttribute('data-id'));
+      const id = btn.getAttribute('data-id');
       if (action === 'edit') return openEdit(id);
       if (action === 'del')  return doDelete(id);
       if (action === 'toggle-hide') {
-        const item = productsData.find(p => Number(p.id) === id);
-        if (!item) return;
+        const list = window.productsData || [];
+        const item = list.find(p => String(p.id) === String(id));
+        if (!item) return alert('Không tìm thấy sản phẩm!');
         item.isHidden = !item.isHidden;
-        saveProducts();
+        window.saveData?.();
         update();
         alert(item.isHidden ? 'Đã ẩn sản phẩm khỏi client.' : 'Đã hiện sản phẩm trên client.');
       }
     });
 
-    // ===== Submit Watches =====
+    // SUBMIT (ADD/EDIT)
     function readFileAsDataURL(file){
       return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
     }
 
+    const getNextWatchId = () => {
+      const list = window.productsData || [];
+      // nếu đã có id chuỗi (p1, a5...), vẫn tạo số tăng dần an toàn nhưng trả về chuỗi
+      const nums = list.map(p => Number(p.id)).filter(n => Number.isFinite(n));
+      let next = nums.length ? Math.max(...nums) + 1 : list.length + 1;
+      return String(next);
+    };
+
     form?.addEventListener('submit', async (e) => {
       e.preventDefault();
+      const list = window.productsData || [];
+
       const isEditing   = !!inputId.value;
       const name        = inputName?.value?.trim() || '';
       const price       = Number(inputPrice?.value || 0);
       const category    = inputCat?.value || '';
       const brand       = inputBrand?.value || '';
       const description = inputDesc?.value?.trim() || '';
-      if (!name || price <= 0 || !category || !brand) { alert('Vui lòng điền đầy đủ Tên, Giá (>0), Loại và Thương hiệu.'); return; }
+
+      if (!name || price <= 0 || !category || !brand) {
+        alert('Vui lòng điền đầy đủ Tên, Giá (>0), Loại và Thương hiệu.');
+        return;
+      }
 
       const hasNewFile = (fileInput?.files?.length || 0) > 0;
       let image = '';
-      if (hasNewFile) { image = await readFileAsDataURL(fileInput.files[0]); }
+      if (hasNewFile) image = await readFileAsDataURL(fileInput.files[0]);
       else { const slug = name.toLowerCase().replace(/\s+/g, '-'); image = `${slug}.jpg`; }
 
       if (isEditing) {
-        const id = Number(inputId.value);
-        const idx = productsData.findIndex(p => Number(p.id) === id);
+        const id = inputId.value;
+        const idx = list.findIndex(p => String(p.id) === String(id));
         if (idx === -1) { alert('Không tìm thấy sản phẩm để cập nhật.'); return; }
-        if (!hasNewFile) image = productsData[idx].image || image;
-        productsData[idx] = { ...productsData[idx], name, price, category, brand, description, image };
+        if (!hasNewFile) image = list[idx].image || image;
+        list[idx] = { ...list[idx], name, price, category, brand, description, image };
       } else {
-        if (productsData.some(p => (p.name || '').trim().toLowerCase() === name.toLowerCase())) { alert('Sản phẩm đã tồn tại (trùng tên).'); return; }
-        const newItem = { id: getNextWatchId(), name, price, category, brand, description, image, isHidden: false };
-        productsData.unshift(newItem);
+        if (list.some(p => (p.name || '').trim().toLowerCase() === name.toLowerCase())) {
+          alert('Sản phẩm đã tồn tại (trùng tên).'); return;
+        }
+        list.unshift({ id: getNextWatchId(), name, price, category, brand, description, image, isHidden: false });
       }
 
-      saveProducts();
+      window.saveData?.();
       update();
       closeModal();
       alert(isEditing ? `Đã cập nhật: ${name}` : `Đã thêm mới: ${name}`);
     });
 
-    // Render lần đầu
+    // INIT
     update();
-
-    // ===== Lắng nghe thay đổi filter (chỉ cho "Đồng hồ")
-    filterCategory?.addEventListener('change', () => update());
-    filterBrand?.addEventListener('change', () => update());
+    filterCategory?.addEventListener('change', update);
+    filterBrand?.addEventListener('change', update);
   });
 })();
 
-// ===== MULTI-SECTION & ACCESSORY MODAL (không tìm kiếm) =====
-(function(){
+// =================== TAB & ACCESSORIES ===================
+(() => {
+  'use strict';
+
   const $  = (s, r=document) => r.querySelector(s);
   const $$ = (s, r=document) => Array.from(r.querySelectorAll(s));
 
@@ -292,48 +313,38 @@
     const h1Title    = document.querySelector('.toolbar h1');
     const btnAdd     = document.getElementById('btnAdd');
     const btnAddAcc  = document.getElementById('btnAddAcc');
-    const tbody      = document.getElementById('productTbody');
     const table      = document.getElementById('productTable');
     const thead      = table?.querySelector('thead');
+    const tbody      = document.getElementById('productTbody');
 
-    // Filter select (dù ở tab nào vẫn hiện, nhưng chỉ áp dụng cho "Đồng hồ")
+    // Filter chỉ tác dụng ở tab watch
     const filterCat = document.getElementById('filterCategory');
     const filterBr  = document.getElementById('filterBrand');
 
-    let current = 'watch'; // watch | strap | box | glass
-    const money = v => Number(v || 0).toLocaleString('vi-VN');
-    const esc   = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
-    const NOIMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="100%" height="100%" fill="#f3f3f3"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">No Image</text></svg>');
-
-    // ===== Accessory modal refs =====
+    // Modal phụ kiện
     const accModal      = $('#accessoryModal');
     const accTitleEl    = $('#accessoryModal .modal-title');
     const accForm       = $('#addAccForm');
     const accIdEl       = $('#accId');
     const accNameEl     = $('#accName');
     const accPriceEl    = $('#accPrice');
-    const accKindEl     = $('#accKind');
+    const accKindEl     = $('#accKind');      // strap | box | glass
     const accTypeEl     = $('#accType');      // glass only
     const accMatEl      = $('#accMaterial');  // strap only
     const accColorEl    = $('#accColor');     // strap only
     const accDescEl     = $('#accDesc');
     const accPreviewEl  = $('#accImagePreview');
     const accImageFile  = $('#accImageFile');
+    const btnAccCancel  = $('#btnAccCancel');
 
-    const accLabel = (k) => ({ strap:'Dây đeo', box:'Hộp đựng', glass:'Kính cường lực' }[k] || 'Phụ kiện');
-    function toggleAccFields(k){
-      $$('.acc-only').forEach(el => el.style.display = 'none');
-      if (k === 'strap') { $$('.acc-strap').forEach(el => el.style.display = ''); }
-      if (k === 'glass') { $$('.acc-glass').forEach(el => el.style.display = ''); }
-    }
+    const NOIMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="100%" height="100%" fill="#f3f3f3"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">No Image</text></svg>');
+    const money = v => Number(v || 0).toLocaleString('vi-VN');
+    const esc   = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
 
-    function getList() {
-      if (current === 'watch') return window.productsData || [];
-      const all = (window.accessoriesData || []);
-      return all.filter(a => (a.accessory || '').toLowerCase() === current);
-    }
+    let current = 'watch';
 
-    function renderHead() {
+    const renderHead = () => {
+      if (!thead) return;
       if (current === 'watch') {
         thead.innerHTML = `
           <tr>
@@ -365,7 +376,7 @@
             <th style="width:120px;">Loại</th>
             <th style="width:220px;">Thao tác</th>
           </tr>`;
-      } else {
+      } else { // glass
         thead.innerHTML = `
           <tr>
             <th style="width:150px;">Ảnh</th>
@@ -376,22 +387,29 @@
             <th style="width:220px;">Thao tác</th>
           </tr>`;
       }
-    }
+    };
 
-    function renderBody(list) {
-      if (current === 'watch') { window.update?.(); return; } // phần đồng hồ đã render ở IIFE trên
-      if (!list.length) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#888">Không có sản phẩm</td></tr>`; return; }
-      const rows = list.map((p, idx) => {
-        const pid = Number(p.id ?? (p._id ?? (p._id = Date.now() + idx)));
+    const getList = () => {
+      if (current === 'watch') return window.productsData || [];
+      const all = window.accessoriesData || [];
+      return all.filter(a => String(a.accessory || '').toLowerCase() === current);
+    };
+
+    const renderBody = (list) => {
+      if (!tbody) return;
+      if (current === 'watch') { window.update?.(); return; }
+      if (!list.length) {
+        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;color:#888">Không có sản phẩm</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = list.map(p => {
+        const pid = p.id;
         const img = (window.resolveImgPath ? window.resolveImgPath(p) : (p.image || '')) || '';
-        const src = img ? img : NOIMG;
-
+        const src = img || NOIMG;
         const actionBtns = `
-          <button class="btn icon" data-action="a-edit" data-id="${pid}" title="Sửa"><i class="fa-solid fa-pen"></i></button>
-          <button class="btn icon" data-action="a-toggle-hide" data-id="${pid}" title="${p.isHidden ? 'Hiện lên client' : 'Ẩn khỏi client'}">
-            <i class="fa-solid ${p.isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i>
-          </button>
-          <button class="btn icon" data-action="a-del" data-id="${pid}" title="Xóa"><i class="fa-solid fa-trash"></i></button>`;
+          <button class="btn icon" data-action="a-edit" data-id="${esc(pid)}" title="Sửa"><i class="fa-solid fa-pen"></i></button>
+          <button class="btn icon" data-action="a-toggle-hide" data-id="${esc(pid)}" title="${p.isHidden ? 'Hiện lên client' : 'Ẩn khỏi client'}"><i class="fa-solid ${p.isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
+          <button class="btn icon" data-action="a-del" data-id="${esc(pid)}" title="Xóa"><i class="fa-solid fa-trash"></i></button>`;
 
         if (current === 'strap') {
           return `
@@ -427,29 +445,19 @@
             <td>${actionBtns}</td>
           </tr>`;
       }).join('');
-      tbody.innerHTML = rows;
-    }
+    };
 
-    function update() {
-      renderHead();
-      const list = getList();
-      if (current === 'watch') { window.update?.(); return; } // đã apply filter ở IIFE trên
-      renderBody(list); // phụ kiện không có tìm kiếm, không filter
-    }
+    const update = () => { renderHead(); const list = getList(); if (current === 'watch') window.update?.(); else renderBody(list); };
 
-    // ==== EVENTS ====
+    // Switch tab
     leftMenu?.addEventListener('click', (e) => {
       const li = e.target.closest('li[data-entity]');
       if (!li) return;
-      current = li.getAttribute('data-entity');
+      current = (li.getAttribute('data-entity') || 'watch').toLowerCase();
       leftMenu.querySelectorAll('li').forEach(x => x.classList.remove('is-active'));
       li.classList.add('is-active');
-      // Luôn bật filter cho UI (nhưng chỉ tác dụng ở tab Đồng hồ)
-      filterCat && (filterCat.disabled = false);
-      filterBr  && (filterBr.disabled  = false);
-      // Cập nhật tiêu đề + bảng
       const titleMap = { watch:'Quản lý đồng hồ', strap:'Quản lý dây đeo', box:'Quản lý hộp đựng', glass:'Kính cường lực' };
-      if (h1Title) h1Title.textContent = titleMap[current];
+      if (h1Title) h1Title.textContent = titleMap[current] || 'Quản lý';
       update();
     });
 
@@ -462,84 +470,94 @@
       const btn = e.target.closest('button[data-action]');
       if (!btn) return;
       const action = btn.dataset.action;
-      const id = Number(btn.dataset.id);
-      if (!action.startsWith('a-')) return; // not accessory action
+      const id = btn.dataset.id;
+      if (!action || !action.startsWith('a-')) return;
 
-      const idx = (window.accessoriesData || []).findIndex(x => Number(x.id) === id);
-      if (idx < 0) return;
+      const list = window.accessoriesData || [];
+      const idx = list.findIndex(x => String(x.id) === String(id));
+      if (idx < 0) { alert('Không tìm thấy phụ kiện!'); return; }
 
-      if (action === 'a-edit') return openAccessoryModal('edit', window.accessoriesData[idx]);
-
+      if (action === 'a-edit') return openAccessoryModal('edit', list[idx]);
       if (action === 'a-toggle-hide') {
-        window.accessoriesData[idx].isHidden = !window.accessoriesData[idx].isHidden;
+        list[idx].isHidden = !list[idx].isHidden;
         window.saveAccessories?.();
         return update();
       }
-
       if (action === 'a-del') {
         if (!confirm('Xoá phụ kiện này?')) return;
-        window.accessoriesData.splice(idx,1);
+        list.splice(idx, 1);
         window.saveAccessories?.();
         return update();
       }
     });
 
-    // ===== Accessory modal logic =====
+    // Accessory modal helpers
     function openAccessoryModal(mode='add', item=null){
-      if (!accModal) return;
+      if (!accModal) return alert('Thiếu modal phụ kiện (#accessoryModal) trong HTML.');
+
       accForm?.reset();
-      accIdEl.value = item?.id || '';
+      accIdEl && (accIdEl.value = item?.id || '');
+
       const kind = (item?.accessory || current || '').toLowerCase();
-      if (['strap','box','glass'].includes(kind)) accKindEl.value = kind;
-      toggleAccFields(accKindEl.value);
+      if (['strap','box','glass'].includes(kind)) accKindEl && (accKindEl.value = kind);
+      toggleAccFields(accKindEl?.value || kind);
 
       if (item){
-        accNameEl.value  = item.name || '';
-        accPriceEl.value = item.price || 0;
-        accTypeEl.value  = item.type || '';
-        accMatEl.value   = item.material || '';
-        accColorEl.value = item.color || '';
-        accDescEl.value  = item.description || '';
+        accNameEl && (accNameEl.value  = item.name || '');
+        accPriceEl && (accPriceEl.value = item.price || 0);
+        accTypeEl && (accTypeEl.value  = item.type || '');
+        accMatEl  && (accMatEl.value   = item.material || '');
+        accColorEl&& (accColorEl.value = item.color || '');
+        accDescEl && (accDescEl.value  = item.description || '');
         const src = window.resolveImgPath ? window.resolveImgPath(item) : (item.image || '');
-        if (src) { accPreviewEl.src = src; accPreviewEl.style.display = 'block'; }
+        if (src && accPreviewEl) { accPreviewEl.src = src; accPreviewEl.style.display = 'block'; }
       } else {
-        accPreviewEl.removeAttribute('src');
-        accPreviewEl.style.display = 'none';
+        if (accPreviewEl) { accPreviewEl.removeAttribute('src'); accPreviewEl.style.display = 'none'; }
       }
 
-      const label = accLabel(accKindEl.value || kind);
-      accTitleEl.textContent = (mode === 'edit' ? 'Sửa ' : 'Thêm ') + (label || 'Phụ kiện');
+      const label = ({ strap:'Dây đeo', box:'Hộp đựng', glass:'Kính cường lực' }[accKindEl?.value || kind] || 'Phụ kiện');
+      accTitleEl && (accTitleEl.textContent = (mode === 'edit' ? 'Sửa ' : 'Thêm ') + label);
+
       accModal.classList.add('show');
       document.body.style.overflow = 'hidden';
       setTimeout(()=>accNameEl?.focus(), 0);
     }
     function closeAccessoryModal(){ accModal?.classList.remove('show'); document.body.style.overflow = ''; }
+    btnAccCancel?.addEventListener('click', (e)=>{ e.preventDefault?.(); closeAccessoryModal(); });
 
-    document.getElementById('btnAccCancel')?.addEventListener('click', closeAccessoryModal);
-    accKindEl?.addEventListener('change', e => { const k = e.target.value; toggleAccFields(k); accTitleEl.textContent = (accIdEl.value ? 'Sửa ' : 'Thêm ') + accLabel(k || ''); });
-
-    // Preview accessory image
-    accImageFile?.addEventListener('change', () => {
-      const f = accImageFile.files?.[0];
-      if (!f || !f.type?.startsWith('image/')) { accPreviewEl.removeAttribute('src'); accPreviewEl.style.display='none'; return; }
-      const url = URL.createObjectURL(f);
-      accPreviewEl.src = url; accPreviewEl.style.display='block';
+    function toggleAccFields(k){
+      $$('.acc-only').forEach(el => el.style.display = 'none');
+      if (k === 'strap') { $$('.acc-strap').forEach(el => el.style.display = ''); }
+      if (k === 'glass') { $$('.acc-glass').forEach(el => el.style.display = ''); }
+    }
+    accKindEl?.addEventListener('change', e => {
+      const k = e.target.value;
+      toggleAccFields(k);
+      accTitleEl && (accTitleEl.textContent = (accIdEl?.value ? 'Sửa ' : 'Thêm ') + ({ strap:'Dây đeo', box:'Hộp đựng', glass:'Kính cường lực' }[k] || 'Phụ kiện'));
     });
 
-    // Submit Accessory
+    accImageFile?.addEventListener('change', () => {
+      const f = accImageFile.files?.[0];
+      if (!f || !f.type?.startsWith('image/')) { accPreviewEl?.removeAttribute('src'); if (accPreviewEl) accPreviewEl.style.display='none'; return; }
+      const url = URL.createObjectURL(f);
+      if (accPreviewEl){ accPreviewEl.src = url; accPreviewEl.style.display='block'; }
+    });
+
     function readFileAsDataURL(file){ return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); }); }
 
     accForm?.addEventListener('submit', async (e) => {
       e.preventDefault();
-      const idStr = accIdEl.value;
-      const name  = (accNameEl.value || '').trim();
-      const price = Number(accPriceEl.value || 0);
-      const accessory = (accKindEl.value || '').toLowerCase(); // strap | box | glass
+      const list = window.accessoriesData || [];
+
+      const idStr = accIdEl?.value || '';
+      const name  = (accNameEl?.value || '').trim();
+      const price = Number(accPriceEl?.value || 0);
+      const accessory = (accKindEl?.value || '').toLowerCase();
       const category  = 'phukien';
-      const description = (accDescEl.value || '').trim();
-      const material = (accMatEl.value || '').trim();
-      const color    = (accColorEl.value || '').trim();
-      const type     = (accTypeEl.value || '').trim();
+      const description = (accDescEl?.value || '').trim();
+      const material = (accMatEl?.value || '').trim();
+      const color    = (accColorEl?.value || '').trim();
+      const type     = (accTypeEl?.value || '').trim();
 
       if (!name || price <= 0 || !accessory) { alert('Điền đủ Tên, Giá (>0), Loại phụ kiện.'); return; }
 
@@ -549,28 +567,30 @@
       else { const slug = name.toLowerCase().replace(/\s+/g, '-'); image = `${slug}.jpg`; }
 
       if (idStr) {
-        const id = Number(idStr);
-        const idx = accessoriesData.findIndex(a => Number(a.id) === id);
+        const idx = list.findIndex(a => String(a.id) === String(idStr));
         if (idx === -1) { alert('Không tìm thấy phụ kiện để cập nhật.'); return; }
-        if (!hasNewFile) image = accessoriesData[idx].image || image;
+        if (!hasNewFile) image = list[idx].image || image;
 
-        const base = { id, name, price, accessory, category, description, image };
+        const base = { id: list[idx].id, name, price, accessory, category, description, image };
         if (accessory === 'strap') { base.material = material; base.color = color; delete base.type; }
         else if (accessory === 'glass') { base.type = type; delete base.material; delete base.color; }
         else { delete base.material; delete base.color; delete base.type; }
 
-        accessoriesData[idx] = { ...accessoriesData[idx], ...base };
-        saveAccessories();
+        list[idx] = { ...list[idx], ...base };
+        window.saveAccessories?.();
         closeAccessoryModal();
         update();
         alert(`Đã cập nhật: ${name}`);
       } else {
-        const nextId = (() => { const m = accessoriesData.reduce((acc,x)=>Math.max(acc, Number(x.id)||0),0); return m+1; })();
-        const base = { id: nextId, name, price, accessory, category, description, image, isHidden:false };
+        const newId = String((() => {
+          const nums = list.map(x => Number(x.id)).filter(Number.isFinite);
+          return (nums.length ? Math.max(...nums) : 0) + 1;
+        })());
+        const base = { id: newId, name, price, accessory, category, description, image, isHidden:false };
         if (accessory === 'strap') { base.material = material; base.color = color; }
         if (accessory === 'glass') { base.type = type; }
-        accessoriesData.unshift(base);
-        saveAccessories();
+        list.unshift(base);
+        window.saveAccessories?.();
         closeAccessoryModal();
         update();
         alert(`Đã thêm mới: ${name}`);
@@ -579,8 +599,7 @@
 
     // INIT
     update();
-
-    // Khi đổi filter => cập nhật danh sách (tác dụng khi current === 'watch')
+    // filter chỉ tác dụng ở tab watch (đã gọi window.update trong renderBody)
     filterCat?.addEventListener('change', () => (current === 'watch') && window.update?.());
     filterBr ?.addEventListener('change', () => (current === 'watch') && window.update?.());
   });

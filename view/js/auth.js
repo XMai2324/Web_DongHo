@@ -87,7 +87,6 @@ document.addEventListener('DOMContentLoaded', () => {
   };
 
   // ===============================  XUẤT HÀM TOÀN CỤC ===============================
-  // (giữ nguyên các hàm global như bản gốc)
   window.getCurrentUser   = getSession;
   window.openLoginModal   = () => showModal('login');
   window.ttShowLoginModal = showModal;
@@ -223,7 +222,7 @@ window.getCurrentUser = function () {
     try { showModal('login'); } catch { /* no-op */ }
   };
 
-  // gọi lại để đồng bộ (giữ nguyên như file gốc)
+  // gọi lại để đồng bộ 
   renderUserState();
 
   
@@ -278,6 +277,12 @@ window.getCurrentUser = function () {
       showMessage(DOM.registerMsg, 'Mật khẩu nhập lại không khớp.', 'error');
       return;
     }
+
+    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password)) {
+    showMessage(DOM.registerMsg, 'Mật khẩu phải có ít nhất 6 ký tự và chứa cả chữ lẫn số.', 'error');
+    return;
+    }
+
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       showMessage(DOM.registerMsg, 'Email không hợp lệ.', 'error');
       return;
