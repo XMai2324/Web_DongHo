@@ -59,10 +59,9 @@
   const nextProdId = nextIdFactory(productsData);
   const nextAccId  = nextIdFactory(accessoriesData);
 
+
   // Ensure IDs / flags
   let touched = false;
-  // productsData.forEach(p => { if (p.id == null || p.id === '') { p.id = nextProdId(); touched = true; } });
-  // if (touched) saveProducts();
   productsData.forEach(p => { 
     if (p.id == null || p.id === '') { 
       p.id = nextProdId(); 
@@ -89,332 +88,6 @@
   if (touched) saveAccessories();
 })();
 
-// // =================== UI & LOGIC: ĐỒNG HỒ ===================
-// (() => {
-//   'use strict';
-
-//   let modal, modalBox, modalBody, form, btnAdd, btnCancel, modalTitle;
-//   let inputId, inputName, inputPrice, inputCat, inputBrand, inputDesc, fileInput, imgPreview;
-//   let tbody, filterCategory, filterBrand;
-
-//   document.addEventListener('DOMContentLoaded', () => {
-//     // Grab DOM
-//     modal       = document.getElementById('watchModal');
-//     modalBox    = modal?.querySelector('.modal-content');
-//     modalBody   = modal?.querySelector('.modal-body');
-//     form        = document.getElementById('addForm');
-//     btnAdd      = document.getElementById('btnAdd');
-//     btnCancel   = document.getElementById('btnCancel');
-//     modalTitle  = modal?.querySelector('.modal-title');
-
-//     inputId     = document.getElementById('watchId');
-//     inputName   = document.getElementById('watchName');
-//     inputPrice  = document.getElementById('watchPrice');
-//     inputCat    = document.getElementById('watchCategory');
-//     inputBrand  = document.getElementById('watchBrand');
-//     inputDesc   = document.getElementById('watchDesc');
-//     fileInput   = document.getElementById('watchImageFile');
-//     imgPreview  = document.getElementById('imagePreview');
-
-
-//     // select khôi phục sp đã xóa
-//     const restoreBrand    = document.getElementById('restoreBrand');
-//     const restoreCategory = document.getElementById('restoreCategory');
-//     const restoreName     = document.getElementById('restoreName');
-
-//     // lấy danh sách sp đã xóa
-//     const getDeletedProducts = () => {
-//     const list = window.productsData || [];
-//     return list.filter(p => p.isDeleted);
-// };
-
-//     tbody          = document.getElementById('productTbody');
-//     filterCategory = document.getElementById('filterCategory');
-//     filterBrand    = document.getElementById('filterBrand');
-
-
-  
-
-//     // Helpers
-//     const NOIMG = 'data:image/svg+xml;utf8,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="80"><rect width="100%" height="100%" fill="#f3f3f3"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" fill="#999" font-family="Arial" font-size="12">No Image</text></svg>');
-//     const money = v => Number(v || 0).toLocaleString('vi-VN');
-//     const esc   = s => String(s ?? '').replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
-
-//     const lockScroll = () => {
-//       const sbw = window.innerWidth - document.documentElement.clientWidth;
-//       document.body.style.paddingRight = sbw ? sbw + 'px' : '';
-//       document.body.style.overflow = 'hidden';
-//     };
-//     const unlockScroll = () => { document.body.style.overflow = ''; document.body.style.paddingRight = ''; };
-
-//     // Preview
-//     let previewURL = null;
-//     const clearPreview = () => {
-//       if (previewURL) URL.revokeObjectURL(previewURL);
-//       previewURL = null;
-//       if (imgPreview) { imgPreview.removeAttribute('src'); imgPreview.style.display = 'none'; }
-//       if (fileInput) fileInput.value = '';
-//     };
-
-//     const resetForm = () => {
-//       form?.reset();
-//       if (inputId) inputId.value = '';
-//       clearPreview();
-//       modalBody?.scrollTo?.({ top: 0 });
-//     };
-
-//     // Open/Close modal
-//     const openModal = (mode = 'add') => {
-//       if (!modal) return;
-//       resetForm();
-//       if (modalTitle) modalTitle.textContent = (mode === 'edit' ? 'Sửa Đồng Hồ' : 'Thêm Đồng Hồ');
-//       modal.classList.add('show'); lockScroll();
-//       setTimeout(() => inputName?.focus(), 0);
-//     };
-//     const closeModal = () => { if (!modal) return; modal.classList.remove('show'); unlockScroll(); clearPreview(); };
-//     window.openModal = openModal; window.closeModal = closeModal;
-
-//     btnCancel?.addEventListener('click', (e) => { e.preventDefault?.(); closeModal(); });
-//     modal?.addEventListener('click', (e) => { if (e.target === modal) closeModal(); });
-//     modalBox?.addEventListener('click', (e) => e.stopPropagation());
-//     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && modal?.classList.contains('show')) closeModal(); });
-
-//     fileInput?.addEventListener('change', () => {
-//       const f = fileInput.files?.[0];
-//       if (!f || !f.type?.startsWith('image/')) { clearPreview(); return; }
-//       if (previewURL) URL.revokeObjectURL(previewURL);
-//       previewURL = URL.createObjectURL(f);
-//       imgPreview.src = previewURL; imgPreview.style.display = 'block';
-//     });
-
-//     // FILTER + RENDER
-//     const applyWatchFilter = (list) => {
-//       const cat = (filterCategory?.value || '');
-//       const br  = (filterBrand?.value || '');
-//       //return list.filter(p => (!cat || p.category === cat) && (!br || p.brand === br));
-//       return list.filter(p => 
-//                           !p.isDeleted &&                      // bỏ sp đã xóa
-//                           (!cat || p.category === cat) && 
-//                           (!br  || p.brand === br)
-//                         );
-//     };
-
-//     const render = (list) => {
-//       if (!tbody) return;
-//       if (!Array.isArray(list) || list.length === 0) {
-//         tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;color:#888">Không có sản phẩm</td></tr>`;
-//         return;
-//       }
-//       tbody.innerHTML = list.map(p => {
-//         const img = esc(window.resolveImgPath ? window.resolveImgPath(p) : (p.image || ''));
-//         return `
-//           <tr>
-//             <td><img class="thumb" src="${img}" alt="${esc(p.name)}" onerror="this.onerror=null;this.src='${NOIMG}'" /></td>
-//             <td title="${esc(p.description || '')}">${esc(p.name)} ${p.isHidden ? '<span class="badge muted">Ẩn</span>' : ''}</td>
-//             <td>${money(p.price)}</td>
-//             <td>${esc(p.category)}</td>
-//             <td>${esc(p.brand)}</td>
-//             <td>
-//               <button class="btn icon" type="button" data-action="edit" data-id="${esc(p.id)}" title="Sửa"><i class="fa-solid fa-pen"></i></button>
-//               <button class="btn icon" type="button" data-action="toggle-hide" data-id="${esc(p.id)}" title="${p.isHidden ? 'Hiện lên client' : 'Ẩn khỏi client'}"><i class="fa-solid ${p.isHidden ? 'fa-eye-slash' : 'fa-eye'}"></i></button>
-//               <button class="btn icon" type="button" data-action="del" data-id="${esc(p.id)}" title="Xóa"><i class="fa-solid fa-trash"></i></button>
-//             </td>
-//           </tr>`;
-//       }).join('');
-//     };
-
-//     const update = () => render(applyWatchFilter(window.productsData || []));
-//     window.update = update;
-
-//     // EDIT / DELETE / TOGGLE-HIDE
-//     const openEdit = (id) => {
-//       const list = window.productsData || [];
-//       const product = list.find(p => String(p.id) === String(id));
-//       if (!product) { alert('Không tìm thấy sản phẩm!'); return; }
-
-//       openModal('edit');
-//       inputId.value    = product.id ?? '';
-//       inputName.value  = product.name ?? '';
-//       inputPrice.value = product.price ?? 0;
-//       inputCat.value   = product.category ?? '';
-//       inputBrand.value = product.brand ?? '';
-//       inputDesc.value  = product.description ?? '';
-
-//       const path = (window.resolveImgPath ? window.resolveImgPath(product) : (product.image || '')) || NOIMG;
-//       imgPreview.src = path; imgPreview.style.display = 'block';
-//     };
-//     window.openEdit = openEdit;
-
-//     const doDelete = (id) => {
-//       const list = window.productsData || [];
-//       const idx = list.findIndex(p => String(p.id) === String(id));
-//       if (idx === -1) return;
-//       if (confirm(`Xóa "${list[idx].name}"?`)) {
-//         //list.splice(idx, 1);
-//         item.isDeleted = true;
-//         window.saveData?.();
-//         update();
-//         alert('Đã xóa sản phẩm!');
-//       }
-//     };
-
-//     tbody?.addEventListener('click', (e) => {
-//       const btn = e.target.closest('button[data-action]');
-//       if (!btn) return;
-//       const action = btn.getAttribute('data-action');
-//       const id = btn.getAttribute('data-id');
-//       if (action === 'edit') return openEdit(id);
-//       if (action === 'del')  return doDelete(id);
-//       if (action === 'toggle-hide') {
-//         const list = window.productsData || [];
-//         const item = list.find(p => String(p.id) === String(id));
-//         if (!item) return alert('Không tìm thấy sản phẩm!');
-//         item.isHidden = !item.isHidden;
-//         window.saveData?.();
-//         update();
-//         alert(item.isHidden ? 'Đã ẩn sản phẩm khỏi client.' : 'Đã hiện sản phẩm trên client.');
-//       }
-//     });
-
-//     function readFileAsDataURL(file){
-//       return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file); });
-//     }
-
-//     const getNextWatchId = () => {
-//       const list = window.productsData || [];
-//       // nếu đã có id chuỗi (p1, a5...), vẫn tạo số tăng dần an toàn nhưng trả về chuỗi
-//       const nums = list.map(p => Number(p.id)).filter(n => Number.isFinite(n));
-//       let next = nums.length ? Math.max(...nums) + 1 : list.length + 1;
-//       return String(next);
-//     };
-
-//     // SUBMIT (ADD/EDIT)
-//     // form?.addEventListener('submit', async (e) => {
-//     //   e.preventDefault();
-//     //   const list = window.productsData || [];
-
-//     //   const isEditing   = !!inputId.value;
-//     //   const name        = inputName?.value?.trim() || '';
-//     //   const price       = Number(inputPrice?.value || 0);
-//     //   const category    = inputCat?.value || '';
-//     //   const brand       = inputBrand?.value || '';
-//     //   const description = inputDesc?.value?.trim() || '';
-
-//     //   if (!name || price <= 0 || !category || !brand) {
-//     //     alert('Vui lòng điền đầy đủ Tên, Giá (>0), Loại và Thương hiệu.');
-//     //     return;
-//     //   }
-
-//     //   const hasNewFile = (fileInput?.files?.length || 0) > 0;
-//     //   let image = '';
-//     //   if (hasNewFile) image = await readFileAsDataURL(fileInput.files[0]);
-//     //   else { const slug = name.toLowerCase().replace(/\s+/g, '-'); image = `${slug}.jpg`; }
-
-//     //   if (isEditing) {
-//     //     const id = inputId.value;
-//     //     const idx = list.findIndex(p => String(p.id) === String(id));
-//     //     if (idx === -1) { alert('Không tìm thấy sản phẩm để cập nhật.'); return; }
-//     //     if (!hasNewFile) image = list[idx].image || image;
-//     //     list[idx] = { ...list[idx], name, price, category, brand, description, image };
-//     //   } else {
-//     //     if (list.some(p => (p.name || '').trim().toLowerCase() === name.toLowerCase())) {
-//     //       alert('Sản phẩm đã tồn tại (trùng tên).'); return;
-//     //     }
-//     //     list.unshift({ id: getNextWatchId(), name, price, category, brand, description, image, isHidden: false });
-//     //   }
-
-//     //   window.saveData?.();
-//     //   update();
-//     //   closeModal();
-//     //   alert(isEditing ? `Đã cập nhật: ${name}` : `Đã thêm mới: ${name}`);
-//     // });
-
-
-//     form?.addEventListener('submit', async (e) => {
-//       e.preventDefault();
-//       const list = window.productsData || [];
-
-//       const isEditing    = !!inputId.value;
-//       const isRestoring  = isEditing && form?.dataset.restoreMode === 'true';
-
-//       const name        = inputName?.value?.trim() || '';
-//       const price       = Number(inputPrice?.value || 0);
-//       const category    = inputCat?.value || '';
-//       const brand       = inputBrand?.value || '';
-//       const description = inputDesc?.value?.trim() || '';
-
-//       if (!name || price <= 0 || !category || !brand) {
-//         alert('Vui lòng điền đầy đủ Tên, Giá (>0), Loại và Thương hiệu.');
-//         return;
-//       }
-
-//       const hasNewFile = (fileInput?.files?.length || 0) > 0;
-//       let image = '';
-//       if (hasNewFile) image = await readFileAsDataURL(fileInput.files[0]);
-//       else {
-//         const slug = name.toLowerCase().replace(/\s+/g, '-');
-//         image = `${slug}.jpg`;
-//       }
-
-//       if (isEditing) {
-//         const id = inputId.value;
-//         const idx = list.findIndex(p => String(p.id) === String(id));
-//         if (idx === -1) { alert('Không tìm thấy sản phẩm để cập nhật.'); return; }
-
-//         if (!hasNewFile) image = list[idx].image || image;
-
-//         list[idx] = {
-//           ...list[idx],
-//           name,
-//           price,
-//           category,
-//           brand,
-//           description,
-//           image,
-//           isDeleted: false   // <--- KHÔI PHỤC lại
-//         };
-
-//         // reset trạng thái restore
-//         if (form?.dataset.restoreMode) delete form.dataset.restoreMode;
-
-//         window.saveData?.();
-//         update();
-//         closeModal();
-//         alert(isRestoring ? `Đã khôi phục sản phẩm: ${name}` : `Đã cập nhật: ${name}`);
-//       } else {
-//         // thêm mới như cũ, nhớ set isDeleted = false
-//         if (list.some(p => (p.name || '').trim().toLowerCase() === name.toLowerCase() && !p.isDeleted)) {
-//           alert('Sản phẩm đã tồn tại (trùng tên).');
-//           return;
-//         }
-//         list.unshift({
-//           id: getNextWatchId(),
-//           name,
-//           price,
-//           category,
-//           brand,
-//           description,
-//           image,
-//           isHidden: false,
-//           isDeleted: false
-//         });
-
-//         window.saveData?.();
-//         update();
-//         closeModal();
-//         alert(`Đã thêm mới: ${name}`);
-//       }
-
-//       // cập nhật lại 3 select khôi phục (vì list sp đã xóa có thể thay đổi)
-//       populateRestoreFilters();
-//     });
-
-//     // INIT
-//     update();
-//     filterCategory?.addEventListener('change', update);
-//     filterBrand?.addEventListener('change', update);
-//   });
-// })();
 
 // =================== UI & LOGIC: ĐỒNG HỒ ===================
 (() => {
@@ -458,8 +131,6 @@
     };
 
     
-
-
     tbody          = document.getElementById('productTbody');
     filterCategory = document.getElementById('filterCategory');
     filterBrand    = document.getElementById('filterBrand');
@@ -505,20 +176,12 @@
 
 
 
-    // Open/Close modal
-    // const openModal = (mode = 'add') => {
-    //   if (!modal) return;
-    //   resetForm();
-    //   if (modalTitle) modalTitle.textContent = (mode === 'edit' ? 'Sửa Đồng Hồ' : 'Thêm Đồng Hồ');
-    //   modal.classList.add('show'); lockScroll();
-    //   setTimeout(() => inputName?.focus(), 0);
-    // };
     const openModal = (mode = 'add') => {
       if (!modal) return;
       resetForm();
 
       if (mode === 'add') {
-        if (modalTitle) modalTitle.textContent = 'Khôi phục sản phẩm đã xóa';
+        if (modalTitle) modalTitle.textContent = 'Thêm sản phẩm';
         restoreGroup && (restoreGroup.style.display = '');  // hiện phần khôi phục
         setEditableFields(false);                           // không cho nhập tay
       } else {
@@ -595,9 +258,9 @@
 
       const deleted = getDeletedProducts();
 
-      restoreBrand.innerHTML    = '<option value="">Thương hiệu (đã xóa)</option>';
-      restoreCategory.innerHTML = '<option value="">Loại (đã xóa)</option>';
-      restoreName.innerHTML     = '<option value="">Tên sản phẩm (đã xóa)</option>';
+      restoreBrand.innerHTML    = '<option value="">Thương hiệu</option>';
+      restoreCategory.innerHTML = '<option value="">Loại</option>';
+      restoreName.innerHTML     = '<option value="">Tên sản phẩm</option>';
 
       const brandSet = new Set();
       const catSet   = new Set();
@@ -629,7 +292,7 @@
       const br  = restoreBrand?.value || '';
       const cat = restoreCategory?.value || '';
 
-      restoreName.innerHTML = '<option value="">Tên sản phẩm (đã xóa)</option>';
+      restoreName.innerHTML = '<option value="">Tên sản phẩm</option>';
 
       const filtered = deleted.filter(p =>
         (!br  || p.brand === br) &&
@@ -647,6 +310,7 @@
     restoreBrand?.addEventListener('change', populateRestoreNames);
     restoreCategory?.addEventListener('change', populateRestoreNames);
 
+    //Chọn sản phẩm để restore
     restoreName?.addEventListener('change', () => {
       const id = restoreName.value;
       if (!id) return;
@@ -687,21 +351,6 @@
       imgPreview.src = path; imgPreview.style.display = 'block';
     };
     window.openEdit = openEdit;
-
-    // const doDelete = (id) => {
-    //   const list = window.productsData || [];
-    //   const item = list.find(p => String(p.id) === String(id));
-    //   if (!item) return alert('Không tìm thấy sản phẩm!');
-
-    //   if (confirm(`Xóa"${item.name}"?`)) {
-    //     //list.splice(index, 1);
-    //     item.isDeleted = true;
-    //     window.saveData?.();
-    //     update();
-    //     populateRestoreFilters();
-    //     alert('Đã chuyển sản phẩm vào danh sách đã xóa!');
-    //   }
-    // };
 
 
     const doDelete = (id, type = 'soft') => {   
@@ -823,13 +472,14 @@
           isDeleted: false
         };
 
-        if (form?.dataset.restoreMode) delete form.dataset.restoreMode;
+        if (form?.dataset.restoreMode) delete form.dataset.restoreMode; //xóa cờ khôi phục
 
         window.saveData?.();
         update();
         closeModal();
         alert(isRestoring ? `Đã khôi phục sản phẩm: ${name}` : `Đã cập nhật: ${name}`);
-      } else {
+      } 
+      else {
         if (list.some(p => (p.name || '').trim().toLowerCase() === name.toLowerCase() && !p.isDeleted)) {
           alert('Sản phẩm đã tồn tại (trùng tên).');
           return;
@@ -862,92 +512,6 @@
     filterBrand   ?.addEventListener('change', update);
   });
 })();
-
-
-
-// =================== KHÔI PHỤC SẢN PHẨM ĐÃ XÓA ===================
-const populateRestoreFilters = () => {
-  if (!restoreBrand || !restoreCategory || !restoreName) return;
-
-  const deleted = getDeletedProducts();
-
-  // reset options
-  restoreBrand.innerHTML    = '<option value="">Thương hiệu</option>';
-  restoreCategory.innerHTML = '<option value="">Loại</option>';
-  restoreName.innerHTML     = '<option value="">Tên sản phẩm</option>';
-
-  const brandSet = new Set();
-  const catSet   = new Set();
-
-  deleted.forEach(p => {
-    if (p.brand)    brandSet.add(p.brand);
-    if (p.category) catSet.add(p.category);
-  });
-
-  brandSet.forEach(b => {
-    const opt = document.createElement('option');
-    opt.value = b;
-    opt.textContent = b;
-    restoreBrand.appendChild(opt);
-  });
-
-  catSet.forEach(c => {
-    const opt = document.createElement('option');
-    opt.value = c;
-    opt.textContent = c;
-    restoreCategory.appendChild(opt);
-  });
-};
-
-
-const populateRestoreNames = () => {
-  if (!restoreName) return;
-  const deleted = getDeletedProducts();
-
-  const br  = restoreBrand?.value || '';
-  const cat = restoreCategory?.value || '';
-
-  restoreName.innerHTML = '<option value="">Tên sản phẩm</option>';
-
-  const filtered = deleted.filter(p =>
-    (!br  || p.brand === br) &&
-    (!cat || p.category === cat)
-  );
-
-  filtered.forEach(p => {
-    const opt = document.createElement('option');
-    opt.value = p.id;           // lưu id
-    opt.textContent = p.name;   // hiển thị tên
-    restoreName.appendChild(opt);
-  });
-};
-
-
-restoreName?.addEventListener('change', () => {
-  const id = restoreName.value;
-  if (!id) return;
-
-  const list = window.productsData || [];
-  const p = list.find(x => String(x.id) === String(id) && x.isDeleted);
-  if (!p) return;
-
-  // gán cho form giống như đang "edit" sp đó
-  inputId.value    = p.id;                 // để submit hiểu là cập nhật
-  inputName.value  = p.name || '';
-  inputPrice.value = p.price || 0;
-  inputCat.value   = p.category || '';
-  inputBrand.value = p.brand || '';
-  inputDesc.value  = p.description || '';
-
-  // hiển thị ảnh
-  const path = (window.resolveImgPath ? window.resolveImgPath(p) : (p.image || '')) || NOIMG;
-  imgPreview.src = path;
-  imgPreview.style.display = 'block';
-
-  // đánh dấu là "khôi phục" (nếu muốn phân biệt)
-  form.dataset.restoreMode = 'true';
-});
-
 
 
 // =================== TAB & ACCESSORIES ===================
@@ -1156,7 +720,7 @@ restoreName?.addEventListener('change', () => {
         accPriceEl && (accPriceEl.value = item.price || 0);
         accTypeEl && (accTypeEl.value  = item.type || '');
         accMatEl  && (accMatEl.value   = item.material || '');
-        accColorEl&& (accColorEl.value = item.color || '');
+        accColorEl && (accColorEl.value = item.color || '');
         accDescEl && (accDescEl.value  = item.description || '');
         const src = window.resolveImgPath ? window.resolveImgPath(item) : (item.image || '');
         if (src && accPreviewEl) { accPreviewEl.src = src; accPreviewEl.style.display = 'block'; }
@@ -1171,6 +735,7 @@ restoreName?.addEventListener('change', () => {
       document.body.style.overflow = 'hidden';
       setTimeout(()=>accNameEl?.focus(), 0);
     }
+    
     function closeAccessoryModal(){ accModal?.classList.remove('show'); document.body.style.overflow = ''; }
     btnAccCancel?.addEventListener('click', (e)=>{ e.preventDefault?.(); closeAccessoryModal(); });
 

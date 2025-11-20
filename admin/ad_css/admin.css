@@ -436,3 +436,47 @@ html, body {
 #restoreBrand, #restoreCategory, #restoreName{
   margin-bottom: 10px;
 }
+
+/* CSS BỔ SUNG CHO CỘT MÔ TẢ TRONG BẢNG */
+.product-table th, 
+.product-table td {
+  /* Khôi phục lại một số thuộc tính đã đặt ở trên */
+  white-space: normal; /* Cho phép ngắt dòng */
+  word-wrap: break-word; /* Đảm bảo từ dài cũng bị ngắt */
+  overflow: hidden; /* Ẩn nội dung tràn (nếu cần) */
+  text-overflow: ellipsis; /* Thêm dấu "..." cho nội dung tràn (chỉ hiệu quả nếu white-space: nowrap, nhưng vẫn nên giữ) */
+}
+
+/* Định nghĩa lại kích thước cho cột Mô tả */
+.product-table thead tr th:nth-child(4), /* Cột Mô tả là cột thứ 4 */
+.product-table tbody tr td:nth-child(4) {
+  width: 250px; /* Đặt một chiều rộng cố định hoặc tương đối lớn hơn */
+  max-width: 30%; /* Giới hạn tối đa, tùy chỉnh theo layout */
+}
+
+/* Giảm bề rộng các cột khác để tạo không gian cho Mô tả */
+.product-table thead tr th:nth-child(1), /* Ảnh */
+.product-table tbody tr td:nth-child(1) {
+  width: 80px;
+}
+.product-table thead tr th:nth-child(3), /* Giá */
+.product-table tbody tr td:nth-child(3) {
+  width: 100px;
+}
+.product-table thead tr th:nth-child(6), /* Thao tác */
+.product-table tbody tr td:nth-child(6) {
+  width: 100px;
+}
+
+/* Cột Tên (Tên hộp) và Loại ( Loại) có thể để auto để chiếm phần còn lại */
+.product-table thead tr th:nth-child(2), /* Tên hộp */
+.product-table tbody tr td:nth-child(2),
+.product-table thead tr th:nth-child(5), /* Loại */
+.product-table tbody tr td:nth-child(5) {
+  width: auto;
+}
+
+/* Đảm bảo bảng có thể cuộn ngang nếu nội dung vẫn quá rộng trên màn hình nhỏ */
+.table-wrap {
+  overflow-x: auto;
+}
