@@ -429,3 +429,10 @@ html, body {
 #login_modal .message.success { color: #28a745; }
 
 
+.restore-row {
+  text-align: center;
+  margin-top: 10px;
+}
+#restoreBrand, #restoreCategory, #restoreName{
+  margin-bottom: 10px;
+}

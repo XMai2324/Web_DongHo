@@ -207,12 +207,32 @@
   <!-- MODAL: Thêm/Sửa đồng hồ -->
   <div id="watchModal" class="modal">
     <div class="modal-content">
-      <h2 class="modal-title">Thêm Đồng Hồ</h2>
+      <h2 class="modal-title">Thêm(khôi phục) Đồng Hồ</h2>
 
       <!-- PHẦN CUỘN -->
       <div class="modal-body">
         <form id="addForm">
           <input type="hidden" id="watchId" name="id" />
+
+
+          <div class="form-group full" id="restoreGroup">
+                <label>Khôi phục sản phẩm đã xóa (tùy chọn)</label>
+                <div class="restore-row">
+                  <select id="restoreBrand">
+                    <option value="">Thương hiệu</option>
+                  </select>
+
+                  <select id="restoreCategory">
+                    <option value="">Loại</option>
+                  </select>
+
+                  <select id="restoreName">
+                    <option value="">Tên sản phẩm</option>
+                  </select>
+                </div>
+                <small style="color:#777;">Chọn thương hiệu → loại → tên sản phẩm để tự động điền lại thông tin.</small>
+              </div>
+
 
           <div class="grid form-grid">
             <div class="form-group">
@@ -246,6 +266,9 @@
                 <option value="rolex">Rolex</option>
               </select>
             </div>
+
+            
+
 
             <div class="form-group full">
               <label for="watchDesc">Mô tả</label>
